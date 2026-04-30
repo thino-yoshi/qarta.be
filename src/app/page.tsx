@@ -1,6 +1,9 @@
 "use client";
 
-import { ShaderGradientCanvas, ShaderGradient } from "shadergradient";
+import { ShaderGradientCanvas, ShaderGradient as ShaderGradientBase } from "shadergradient";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ShaderGradient = ShaderGradientBase as any;
 
 const PhoneMockup = () => (
   <div style={{
@@ -64,17 +67,40 @@ export default function Home() {
       <section style={{ position: "relative", width: "100%", height: "100vh", overflow: "hidden" }}>
         <ShaderGradientCanvas style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
           <ShaderGradient
-            animate="on" axesHelper="off" brightness={1.2}
-            cAzimuthAngle={200} cDistance={2.11} cPolarAngle={90} cameraZoom={1}
-            color1="#001957" color2="#c4b5fd" color3="#00005e"
-            destination="onCanvas" embedMode="off" envPreset="city" fov={45}
-            grain="on" lightType="3d" pixelDensity={1.8}
-            positionX={-1.3} positionY={0} positionZ={0}
-            range="enabled" rangeEnd={40} rangeStart={0} reflection={0.1}
-            rotationX={60} rotationY={10} rotationZ={50}
-            shader="defaults" type="plane"
-            uAmplitude={1} uDensity={0.7} uFrequency={5.5}
-            uSpeed={0.1} uStrength={6.2} uTime={0} wireframe={false}
+            animate="on"
+            brightness={1.2}
+            cAzimuthAngle={200}
+            cDistance={2.11}
+            cPolarAngle={90}
+            cameraZoom={1}
+            color1="#001957"
+            color2="#c4b5fd"
+            color3="#00005e"
+            destination="onCanvas"
+            envPreset="city"
+            fov={45}
+            grain="on"
+            lightType="3d"
+            pixelDensity={1.8}
+            positionX={-1.3}
+            positionY={0}
+            positionZ={0}
+            range="enabled"
+            rangeEnd={40}
+            rangeStart={0}
+            reflection={0.1}
+            rotationX={60}
+            rotationY={10}
+            rotationZ={50}
+            shader="defaults"
+            type="plane"
+            uAmplitude={1}
+            uDensity={0.7}
+            uFrequency={5.5}
+            uSpeed={0.1}
+            uStrength={6.2}
+            uTime={0}
+            wireframe={false}
           />
         </ShaderGradientCanvas>
 
