@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockup — Clip-path morph</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    height: 350vh;
+    background: #080814;
+    font-family: system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── Gradient plein écran, clippé en forme de téléphone au départ ── */
+  #gradient {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    will-change: clip-path;
+    background:
+      radial-gradient(ellipse at 75% 20%, #7c6fd6 0%, transparent 55%),
+      radial-gradient(ellipse at 20% 80%, #1a3a8f 0%, transparent 50%),
+      linear-gradient(160deg, #001138 0%, #080830 50%, #0a0028 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  /* ── Brand text (visible au début, "écran du téléphone") ── */
+  #brand {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  #brand-logo {
+    font-size: 2.4rem;
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    text-shadow: 0 0 40px rgba(140, 100, 255, 0.5);
+  }
+
+  #brand-tagline {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.55);
+    text-align: center;
+    line-height: 1.6;
+    max-width: 190px;
+  }
+
+  /* ── Hero text (apparaît après l'ouverture) ── */
+  #hero {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #hero h1 {
+    font-size: clamp(4.5rem, 11vw, 9rem);
+    font-weight: 900;
+    letter-spacing: -0.045em;
+    text-align: center;
+    line-height: 0.92;
+    text-shadow: 0 2px 60px rgba(0,0,0,0.4);
+  }
+
+  #hero p {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.75);
+    text-align: center;
+    max-width: 440px;
+    line-height: 1.65;
+  }
+
+  /* ── Cadre téléphone ── */
+  #phone-frame {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 280px;
+    height: 500px;
+    border: 5px solid rgba(100, 100, 200, 0.55);
+    border-radius: 40px;
+    z-index: 20;
+    pointer-events: none;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.06),
+      0 0 40px rgba(100, 80, 255, 0.15),
+      0 40px 100px rgba(0,0,0,0.6);
+  }
+
+  /* Notch */
+  #phone-frame::before {
+    content: '';
+    position: absolute;
+    top: 13px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 52px;
+    height: 10px;
+    background: #080814;
+    border-radius: 8px;
+  }
+
+  /* Home indicator */
+  #phone-frame::after {
+    content: '';
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 38px;
+    height: 5px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 4px;
+  }
+
+  /* ── Hint scroll ── */
+  #hint {
+    position: fixed;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    color: rgba(255,255,255,0.45);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  #hint .line {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.3);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; }
+    50%       { opacity: 1; }
+  }
+
+  /* ── Contenu sous le hero ── */
+  .site-content {
+    position: absolute;
+    top: 100vh;
+    width: 100%;
+    padding: 80px 10%;
+  }
+
+  .section {
+    max-width: 620px;
+    margin-bottom: 40px;
+    padding: 56px;
+    border-radius: 20px;
+    background: white;
+  }
+
+  .section h2 {
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: #0a0a0a;
+    letter-spacing: -0.03em;
+    margin-bottom: 14px;
+  }
+
+  .section p {
+    color: #666;
+    line-height: 1.75;
+    font-size: 0.95rem;
+  }
+
+  .dark {
+    background: #001133;
+  }
+
+  .dark h2 { color: white; }
+  .dark p  { color: rgba(255,255,255,0.45); }
+</style>
+</head>
+<body>
+
+  <!-- Gradient animé -->
+  <div id="gradient">
+    <div id="brand">
+      <span id="brand-logo">Qarta</span>
+      <span id="brand-tagline">La plateforme de fidélité qui connecte les commerçants à leurs clients</span>
+    </div>
+    <div id="hero">
+      <h1>Qarta</h1>
+      <p>La fidélité, sans friction. Un scan suffit pour rejoindre, cumuler, récompenser.</p>
+    </div>
+  </div>
+
+  <!-- Cadre physique du téléphone -->
+  <div id="phone-frame"></div>
+
+  <!-- Hint -->
+  <div id="hint">Scroll<div class="line"></div></div>
+
+  <!-- Contenu page -->
+  <div class="site-content">
+    <div class="section">
+      <h2>La fidélité, sans friction.</h2>
+      <p>Qarta remplace les cartes papier par un système universel basé sur le QR code. Un scan suffit pour tout — rejoindre, cumuler, récompenser.</p>
+    </div>
+    <div class="section dark">
+      <h2>Créez votre programme en 5 minutes.</h2>
+      <p>Pas besoin de développeur. Configurez, générez votre QR code et commencez à fidéliser le jour même.</p>
+    </div>
+    <div class="section">
+      <h2>Toutes vos cartes dans votre poche.</h2>
+      <p>Scannez et rejoignez instantanément. Vos cartes, points et récompenses, toujours à portée de main.</p>
+    </div>
+  </div>
+
+<script>
+  const gradient = document.getElementById('gradient');
+  const frame    = document.getElementById('phone-frame');
+  const brand    = document.getElementById('brand');
+  const hero     = document.getElementById('hero');
+  const hint     = document.getElementById('hint');
+
+  const VW = window.innerWidth;
+  const VH = window.innerHeight;
+
+  const PW = 280;
+  const PH = 500;
+
+  // Insets de départ — clip centré en forme de téléphone
+  const I_TOP  = (VH - PH) / 2;
+  const I_SIDE = (VW - PW) / 2;
+
+  const SCROLL_RANGE = VH;
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function easeInOut(t) { return t < .5 ? 2*t*t : -1 + (4 - 2*t)*t; }
+  function easeOut3(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function update() {
+    const raw = clamp(window.scrollY / SCROLL_RANGE, 0, 1);
+    const p   = easeInOut(raw);
+
+    // ── Phase 1 : clip-path s'ouvre (0 → 0.68) ──────────────────
+    const p1   = clamp(p / 0.68, 0, 1);
+    const top  = lerp(I_TOP,  -6, p1);
+    const side = lerp(I_SIDE, -6, p1);
+    const rad  = lerp(40,      0, p1);
+
+    gradient.style.clipPath =
+      `inset(${top}px ${side}px ${top}px ${side}px round ${rad}px)`;
+
+    // ── Cadre téléphone ──────────────────────────────────────────
+    // Disparaît vite + légère mise à l'échelle vers l'extérieur
+    const frameScale = lerp(1, 1.06, clamp(p1 * 1.5, 0, 1));
+    const frameOp    = clamp(1 - p1 * 3.5, 0, 1);
+    frame.style.opacity   = frameOp;
+    frame.style.transform = `translate(-50%, -50%) scale(${frameScale})`;
+
+    // ── Brand text : disparaît pendant l'ouverture ───────────────
+    brand.style.opacity = clamp(1 - p1 * 2.8, 0, 1);
+
+    // ── Hero text : apparaît après 60% ──────────────────────────
+    const p2 = clamp((p - 0.6) / 0.4, 0, 1);
+    hero.style.opacity = easeOut3(p2);
+
+    // ── Hint ──────────────────────────────────────────────────────
+    hint.style.opacity = clamp(1 - raw * 7, 0, 1);
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+
+> qarta.be@0.1.0 dev
+> next dev
+
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.1.38:3000
+✓ Ready in 512ms
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:3001
+- PID:          8916
+- Dir:          C:\Users\gobin\Documents\qarta.be
+- Log:          .next\dev\logs\next-development.log
+
+Run taskkill /PID 8916 /F to stop it.
+[?25h

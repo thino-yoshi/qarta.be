@@ -1,15 +1,9 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
 import "./globals.css";
 
-const geist = Geist({
-  variable: "--font-geist",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "Qarta.be",
-  description: "Qarta.be",
+  title: "Qarta — Fidélité digitale",
+  description: "Toutes vos cartes de fidélité réunies dans une seule application. Simple. Digital. Écologique.",
 };
 
 export default function RootLayout({
@@ -18,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="fr" className="h-full antialiased">
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }
