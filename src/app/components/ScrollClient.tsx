@@ -68,7 +68,7 @@ export default function ScrollClient() {
       id="client"
       data-testid="scroll-client"
       className="relative overflow-hidden"
-      style={{ minHeight: "150vh", background: "linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%)" }}
+      style={{ minHeight: "150vh", background: "linear-gradient(180deg, #f4f7fc 0%, #faf8f4 8%, #f3f0ea 100%)" }}
     >
       <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 w-full grid lg:grid-cols-2 gap-16 items-center">
@@ -78,19 +78,18 @@ export default function ScrollClient() {
               Chapitre 02 · Expérience Client
             </span>
             <h2
-              className="mt-6 font-display text-[#0f2044]"
+              className="mt-6 font-display text-[#0f2044] flex flex-col"
               style={{
                 fontSize: "clamp(2.4rem, 5.4vw, 4.6rem)",
-                lineHeight: 1.02,
-                letterSpacing: "-0.03em",
-                fontWeight: 300,
+                letterSpacing: "0.06em",
+                fontWeight: 600,
+                lineHeight: 1,
+                gap: "0.12em",
               }}
             >
-              Simple.
-              <br />
-              <span className="font-serif-accent text-[#2c7be5]">Digital.</span>
-              <br />
-              Écologique.
+              <span>Simple.</span>
+              <span className="text-[#2c7be5]">Écologique.</span>
+              <span>Efficace.</span>
             </h2>
             <p className="mt-6 text-[#47526a] text-[17px] leading-relaxed max-w-lg">
               Fini les cartes cartonnées froissées au fond du portefeuille. Toutes vos cartes de
@@ -100,9 +99,9 @@ export default function ScrollClient() {
             <div className="mt-8 grid grid-cols-2 gap-3 max-w-md">
               {[
                 { icon: QrCode, label: "QR code unique" },
-                { icon: Wallet, label: "Apple Wallet" },
+                { icon: Wallet, label: "Apple & Google Wallet" },
                 { icon: Sparkles, label: "Récompenses auto" },
-                { icon: Coffee, label: "Tous commerces" },
+                { icon: Coffee, label: "Vos commerces préférés" },
               ].map(({ icon: Icon, label }) => (
                 <div
                   key={label}

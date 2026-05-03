@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
-import WaveBackground from "./WaveBackground";
-import QartaPhoneLogin from "./QartaPhoneLogin";
-import { QartaWordmark } from "./QartaLogo";
+import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
+import dynamic from "next/dynamic";
+const HeroGradient = dynamic(() => import("./HeroGradient"), { ssr: false });
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -20,8 +19,6 @@ export default function Hero() {
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const rx = useSpring(useTransform(my, [-0.5, 0.5], [10, -10]), { stiffness: 80, damping: 14 });
-  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-14, 14]), { stiffness: 80, damping: 14 });
 
   useEffect(() => {
     const el = heroRef.current;
@@ -46,16 +43,16 @@ export default function Hero() {
       ref={heroRef}
       data-testid="hero-section"
       className="relative w-full overflow-hidden"
-      style={{ height: "110vh" }}
+      style={{ height: "110vh", background: "#000000" }}
     >
-      <WaveBackground intensity={1} />
+      <HeroGradient />
 
       <div ref={cursorRef} className="q-cursor-glow" />
 
       <div
         className="absolute inset-x-0 bottom-0 h-[30vh] pointer-events-none"
         style={{
-          background: "linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 60%, #ffffff 100%)",
+          background: "linear-gradient(180deg, rgba(250,248,244,0) 0%, rgba(250,248,244,0.5) 60%, #faf8f4 100%)",
         }}
       />
 
@@ -68,42 +65,40 @@ export default function Hero() {
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-crystal mb-8"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8"
+            style={{ background: "#0f2044", border: "1px solid rgba(74,158,255,0.2)" }}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#4a9eff] animate-pulse-glow"></span>
-            <span className="text-[12px] font-medium tracking-widest uppercase text-[#0f2044]/80">
-              Fidélité digitale · Nouvelle génération
+            <span className="text-[12px] font-medium tracking-widest uppercase text-[#faf8f4]/80">
+              La Fidélité digitale Réinventée
             </span>
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 20, filter: "blur(10px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-            transition={{ duration: 1.1, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-            className="font-display font-light text-white text-center"
+          <h1
+            className="font-display text-center animate-hero-title"
             style={{
               fontSize: "clamp(4.5rem, 16vw, 16rem)",
               lineHeight: 0.9,
-              letterSpacing: "-0.04em",
-              textShadow: "0 4px 40px rgba(15, 32, 68, 0.25)",
+              fontWeight: 600,
+              letterSpacing: "0.06em",
+              color: "#faf8f4",
             }}
             data-testid="hero-title"
           >
             QARTA
-          </motion.h1>
+          </h1>
 
           <motion.p
             style={{ opacity: subOpacity }}
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.45 }}
-            className="mt-6 max-w-2xl text-white/90 text-[17px] md:text-[19px] leading-relaxed text-center"
+            className="mt-6 max-w-2xl text-[#faf8f4]/90 text-[17px] md:text-[19px] leading-relaxed text-center"
             data-testid="hero-subtitle"
           >
             Toutes vos cartes de fidélité{" "}
-            <span className="font-serif-accent text-[#cfe3ff]">réunies</span> dans une seule application.{" "}
-            <span className="block mt-1 text-white/70 text-[15px] md:text-[16px]">
-              Simple. Digital. Écologique.
+            <span className="text-[#cfe3ff] font-semibold">réunies</span> dans une seule application.{" "}
+            <span className="block mt-1 text-[#faf8f4]/70 text-[15px] md:text-[16px]">
+              
             </span>
           </motion.p>
 
@@ -145,28 +140,11 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2, duration: 1 }}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/60"
+            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#faf8f4]/60"
           >
             <span className="text-[10px] uppercase tracking-[0.3em]">Défiler</span>
             <div className="w-px h-12 bg-gradient-to-b from-white/60 to-transparent" />
           </motion.div>
-        </motion.div>
-
-        {/* Floating phone */}
-        <motion.div
-          initial={{ y: 140, opacity: 0 }}
-          animate={{ y: 320, opacity: 1 }}
-          transition={{ duration: 1.4, delay: 1, ease: [0.22, 1, 0.36, 1] }}
-          style={{ rotateX: rx, rotateY: ry, transformPerspective: 1400 }}
-          className="absolute left-1/2 bottom-[-260px] -translate-x-1/2 animate-float"
-          data-testid="hero-floating-phone"
-        >
-          <div className="q-phone-shell">
-            <div className="q-phone-screen">
-              <div className="q-phone-notch" />
-              <QartaPhoneLogin role="client" />
-            </div>
-          </div>
         </motion.div>
       </div>
     </section>

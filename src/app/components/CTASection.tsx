@@ -23,15 +23,6 @@ const steps = [
 
 const plans = [
   {
-    name: "Découverte",
-    price: "Gratuit",
-    period: "pour commencer",
-    features: ["1 programme actif", "Jusqu'à 50 clients", "QR code & Apple Wallet", "Statistiques basiques"],
-    cta: "Créer un compte",
-    href: "/register?role=merchant",
-    popular: false,
-  },
-  {
     name: "Pro",
     price: "29€",
     period: "/ mois",
@@ -46,20 +37,11 @@ const plans = [
     href: "/register?role=merchant&plan=pro",
     popular: true,
   },
-  {
-    name: "Entreprise",
-    price: "Sur devis",
-    period: "multi-établissements",
-    features: ["Plusieurs points de vente", "API & intégrations", "Design sur-mesure", "Account manager dédié"],
-    cta: "Nous contacter",
-    href: "/contact",
-    popular: false,
-  },
 ];
 
 export default function CTASection() {
   return (
-    <section id="pricing" data-testid="cta-section" className="relative bg-white">
+    <section id="pricing" data-testid="cta-section" className="relative" style={{ background: "#faf8f4" }}>
       {/* Steps */}
       <div className="mx-auto max-w-7xl px-6 lg:px-10 pt-20 pb-12">
         <div className="text-center max-w-2xl mx-auto">
@@ -70,13 +52,13 @@ export default function CTASection() {
             className="mt-6 font-display text-[#0f2044]"
             style={{
               fontSize: "clamp(2rem, 4.2vw, 3.4rem)",
-              fontWeight: 300,
-              letterSpacing: "-0.03em",
-              lineHeight: 1.05,
+              fontWeight: 400,
+              letterSpacing: "0.06em",
+              lineHeight: 1.15,
             }}
           >
-            Créer votre programme en{" "}
-            <span className="font-serif-accent text-[#2c7be5]">3 étapes</span>.
+            Créer votre programme<br />
+            en <span className="text-[#2c7be5]">3 étapes</span>.
           </h2>
         </div>
 
@@ -120,22 +102,22 @@ export default function CTASection() {
             className="mt-6 font-display text-[#0f2044]"
             style={{
               fontSize: "clamp(2rem, 4.2vw, 3.4rem)",
-              fontWeight: 300,
-              letterSpacing: "-0.03em",
+              fontWeight: 600,
+              letterSpacing: "0.06em",
             }}
           >
             Des tarifs{" "}
-            <span className="font-serif-accent text-[#2c7be5]">clairs</span> et sans surprise.
+            <span className="text-[#2c7be5]">clairs</span> et sans surprise.
           </h2>
         </div>
 
-        <div className="mt-14 grid md:grid-cols-3 gap-5">
+        <div className="mt-14 flex justify-center">
           {plans.map((p, i) => (
             <div
               key={p.name}
-              className={`relative p-7 rounded-3xl transition-transform hover:-translate-y-1 duration-300 ${
+              className={`relative p-7 rounded-3xl transition-transform hover:-translate-y-1 duration-300 w-full max-w-sm ${
                 p.popular
-                  ? "border-2 border-[#2c7be5] bg-white"
+                  ? "border-2 border-[#0f2044] bg-white"
                   : "bg-white border border-[#eaf0fb]"
               }`}
               style={{
@@ -145,7 +127,7 @@ export default function CTASection() {
               }}
             >
               {p.popular && (
-                <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-[#2c7be5] text-white text-[10px] font-bold uppercase tracking-widest">
+                <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-[#0f2044] text-white text-[10px] font-bold uppercase tracking-widest">
                   Populaire
                 </div>
               )}
@@ -159,8 +141,8 @@ export default function CTASection() {
               <div className="mt-5 space-y-3">
                 {p.features.map((f) => (
                   <div key={f} className="flex items-start gap-2.5">
-                    <div className="w-5 h-5 rounded-full bg-[#eaf2fd] flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check size={12} color="#2c7be5" strokeWidth={3} />
+                    <div className="w-5 h-5 rounded-full bg-[#e8eaf0] flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <Check size={12} color="#0f2044" strokeWidth={3} />
                     </div>
                     <span className="text-[14px] text-[#47526a]">{f}</span>
                   </div>
@@ -170,7 +152,7 @@ export default function CTASection() {
                 href={p.href}
                 className={`mt-7 w-full inline-flex items-center justify-center gap-2 py-3 rounded-full font-semibold transition-colors ${
                   p.popular
-                    ? "bg-[#2c7be5] text-white hover:bg-[#1f63c7]"
+                    ? "bg-[#0f2044] text-white hover:bg-[#0b1220]"
                     : "border border-[#0f2044]/14 text-[#0f2044] hover:border-[#2c7be5] hover:text-[#2c7be5]"
                 }`}
               >

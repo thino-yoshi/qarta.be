@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef } from "react";
-import { motion, useScroll, useTransform, MotionValue } from "framer-motion";
+import { motion } from "framer-motion";
 import { Coffee, Scissors, ShoppingBag, Cpu, Car, Dumbbell, Utensils, Flower2 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { QartaLogo } from "./QartaLogo";
@@ -16,52 +16,41 @@ const ORBIT: { Icon: LucideIcon; label: string }[] = [
   { Icon: Flower2, label: "Beauté" },
 ];
 
-function OrbitIcon({
-  item,
-  index,
-  rotateBase,
-  total,
-}: {
-  item: { Icon: LucideIcon; label: string };
-  index: number;
-  rotateBase: MotionValue<number>;
-  total: number;
-}) {
+const DURATION = 22; // secondes pour un tour complet
+
+function OrbitIcon({ item, index, total }: { item: { Icon: LucideIcon; label: string }; index: number; total: number }) {
   const angle = (index / total) * Math.PI * 2;
   const radius = 220;
   const x = Math.cos(angle) * radius;
   const y = Math.sin(angle) * radius;
-  const counter = useTransform(rotateBase, (v: number) => -v);
   const Icon = item.Icon;
 
   return (
-    <motion.div
-      style={{ rotate: counter, x, y }}
-      className="absolute"
-    >
-      <div
-        className="w-[82px] h-[82px] rounded-2xl flex flex-col items-center justify-center gap-1"
-        style={{
-          background: "rgba(255,255,255,0.92)",
-          boxShadow: "0 18px 40px -18px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.8)",
-        }}
+    <div style={{ position: "absolute", transform: `translate(${x}px, ${y}px)` }}>
+      {/* contre-rotation pour garder les icônes droites */}
+      <motion.div
+        animate={{ rotate: -360 }}
+        transition={{ duration: DURATION, repeat: Infinity, ease: "linear" }}
       >
-        <Icon size={22} color="#2c7be5" strokeWidth={2} />
-        <span className="text-[9px] font-semibold text-[#0f2044] text-center px-1 leading-tight">
-          {item.label}
-        </span>
-      </div>
-    </motion.div>
+        <div
+          className="w-[82px] h-[82px] rounded-2xl flex flex-col items-center justify-center gap-1"
+          style={{
+            background: "rgba(255,255,255,0.92)",
+            boxShadow: "0 18px 40px -18px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.8)",
+          }}
+        >
+          <Icon size={22} color="#2c7be5" strokeWidth={2} />
+          <span className="text-[9px] font-semibold text-[#0f2044] text-center px-1 leading-tight">
+            {item.label}
+          </span>
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
 export default function ScrollBusinesses() {
   const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const rotateBase = useTransform(scrollYProgress, [0, 1], [0, 360]);
 
   return (
     <section
@@ -70,7 +59,7 @@ export default function ScrollBusinesses() {
       className="relative overflow-hidden"
       style={{
         minHeight: "110vh",
-        background: "linear-gradient(180deg, #0b1220 0%, #0f2044 40%, #ffffff 100%)",
+        background: "linear-gradient(180deg, #0b1220 0%, #0f2044 40%, #faf8f4 100%)",
       }}
     >
       <div className="sticky top-0 h-screen flex items-center">
@@ -83,17 +72,17 @@ export default function ScrollBusinesses() {
             style={{
               fontSize: "clamp(2.3rem, 5vw, 4.4rem)",
               lineHeight: 1.02,
-              letterSpacing: "-0.03em",
-              fontWeight: 300,
+              letterSpacing: "0.06em",
+              fontWeight: 600,
               maxWidth: "20ch",
             }}
           >
             QARTA s&apos;adapte à{" "}
-            <span className="font-serif-accent text-[#4a9eff]">tous</span> les commerces.
+            <span className="text-[#4a9eff]">tous</span> les commerces.
           </h2>
           <p className="mt-6 text-white/70 text-[17px] max-w-xl mx-auto leading-relaxed">
             Du coffee shop à l&apos;atelier de lavage auto, du coiffeur au boucher — chaque commerce
-            local trouve sa place dans l&apos;écosystème QARTA.
+            local trouve sa place dans l&apos;univers QARTA.
           </p>
 
           <div className="relative mx-auto mt-14 w-full" style={{ height: 480 }}>
@@ -128,7 +117,8 @@ export default function ScrollBusinesses() {
 
             {/* rotating icons */}
             <motion.div
-              style={{ rotate: rotateBase }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: DURATION, repeat: Infinity, ease: "linear" }}
               className="absolute inset-0 flex items-center justify-center"
             >
               {ORBIT.map((item, i) => (
@@ -136,7 +126,6 @@ export default function ScrollBusinesses() {
                   key={item.label}
                   item={item}
                   index={i}
-                  rotateBase={rotateBase}
                   total={ORBIT.length}
                 />
               ))}

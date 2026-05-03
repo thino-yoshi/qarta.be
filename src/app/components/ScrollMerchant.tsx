@@ -202,7 +202,7 @@ export default function ScrollMerchant() {
       <div
         className="absolute top-0 left-0 right-0 h-[30vh] pointer-events-none"
         style={{
-          background: "linear-gradient(180deg, #ffffff 0%, #f6f8fb 40%, rgba(11,18,32,0.9) 100%)",
+          background: "linear-gradient(180deg, #faf8f4 0%, #f3f0ea 40%, rgba(11,18,32,0.9) 100%)",
         }}
       />
       <div
@@ -225,17 +225,16 @@ export default function ScrollMerchant() {
               style={{
                 fontSize: "clamp(2.3rem, 5vw, 4.2rem)",
                 lineHeight: 1.02,
-                letterSpacing: "-0.03em",
-                fontWeight: 300,
+                letterSpacing: "0.06em",
+                fontWeight: 600,
               }}
             >
               Un outil{" "}
-              <span className="font-serif-accent text-[#4a9eff]">puissant</span>
+              <span className="text-[#4a9eff]">puissant</span>
               <br /> et simple.
             </h2>
             <p className="mt-6 text-white/70 text-[17px] leading-relaxed max-w-lg">
-              Créez votre programme de fidélité en quelques minutes. Fidélisez vos clients,
-              récoltez des avis, écoulez vos invendus — tout depuis un tableau de bord intuitif.
+              Créez un programme de fidélité pour faire revenir vos clients, envoyer des rappels automatiques et analyser vos ventes. Identifiez vos heures creuses et augmentez votre chiffre d&apos;affaires depuis un tableau de bord simple.
             </p>
 
             <div className="mt-8 grid grid-cols-2 gap-3 max-w-md">

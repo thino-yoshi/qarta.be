@@ -12,7 +12,8 @@ export default function ScrollImmersion() {
 
   const scale = useTransform(scrollYProgress, [0.1, 0.55], [0.85, 1.08]);
   const rotate = useTransform(scrollYProgress, [0, 1], [-6, 6]);
-  const y = useTransform(scrollYProgress, [0, 1], [-50, 50]);
+  const y = useTransform(scrollYProgress, [0, 0.45, 1], [280, 0, 50]);
+  const x = useTransform(scrollYProgress, [0, 0.45], [-700, 0]);
   const textOpacity = useTransform(scrollYProgress, [0.15, 0.4, 0.7], [0, 1, 0.35]);
   const textY = useTransform(scrollYProgress, [0.1, 0.5], [40, -20]);
 
@@ -21,7 +22,7 @@ export default function ScrollImmersion() {
       ref={ref}
       data-testid="scroll-immersion"
       className="relative overflow-hidden"
-      style={{ minHeight: "100vh", background: "#ffffff" }}
+      style={{ minHeight: "100vh", background: "#faf8f4" }}
     >
       {/* decorative blobs */}
       <div
@@ -29,8 +30,13 @@ export default function ScrollImmersion() {
         style={{ background: "radial-gradient(circle, rgba(74,158,255,0.4), transparent 60%)" }}
       />
       <div
-        className="absolute bottom-0 right-[-10%] w-[45vw] h-[45vw] rounded-full opacity-30 blur-3xl"
+        className="absolute top-[20%] right-[-10%] w-[45vw] h-[45vw] rounded-full opacity-25 blur-3xl"
         style={{ background: "radial-gradient(circle, rgba(44,123,229,0.35), transparent 60%)" }}
+      />
+      {/* bottom fade — masks blobs before next section */}
+      <div
+        className="absolute bottom-0 left-0 right-0 h-[35vh] pointer-events-none"
+        style={{ background: "linear-gradient(to bottom, transparent, #faf8f4)" }}
       />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-[8rem] pb-20 grid lg:grid-cols-2 gap-16 items-center">
@@ -43,20 +49,19 @@ export default function ScrollImmersion() {
             style={{
               fontSize: "clamp(2.2rem, 5vw, 4.2rem)",
               lineHeight: 1.05,
-              letterSpacing: "-0.03em",
-              fontWeight: 300,
+              letterSpacing: "0.06em",
+              fontWeight: 600,
             }}
           >
             Entrez dans{" "}
-            <span className="font-serif-accent text-[#2c7be5]">l&apos;écosystème</span> QARTA.
+            <span className="text-[#2c7be5]">l&apos;univers</span> QARTA.
           </h2>
           <p className="mt-6 text-[#47526a] text-[17px] leading-relaxed max-w-lg">
-            Un univers pensé pour faire disparaître les cartes cartonnées et réunir — dans un seul
-            geste — tous les commerces que vous aimez.
+            Un univers pensé pour faire disparaître les cartes en papier et créer, d&apos;un seul geste, un lien durable entre les clients et les commerçants.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            {["Sans carton", "Toujours avec vous", "Instantané"].map((t, i) => (
+            {["Intuitif", "Pratique", "Rapide"].map((t, i) => (
               <div
                 key={t}
                 className="px-4 py-2 rounded-full bg-white border border-[#eaf0fb] text-[#0f2044] text-[13px] font-medium"
@@ -70,7 +75,7 @@ export default function ScrollImmersion() {
         </motion.div>
 
         <motion.div
-          style={{ scale, rotate, y }}
+          style={{ scale, rotate, y, x }}
           className="order-1 lg:order-2 flex justify-center"
           data-testid="immersion-phone"
         >

@@ -5,11 +5,15 @@ import { usePathname } from "next/navigation";
 import { QartaLogo, QartaWordmark } from "./QartaLogo";
 
 const NAV = [
-  { label: "Accueil", href: "#hero", scrollId: "hero" },
-  { label: "Client", href: "#client", scrollId: "scroll-client" },
-  { label: "Commerçant", href: "#merchant", scrollId: "scroll-merchant" },
-  { label: "Abonnement", href: "#pricing", scrollId: "pricing" },
+  { label: "Accueil",    href: "#hero",      scrollId: "hero" },
+  { label: "Immersion",  href: "#immersion",  scrollId: "scroll-immersion" },
+  { label: "Client",     href: "#client",     scrollId: "scroll-client" },
+  { label: "Commerçant", href: "#merchant",   scrollId: "scroll-merchant" },
+  { label: "Contact",    href: "/contact",    scrollId: "" },
+  { label: "Tarif",      href: "#pricing",    scrollId: "pricing" },
 ];
+
+const DEMO = { label: "Démo", href: "/register?role=merchant" };
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -62,18 +66,31 @@ export default function Header() {
             {NAV.map((item) => (
               <a
                 key={item.label}
-                href={onLanding ? item.href : `/${item.href}`}
-                onClick={(e) => handleAnchor(e, item.scrollId)}
+                href={item.scrollId ? (onLanding ? item.href : `/${item.href}`) : item.href}
+                onClick={(e) => item.scrollId ? handleAnchor(e, item.scrollId) : undefined}
                 className={`px-4 py-2 text-[14px] font-medium rounded-full transition-colors duration-200 ${
                   scrolled
                     ? "text-[#0f2044]/80 hover:text-[#2c7be5] hover:bg-[#2c7be5]/8"
                     : "text-white/85 hover:text-white hover:bg-white/10"
                 }`}
-                data-testid={`header-nav-${item.scrollId}`}
+                data-testid={`header-nav-${item.scrollId || item.label}`}
               >
                 {item.label}
               </a>
             ))}
+
+            {/* Séparateur + bouton Démo */}
+            <span className={`mx-1 h-4 w-px ${scrolled ? "bg-[#0f2044]/15" : "bg-white/20"}`} />
+            <Link
+              href={DEMO.href}
+              className={`px-4 py-2 text-[14px] font-semibold rounded-full border transition-colors duration-200 ${
+                scrolled
+                  ? "border-[#0f2044]/20 text-[#0f2044] hover:bg-[#0f2044] hover:text-white"
+                  : "border-white/30 text-white hover:bg-white hover:text-[#0f2044]"
+              }`}
+            >
+              Démo
+            </Link>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -120,16 +137,22 @@ export default function Header() {
             {NAV.map((item) => (
               <a
                 key={item.label}
-                href={onLanding ? item.href : `/${item.href}`}
+                href={item.scrollId ? (onLanding ? item.href : `/${item.href}`) : item.href}
                 onClick={(e) => {
                   setOpen(false);
-                  handleAnchor(e, item.scrollId);
+                  if (item.scrollId) handleAnchor(e, item.scrollId);
                 }}
                 className="block px-4 py-3 text-[#0f2044] font-medium rounded-2xl hover:bg-[#2c7be5]/10"
               >
                 {item.label}
               </a>
             ))}
+            <Link
+              href={DEMO.href}
+              className="block px-4 py-3 text-[#0f2044] font-semibold rounded-2xl hover:bg-[#0f2044]/8"
+            >
+              Démo
+            </Link>
             <Link
               href="/login"
               className="block px-4 py-3 text-[#2c7be5] font-semibold rounded-2xl"

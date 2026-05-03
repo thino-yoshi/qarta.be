@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Qarta — Fidélité digitale",
-  description: "Toutes vos cartes de fidélité réunies dans une seule application. Simple. Digital. Écologique.",
+  description: "Toutes vos cartes de fidélité réunies dans une seule application. Simple. Digital.",
 };
 
 export default function RootLayout({
