@@ -1,13 +1,15 @@
 "use client";
 import { ShaderGradientCanvas, ShaderGradient } from "shadergradient";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ShaderGradientAny = ShaderGradient as any;
+
 export default function HeroGradient() {
   return (
     <ShaderGradientCanvas
       style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
     >
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <ShaderGradient
+      <ShaderGradientAny
         animate="on"
         axesHelper="off"
         brightness={1.2}
