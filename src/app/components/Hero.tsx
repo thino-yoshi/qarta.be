@@ -1,8 +1,18 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, Component, ReactNode } from "react";
 import { motion, useScroll, useTransform, useMotionValue } from "framer-motion";
 import dynamic from "next/dynamic";
 const HeroGradient = dynamic(() => import("./HeroGradient"), { ssr: false });
+
+class GradientErrorBoundary extends Component<{ children: ReactNode }, { crashed: boolean }> {
+  state = { crashed: false };
+  componentDidCatch() { this.setState({ crashed: true }); }
+  static getDerivedStateFromError() { return { crashed: true }; }
+  render() {
+    if (this.state.crashed) return null; // fallback silencieux — le fond noir reste
+    return this.props.children;
+  }
+}
 
 export default function Hero() {
   const heroRef = useRef<HTMLElement>(null);
@@ -45,7 +55,9 @@ export default function Hero() {
       className="relative w-full overflow-hidden"
       style={{ height: "110vh", background: "#000000" }}
     >
-      <HeroGradient />
+      <GradientErrorBoundary>
+        <HeroGradient />
+      </GradientErrorBoundary>
 
       <div ref={cursorRef} className="q-cursor-glow" />
 
