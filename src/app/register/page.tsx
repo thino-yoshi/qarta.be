@@ -95,7 +95,7 @@ export default function RegisterPage() {
     num_locations: "1 établissement",
   });
 
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [otp, setOtp] = useState(["", "", "", "", "", "", "", ""]);
   const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const set = (key: string, val: string) => setForm((f) => ({ ...f, [key]: val }));
@@ -184,7 +184,7 @@ export default function RegisterPage() {
   /* ─── Submit étape 3 → vérifier le code ─── */
   const handleVerify = async () => {
     const token = otp.join("");
-    if (token.length < 6) { setError("Entrez le code à 6 chiffres."); return; }
+    if (token.length < 8) { setError("Entrez le code à 8 chiffres."); return; }
     setError(null);
     setLoading(true);
 
@@ -248,7 +248,7 @@ export default function RegisterPage() {
     const next = [...otp];
     next[i] = val.slice(-1);
     setOtp(next);
-    if (val && i < 5) otpRefs.current[i + 1]?.focus();
+    if (val && i < 7) otpRefs.current[i + 1]?.focus();
   };
 
   const handleOtpKey = (i: number, e: React.KeyboardEvent) => {
@@ -259,11 +259,11 @@ export default function RegisterPage() {
 
   const handleOtpPaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 8);
     const next = [...otp];
     text.split("").forEach((c, i) => { next[i] = c; });
     setOtp(next);
-    otpRefs.current[Math.min(text.length, 5)]?.focus();
+    otpRefs.current[Math.min(text.length, 7)]?.focus();
   };
 
   /* ─── UI helper ─── */
@@ -494,7 +494,7 @@ export default function RegisterPage() {
               <h1 className="text-white text-[22px] font-bold mb-2" style={{ fontFamily: "Manrope, sans-serif", letterSpacing: "-0.02em" }}>
                 Vérifiez votre email
               </h1>
-              <p className="text-white/45 text-[14px] mb-1">Code envoyé à</p>
+              <p className="text-white/45 text-[14px] mb-1">Code à 8 chiffres envoyé à</p>
               <p className="text-[#4a9eff] font-semibold text-[14px] mb-8">{form.email}</p>
 
               {error && <ErrorBox msg={error} />}
@@ -522,7 +522,8 @@ export default function RegisterPage() {
 
               <button onClick={handleVerify} disabled={loading || otp.join("").length < 6}
                 className="w-full py-3.5 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
+                style={{ background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)" }}
+                disabled={loading || otp.join("").length < 8}>
                 {loading ? <Spinner /> : <> Vérifier et accéder au dashboard <ArrowRight size={16} strokeWidth={2.2} /> </>}
               </button>
 
