@@ -1,13 +1,40 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, Mail, Lock, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Mail, Lock, ArrowRight, AlertCircle } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      setError(
+        error.message === "Invalid login credentials"
+          ? "Email ou mot de passe incorrect."
+          : "Une erreur est survenue. Réessayez."
+      );
+      setLoading(false);
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
+  };
 
   return (
     <div
@@ -82,8 +109,17 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {/* Error */}
+          {error && (
+            <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl mb-5 text-[13px] text-red-300"
+              style={{ background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.2)" }}>
+              <AlertCircle size={15} strokeWidth={2} className="flex-shrink-0" />
+              {error}
+            </div>
+          )}
+
           {/* Form */}
-          <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-3" onSubmit={handleLogin}>
             {/* Email */}
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
@@ -159,20 +195,21 @@ export default function LoginPage() {
             {/* Submit */}
             <button
               type="submit"
-              className="w-full mt-1 py-3.5 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+              disabled={loading}
+              className="w-full mt-1 py-3.5 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
               style={{
                 background: "linear-gradient(135deg, #2c7be5 0%, #4a9eff 100%)",
                 boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 16px 36px -10px rgba(44,123,229,0.75), inset 0 1px 0 rgba(255,255,255,0.2)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)";
-              }}
             >
-              Se connecter
-              <ArrowRight size={16} strokeWidth={2.2} />
+              {loading ? (
+                <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="3"/>
+                  <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                </svg>
+              ) : (
+                <>Se connecter <ArrowRight size={16} strokeWidth={2.2} /></>
+              )}
             </button>
           </form>
 
