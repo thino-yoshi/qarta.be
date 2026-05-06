@@ -68,9 +68,9 @@ export default function ScrollClient() {
       id="client"
       data-testid="scroll-client"
       className="relative overflow-hidden"
-      style={{ minHeight: "150vh", background: "linear-gradient(180deg, #f4f7fc 0%, #faf8f4 8%, #f3f0ea 100%)" }}
+      style={{ background: "linear-gradient(180deg, #f4f7fc 0%, #faf8f4 8%, #f3f0ea 100%)" }}
     >
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
+      <div className="flex flex-col items-center justify-center py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 w-full grid lg:grid-cols-2 gap-16 items-center">
           {/* Text */}
           <div>

@@ -58,11 +58,10 @@ export default function ScrollBusinesses() {
       data-testid="scroll-all-business"
       className="relative overflow-hidden"
       style={{
-        minHeight: "110vh",
         background: "linear-gradient(180deg, #0b1220 0%, #0f2044 40%, #faf8f4 100%)",
       }}
     >
-      <div className="sticky top-0 h-screen flex items-center">
+      <div className="flex items-center py-20 lg:py-28">
         <div className="relative mx-auto max-w-7xl px-6 lg:px-10 w-full text-center">
           <span className="inline-block px-3 py-1 rounded-full bg-white/8 text-[#4a9eff] text-[11px] font-semibold tracking-[0.18em] uppercase border border-white/10">
             Chapitre 04 · Tous types de commerces

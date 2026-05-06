@@ -197,7 +197,7 @@ export default function ScrollMerchant() {
       id="merchant"
       data-testid="scroll-merchant"
       className="relative overflow-hidden"
-      style={{ minHeight: "150vh", background: "#0b1220" }}
+      style={{ background: "#0b1220" }}
     >
       <div
         className="absolute top-1/4 right-[-10%] w-[55vw] h-[55vw] rounded-full opacity-30 blur-3xl"
@@ -208,7 +208,7 @@ export default function ScrollMerchant() {
         style={{ background: "radial-gradient(circle, rgba(44,123,229,0.6), transparent 60%)" }}
       />
 
-      <div className="sticky top-0 h-screen flex items-center">
+      <div className="flex items-center py-20 lg:py-28">
         <div className="relative mx-auto max-w-7xl px-6 lg:px-10 w-full grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-5">
             <span className="inline-block px-3 py-1 rounded-full bg-white/8 text-[#4a9eff] text-[11px] font-semibold tracking-[0.18em] uppercase border border-white/10">

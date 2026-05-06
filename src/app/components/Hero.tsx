@@ -53,7 +53,7 @@ export default function Hero() {
       ref={heroRef}
       data-testid="hero-section"
       className="relative w-full overflow-hidden"
-      style={{ height: "110vh", background: "#000000" }}
+      style={{ height: "100vh", background: "#000000" }}
     >
       <GradientErrorBoundary>
         <HeroGradient />

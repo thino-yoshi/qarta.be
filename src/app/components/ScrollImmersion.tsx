@@ -22,7 +22,7 @@ export default function ScrollImmersion() {
       ref={ref}
       data-testid="scroll-immersion"
       className="relative overflow-hidden"
-      style={{ minHeight: "100vh", background: "#faf8f4" }}
+      style={{ background: "#faf8f4" }}
     >
       {/* decorative blobs */}
       <div
