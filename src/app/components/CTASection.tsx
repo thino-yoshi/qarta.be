@@ -24,7 +24,7 @@ const steps = [
 const plans = [
   {
     name: "Pro",
-    price: "29€",
+    price: "20€",
     period: "/ mois",
     features: [
       "Programmes illimités",

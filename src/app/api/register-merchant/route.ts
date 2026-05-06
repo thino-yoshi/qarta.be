@@ -1,9 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
+import { resend, FROM_EMAIL, ADMIN_EMAIL } from "@/lib/resend";
+import { welcomeMerchantEmail } from "@/lib/emails/welcome-merchant";
+import { adminNewMerchantEmail } from "@/lib/emails/admin-new-merchant";
 
 export async function POST(req: NextRequest) {
-  /* ── 1. Vérifier que l'utilisateur est bien connecté (OTP vérifié) ── */
+  /* ── 1. Vérifier que l'utilisateur est bien connecté ── */
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -13,10 +16,10 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
 
-  /* ── 2. Insérer via service role (contourne RLS et grants) ── */
+  /* ── 2. Insérer via service role ── */
   const admin = createAdminClient();
 
-  /* users EN PREMIER — merchants.id a une FK vers public.users.id */
+  /* users EN PREMIER */
   const { error: userError } = await admin.from("users").upsert({
     id: user.id,
     email: user.email,
@@ -52,6 +55,38 @@ export async function POST(req: NextRequest) {
     console.error("[register-merchant] merchants error:", merchantError);
     return NextResponse.json({ error: merchantError.message }, { status: 500 });
   }
+
+  /* ── 3. Emails via Resend (en parallèle, non bloquants) ── */
+  const welcome = welcomeMerchantEmail({
+    firstName: body.first_name,
+    businessName: body.business_name,
+  });
+
+  const adminNotif = adminNewMerchantEmail({
+    firstName: body.first_name,
+    lastName: body.last_name,
+    businessName: body.business_name,
+    category: body.category,
+    email: user.email!,
+    phone: body.phone,
+    city: body.city,
+    numLocations: body.num_locations,
+  });
+
+  await Promise.allSettled([
+    resend.emails.send({
+      from: FROM_EMAIL,
+      to: user.email!,
+      subject: welcome.subject,
+      html: welcome.html,
+    }),
+    resend.emails.send({
+      from: FROM_EMAIL,
+      to: ADMIN_EMAIL,
+      subject: adminNotif.subject,
+      html: adminNotif.html,
+    }),
+  ]);
 
   return NextResponse.json({ success: true });
 }
