@@ -1,10 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, Component, ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, AlertCircle } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
 import { createClient } from "@/lib/supabase/client";
+import dynamic from "next/dynamic";
+const HeroGradient = dynamic(() => import("../components/HeroGradient"), { ssr: false });
+
+class GradientErrorBoundary extends Component<{ children: ReactNode }, { crashed: boolean }> {
+  state = { crashed: false };
+  componentDidCatch() { this.setState({ crashed: true }); }
+  static getDerivedStateFromError() { return { crashed: true }; }
+  render() {
+    if (this.state.crashed) return null;
+    return this.props.children;
+  }
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,33 +49,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      className="fixed inset-0 flex flex-col overflow-y-auto overflow-x-hidden"
-      style={{ background: "#0b1220" }}
-    >
-      {/* Ambient glows */}
-      <div
-        className="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full opacity-40 blur-3xl pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(74,158,255,0.5), transparent 65%)" }}
-      />
-      <div
-        className="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full opacity-30 blur-3xl pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(44,123,229,0.5), transparent 65%)" }}
-      />
-      <div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-10 blur-3xl pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(100,120,255,0.6), transparent 60%)" }}
-      />
+    <>
+      {/* Gradient fixe derrière tout */}
+      <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: -10, background: "#000511" }}>
+        <GradientErrorBoundary>
+          <HeroGradient />
+        </GradientErrorBoundary>
+      </div>
 
-      {/* Grid overlay */}
-      <div
-        className="absolute inset-0 opacity-20 pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(74,158,255,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(74,158,255,0.08) 1px,transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
-      />
+    <div
+      className="min-h-screen flex flex-col overflow-x-hidden"
+    >
 
       {/* Top bar */}
       <div className="relative z-10 flex items-center justify-between px-8 pt-7">
@@ -83,101 +79,109 @@ export default function LoginPage() {
       {/* Card */}
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-12">
         <div
-          className="w-full max-w-md rounded-3xl p-8 sm:p-10"
+          className="w-full max-w-[1300px] rounded-3xl p-16 sm:p-20"
           style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.10)",
-            backdropFilter: "blur(24px)",
-            boxShadow: "0 40px 80px -30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.08)",
+            background: "#0d1b3e",
+            border: "1px solid rgba(255,255,255,0.08)",
+            boxShadow: "0 40px 80px -20px rgba(0,0,0,0.5)",
+            minHeight: "850px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
           }}
         >
+          {/* Contenu centré dans la grande carte */}
+          <div className="max-w-lg mx-auto">
           {/* Header card */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-5"
-              style={{ background: "linear-gradient(135deg, #0f2044, #1a3a6e)", border: "1px solid rgba(74,158,255,0.2)", boxShadow: "0 10px 30px -10px rgba(44,123,229,0.4)" }}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl mb-7"
+              style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.4)" }}
             >
-              <QartaLogo size={44} variant="badge" showTiles={false} />
+              <QartaLogo size={64} variant="badge" showTiles={false} />
             </div>
             <h1
-              className="text-white text-[26px] font-bold leading-tight"
-              style={{ fontFamily: "Manrope, sans-serif", letterSpacing: "-0.02em" }}
+              className="text-[38px] font-bold leading-tight"
+              style={{ fontFamily: "Manrope, sans-serif", letterSpacing: "-0.02em", color: "#FBF7F2" }}
             >
               Bon retour parmi nous
             </h1>
-            <p className="text-white/45 text-[14px] mt-2">
+            <p className="text-[17px] mt-2" style={{ color: "#4a9eff" }}>
               Espace commerçant
             </p>
           </div>
 
           {/* Error */}
           {error && (
-            <div className="flex items-center gap-2.5 px-4 py-3 rounded-2xl mb-5 text-[13px] text-red-300"
-              style={{ background: "rgba(239,68,68,0.10)", border: "1px solid rgba(239,68,68,0.2)" }}>
-              <AlertCircle size={15} strokeWidth={2} className="flex-shrink-0" />
+            <div className="flex items-center gap-2.5 px-5 py-4 rounded-2xl mb-6 text-[15px]"
+              style={{ background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)", color: "#fca5a5" }}>
+              <AlertCircle size={17} strokeWidth={2} className="flex-shrink-0" />
               {error}
             </div>
           )}
 
           {/* Form */}
-          <form className="space-y-3" onSubmit={handleLogin}>
+          <form className="space-y-4" onSubmit={handleLogin}>
             {/* Email */}
             <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Mail size={16} color="rgba(255,255,255,0.35)" strokeWidth={2} />
+              <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                <Mail size={20} color="#6b7280" strokeWidth={2} />
               </div>
               <input
                 type="email"
                 placeholder="Adresse e-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-11 pr-4 py-3.5 rounded-2xl text-[14px] text-white placeholder-white/30 outline-none transition-all"
+                className="w-full pl-14 pr-5 py-5 rounded-2xl text-[17px] outline-none transition-all"
                 style={{
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.10)",
+                  background: "#FBF7F2",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#1a1a2e",
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.border = "1px solid rgba(74,158,255,0.5)";
-                  e.currentTarget.style.background = "rgba(74,158,255,0.06)";
+                  e.currentTarget.style.border = "1px solid rgba(44,123,229,0.6)";
+                  e.currentTarget.style.background = "#f0ecff";
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.border = "1px solid rgba(255,255,255,0.10)";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+                  e.currentTarget.style.border = "1px solid rgba(255,255,255,0.1)";
+                  e.currentTarget.style.background = "#FBF7F2";
                 }}
               />
             </div>
 
             {/* Password */}
             <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                <Lock size={16} color="rgba(255,255,255,0.35)" strokeWidth={2} />
+              <div className="absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none">
+                <Lock size={20} color="#6b7280" strokeWidth={2} />
               </div>
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Mot de passe"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-11 pr-12 py-3.5 rounded-2xl text-[14px] text-white placeholder-white/30 outline-none transition-all"
+                className="w-full pl-14 pr-14 py-5 rounded-2xl text-[17px] outline-none transition-all"
                 style={{
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.10)",
+                  background: "#FBF7F2",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  color: "#1a1a2e",
                 }}
                 onFocus={(e) => {
-                  e.currentTarget.style.border = "1px solid rgba(74,158,255,0.5)";
-                  e.currentTarget.style.background = "rgba(74,158,255,0.06)";
+                  e.currentTarget.style.border = "1px solid rgba(44,123,229,0.6)";
+                  e.currentTarget.style.background = "#f0ecff";
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.border = "1px solid rgba(255,255,255,0.10)";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.06)";
+                  e.currentTarget.style.border = "1px solid rgba(255,255,255,0.1)";
+                  e.currentTarget.style.background = "#FBF7F2";
                 }}
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/35 hover:text-white/70 transition-colors"
+                className="absolute right-5 top-1/2 -translate-y-1/2 transition-colors"
+                style={{ color: "#6b7280" }}
               >
                 {showPassword
-                  ? <EyeOff size={16} strokeWidth={2} />
-                  : <Eye size={16} strokeWidth={2} />
+                  ? <EyeOff size={20} strokeWidth={2} />
+                  : <Eye size={20} strokeWidth={2} />
                 }
               </button>
             </div>
@@ -186,7 +190,8 @@ export default function LoginPage() {
             <div className="flex justify-end pt-1">
               <Link
                 href="/forgot-password"
-                className="text-[13px] text-[#4a9eff]/80 hover:text-[#4a9eff] transition-colors"
+                className="text-[15px] transition-colors"
+                style={{ color: "#4a9eff" }}
               >
                 Mot de passe oublié ?
               </Link>
@@ -196,30 +201,32 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-1 py-3.5 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full mt-1 py-5 rounded-2xl font-semibold text-[18px] flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
               style={{
-                background: "linear-gradient(135deg, #2c7be5 0%, #4a9eff 100%)",
-                boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)",
+                background: "#FBF7F2",
+                color: "#0d1b3e",
+                boxShadow: "0 12px 30px -10px rgba(0,0,0,0.3)",
               }}
             >
               {loading ? (
-                <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="3"/>
-                  <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                <svg className="animate-spin" width="22" height="22" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="#0d1b3e" strokeWidth="3"/>
+                  <path className="opacity-75" fill="#0d1b3e" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
                 </svg>
               ) : (
-                <>Se connecter <ArrowRight size={16} strokeWidth={2.2} /></>
+                <>Se connecter <ArrowRight size={20} strokeWidth={2.2} /></>
               )}
             </button>
           </form>
 
           {/* Footer card */}
-          <p className="text-center text-[13px] text-white/35 mt-6">
+          <p className="text-center text-[15px] mt-8" style={{ color: "#4a9eff" }}>
             Pas encore de compte ?{" "}
-            <Link href="/register" className="text-[#4a9eff] font-semibold hover:text-white transition-colors">
+            <Link href="/register" className="font-semibold transition-colors" style={{ color: "#FBF7F2" }}>
               Créer un espace commerçant
             </Link>
           </p>
+          </div>
         </div>
       </div>
 
@@ -228,5 +235,6 @@ export default function LoginPage() {
         <p className="text-[12px] text-white/20">© 2026 QARTA · Tous droits réservés</p>
       </div>
     </div>
+    </>
   );
 }

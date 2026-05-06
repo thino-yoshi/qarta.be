@@ -200,12 +200,6 @@ export default function ScrollMerchant() {
       style={{ minHeight: "150vh", background: "#0b1220" }}
     >
       <div
-        className="absolute top-0 left-0 right-0 h-[30vh] pointer-events-none"
-        style={{
-          background: "linear-gradient(180deg, #faf8f4 0%, #f3f0ea 40%, rgba(11,18,32,0.9) 100%)",
-        }}
-      />
-      <div
         className="absolute top-1/4 right-[-10%] w-[55vw] h-[55vw] rounded-full opacity-30 blur-3xl"
         style={{ background: "radial-gradient(circle, rgba(74,158,255,0.5), transparent 60%)" }}
       />

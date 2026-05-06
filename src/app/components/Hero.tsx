@@ -61,12 +61,6 @@ export default function Hero() {
 
       <div ref={cursorRef} className="q-cursor-glow" />
 
-      <div
-        className="absolute inset-x-0 bottom-0 h-[30vh] pointer-events-none"
-        style={{
-          background: "linear-gradient(180deg, rgba(250,248,244,0) 0%, rgba(250,248,244,0.5) 60%, #faf8f4 100%)",
-        }}
-      />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10 h-full flex flex-col items-center justify-center pt-24">
         <motion.div
@@ -130,7 +124,7 @@ export default function Hero() {
               className="q-btn-primary"
               data-testid="hero-cta-merchant"
             >
-              Lancer ma fidélité
+              Lancez votre fidélité
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
@@ -144,7 +138,7 @@ export default function Hero() {
               className="px-5 py-3.5 rounded-full font-semibold text-white border border-white/30 hover:bg-white/10 transition-colors backdrop-blur-md"
               data-testid="hero-cta-client"
             >
-              Voir côté client
+              Contact
             </a>
           </motion.div>
 
