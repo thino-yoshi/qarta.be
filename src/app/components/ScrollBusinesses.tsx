@@ -58,7 +58,7 @@ export default function ScrollBusinesses() {
       data-testid="scroll-all-business"
       className="relative overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, #0b1220 0%, #0f2044 40%, #faf8f4 100%)",
+        background: "#0b1220",
       }}
     >
       <div className="flex items-center py-20 lg:py-28">
