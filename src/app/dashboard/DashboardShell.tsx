@@ -175,17 +175,18 @@ export default function DashboardShell({ user, merchant, loyaltyCard }: Props) {
           </div>
         )}
 
-        {/* Tab content */}
+        {/* Tab content — tous les onglets restent montés (display:none) pour
+             préserver l'état React (design de la carte, etc.) entre les navigations */}
         <div className="flex-1 min-h-0 px-6 py-6 overflow-auto">
-          {activeTab === "carte" && (
+          <div style={{ display: activeTab === "carte" ? "block" : "none" }}>
             <CarteTab merchant={merchant} loyaltyCard={loyaltyCard} isActive={isActive} />
-          )}
-          {activeTab === "statistiques" && (
+          </div>
+          <div style={{ display: activeTab === "statistiques" ? "block" : "none" }}>
             <StatistiquesTab merchant={merchant} isActive={isActive} />
-          )}
-          {activeTab === "abonnement" && (
+          </div>
+          <div style={{ display: activeTab === "abonnement" ? "block" : "none" }}>
             <AbonnementTab merchant={merchant} isActive={isActive} />
-          )}
+          </div>
         </div>
       </main>
     </div>
