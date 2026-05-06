@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, ArrowLeft, Building2, User, Mail, Lock, Phone, MapPin, Globe, Hash, CheckCircle, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, ArrowLeft, Building2, User, Mail, Lock, Phone, MapPin, Globe, Hash, CheckCircle, AlertCircle, Eye, EyeOff, type LucideIcon } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
 import { createClient } from "@/lib/supabase/client";
 
@@ -46,7 +46,7 @@ const inputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) =>
 
 function Field({
   label, icon: Icon, children,
-}: { label: string; icon?: React.ElementType; children: React.ReactNode }) {
+}: { label: string; icon?: LucideIcon; children: React.ReactNode }) {
   return (
     <div>
       <label className="block text-[12px] text-white/50 font-medium mb-1.5 uppercase tracking-wider">

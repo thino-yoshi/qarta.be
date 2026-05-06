@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle } from "lucide-react";
+import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle, type LucideIcon } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
 import CarteTab from "./tabs/CarteTab";
 import StatistiquesTab from "./tabs/StatistiquesTab";
@@ -18,7 +18,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("carte");
   const isActive = merchant?.subscription_status === "active";
 
-  const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
+  const tabs: { id: Tab; label: string; icon: LucideIcon }[] = [
     { id: "carte",         label: "Ma carte",      icon: Store },
     { id: "statistiques",  label: "Statistiques",  icon: BarChart2 },
     { id: "abonnement",    label: "Abonnement",    icon: CreditCard },
