@@ -1,30 +1,37 @@
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
+import DashboardShell from "./DashboardShell";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-
   if (!user) redirect("/login");
 
+  // Rediriger l'admin vers son espace dédié
+  if (user.email === process.env.QARTA_ADMIN_EMAIL) redirect("/admin");
+
+  const admin = createAdminClient();
+
+  const { data: merchant } = await admin
+    .from("merchants")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (!merchant) redirect("/register");
+
+  const { data: loyaltyCard } = await admin
+    .from("merchant_card_designs")
+    .select("*")
+    .eq("merchant_id", user.id)
+    .maybeSingle();
+
   return (
-    <div
-      className="min-h-screen flex items-center justify-center"
-      style={{ background: "#0b1220", color: "white", fontFamily: "Manrope, sans-serif" }}
-    >
-      <div className="text-center">
-        <div className="text-[13px] text-white/40 uppercase tracking-widest mb-3">Dashboard commerçant</div>
-        <h1 className="text-[2rem] font-bold">Bienvenue 👋</h1>
-        <p className="text-white/50 mt-2 text-[15px]">{user.email}</p>
-        <form action="/api/logout" method="POST" className="mt-8">
-          <button
-            type="submit"
-            className="px-6 py-2.5 rounded-full text-[14px] font-semibold text-white/70 border border-white/15 hover:border-white/30 transition-colors"
-          >
-            Se déconnecter
-          </button>
-        </form>
-      </div>
-    </div>
+    <DashboardShell
+      user={{ id: user.id, email: user.email! }}
+      merchant={merchant}
+      loyaltyCard={loyaltyCard ?? null}
+    />
   );
 }

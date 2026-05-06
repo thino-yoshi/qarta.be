@@ -170,7 +170,7 @@ export default function RegisterPage() {
       setError(
         signUpError.message.includes("already registered")
           ? "Cet email est déjà utilisé. Connectez-vous."
-          : "Erreur lors de la création du compte. Réessayez."
+          : `Erreur: ${signUpError.message}`
       );
       setLoading(false);
       return;
@@ -188,6 +188,7 @@ export default function RegisterPage() {
     setError(null);
     setLoading(true);
 
+    /* ── 1. Vérifier l'OTP Supabase ── */
     const supabase = createClient();
     const { data, error: verifyError } = await supabase.auth.verifyOtp({
       email: form.email,
@@ -201,32 +202,38 @@ export default function RegisterPage() {
       return;
     }
 
-    /* ── Insérer dans merchants ── */
-    await supabase.from("merchants").upsert({
-      id: data.user.id,
-      business_name: form.business_name,
-      category: form.category,
-      email: form.email,
-      first_name: form.first_name,
-      last_name: form.last_name,
-      phone: form.phone,
-      address: form.address,
-      postal_code: form.postal_code,
-      city: form.city,
-      country: form.country,
-      website: form.website || null,
-      siret: form.siret || null,
-      num_locations: form.num_locations,
-      subscription_status: "pending",
-    });
+    /* ── 2. Enregistrer les données via route API serveur (service role) ── */
+    try {
+      const res = await fetch("/api/register-merchant", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          business_name: form.business_name,
+          category: form.category,
+          first_name: form.first_name,
+          last_name: form.last_name,
+          phone: form.phone,
+          address: form.address,
+          postal_code: form.postal_code,
+          city: form.city,
+          country: form.country,
+          website: form.website,
+          siret: form.siret,
+          num_locations: form.num_locations,
+        }),
+      });
 
-    /* ── Insérer dans users ── */
-    await supabase.from("users").upsert({
-      id: data.user.id,
-      email: form.email,
-      name: `${form.first_name} ${form.last_name}`,
-      user_type: "merchant",
-    });
+      const result = await res.json();
+      if (!res.ok) {
+        setError(`Erreur lors de l'enregistrement : ${result.error}`);
+        setLoading(false);
+        return;
+      }
+    } catch (e) {
+      setError("Erreur réseau. Réessayez.");
+      setLoading(false);
+      return;
+    }
 
     router.push("/dashboard");
     router.refresh();
@@ -520,10 +527,10 @@ export default function RegisterPage() {
                 ))}
               </div>
 
-              <button onClick={handleVerify} disabled={loading || otp.join("").length < 6}
+              <button onClick={handleVerify}
+                disabled={loading || otp.join("").length < 8}
                 className="w-full py-3.5 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)" }}
-                disabled={loading || otp.join("").length < 8}>
+                style={{ background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
                 {loading ? <Spinner /> : <> Vérifier et accéder au dashboard <ArrowRight size={16} strokeWidth={2.2} /> </>}
               </button>
 
@@ -535,7 +542,7 @@ export default function RegisterPage() {
                 </button>
               </p>
 
-              <button onClick={() => { setStep(2); setError(null); setOtp(["","","","","",""]); }}
+              <button onClick={() => { setStep(2); setError(null); setOtp(["","","","","","","",""]); }}
                 className="mt-3 text-[12px] text-white/25 hover:text-white/50 transition-colors flex items-center gap-1 mx-auto">
                 <ArrowLeft size={12} /> Modifier mon email
               </button>
