@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: CONTACT_EMAIL,
-    reply_to: email,
+    replyTo: email,
     subject: `Message de ${name} via qarta.be`,
     html: `
       <div style="font-family:'Manrope',sans-serif;max-width:560px;margin:0 auto;color:#0f2044;">
