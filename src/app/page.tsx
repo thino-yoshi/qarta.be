@@ -6,8 +6,6 @@ import ScrollMerchant from "./components/ScrollMerchant";
 import ScrollBusinesses from "./components/ScrollBusinesses";
 import CTASection from "./components/CTASection";
 import Footer from "./components/Footer";
-import FloatingEditButton from "./components/FloatingEditButton";
-
 export default function Home() {
   return (
     <main className="relative">
@@ -19,7 +17,6 @@ export default function Home() {
       <ScrollBusinesses />
       <CTASection />
       <Footer />
-      <FloatingEditButton />
     </main>
   );
 }

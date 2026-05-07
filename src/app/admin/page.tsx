@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { Users, Store, CreditCard, TrendingUp, LogOut, Settings, ShieldCheck } from "lucide-react";
+import { Users, Store, CreditCard, TrendingUp, LogOut, Settings, ShieldCheck, LayoutPanelLeft } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
 
 async function setMerchantStatus(formData: FormData) {
@@ -59,6 +59,13 @@ export default async function AdminPage() {
         </div>
         <div className="flex items-center gap-4">
           <span className="text-[13px] text-white/40">{user.email}</span>
+          <a
+            href="/admin/editor"
+            className="flex items-center gap-2 text-[13px] font-semibold px-4 py-2 rounded-xl transition-all"
+            style={{ background: "rgba(74,158,255,0.12)", border: "1px solid rgba(74,158,255,0.25)", color: "#4a9eff" }}
+          >
+            <LayoutPanelLeft size={14} /> Éditeur de pages
+          </a>
           <form action="/api/logout" method="POST">
             <button type="submit" className="flex items-center gap-2 text-[13px] text-white/40 hover:text-white/70 transition-colors px-4 py-2 rounded-xl"
               style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
