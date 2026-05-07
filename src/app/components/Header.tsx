@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { QartaLogo, QartaWordmark } from "./QartaLogo";
 
-const NAV = [
-  { label: "Accueil",    href: "#hero",      scrollId: "hero" },
+const NAV_DEFAULT = [
+  { label: "Accueil",    href: "#hero",       scrollId: "hero" },
   { label: "Immersion",  href: "#immersion",  scrollId: "scroll-immersion" },
   { label: "Client",     href: "#client",     scrollId: "scroll-client" },
   { label: "Commerçant", href: "#merchant",   scrollId: "scroll-merchant" },
@@ -13,12 +13,21 @@ const NAV = [
   { label: "Tarif",      href: "#pricing",    scrollId: "pricing" },
 ];
 
-const DEMO = { label: "Démo", href: "/register?role=merchant" };
-
-export default function Header() {
+export default function Header({ content }: { content?: Record<string, unknown> }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  // Merge DB content with defaults
+  const c = content ?? {};
+  const rawLinks = (c.navLinks as { label: string; href: string }[] | undefined) ?? NAV_DEFAULT;
+  const NAV = rawLinks.map(link => {
+    const def = NAV_DEFAULT.find(d => d.href === link.href);
+    return { label: link.label, href: link.href, scrollId: def?.scrollId ?? link.href.replace("#", "") };
+  });
+  const DEMO         = { label: (c.demoLabel as string)     ?? "Démo",            href: (c.demoHref as string)  ?? "/register?role=merchant" };
+  const loginLabel   = (c.loginLabel    as string) ?? "Connexion";
+  const registerLabel = (c.registerLabel as string) ?? "Créer un compte";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -79,7 +88,6 @@ export default function Header() {
               </a>
             ))}
 
-            {/* Séparateur + bouton Démo */}
             <span className={`mx-1 h-4 w-px ${scrolled ? "bg-[#0f2044]/15" : "bg-white/20"}`} />
             <Link
               href={DEMO.href}
@@ -89,7 +97,7 @@ export default function Header() {
                   : "border-white/30 text-white hover:bg-white hover:text-[#0f2044]"
               }`}
             >
-              Démo
+              {DEMO.label}
             </Link>
           </nav>
 
@@ -101,7 +109,7 @@ export default function Header() {
               }`}
               data-testid="header-login-link"
             >
-              Connexion
+              {loginLabel}
             </Link>
             <Link
               href="/register"
@@ -109,10 +117,9 @@ export default function Header() {
               data-testid="header-register-link"
               style={{ padding: "8px 16px", fontSize: "14px" }}
             >
-              Créer un compte
+              {registerLabel}
             </Link>
 
-            {/* mobile menu */}
             <button
               className="md:hidden w-10 h-10 rounded-full flex items-center justify-center"
               onClick={() => setOpen(!open)}
@@ -131,7 +138,6 @@ export default function Header() {
           </div>
         </div>
 
-        {/* mobile drawer */}
         {open && (
           <div className="md:hidden mt-2 glass-crystal rounded-3xl p-5 space-y-1 animate-card-in">
             {NAV.map((item) => (
@@ -147,17 +153,11 @@ export default function Header() {
                 {item.label}
               </a>
             ))}
-            <Link
-              href={DEMO.href}
-              className="block px-4 py-3 text-[#0f2044] font-semibold rounded-2xl hover:bg-[#0f2044]/8"
-            >
-              Démo
+            <Link href={DEMO.href} className="block px-4 py-3 text-[#0f2044] font-semibold rounded-2xl hover:bg-[#0f2044]/8">
+              {DEMO.label}
             </Link>
-            <Link
-              href="/login"
-              className="block px-4 py-3 text-[#2c7be5] font-semibold rounded-2xl"
-            >
-              Connexion
+            <Link href="/login" className="block px-4 py-3 text-[#2c7be5] font-semibold rounded-2xl">
+              {loginLabel}
             </Link>
           </div>
         )}

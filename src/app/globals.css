@@ -19,6 +19,13 @@
   --background: 40 33% 97%;
   --foreground: 222 38% 11%;
   --radius: 0.75rem;
+
+  /* ── Théme dynamique (overridé par l'éditeur CMS) ── */
+  --q-primary:   #0f2044;
+  --q-accent:    #2c7be5;
+  --q-highlight: #4a9eff;
+  --q-light:     #faf8f4;
+  --q-btn-radius: 999px;
 }
 
 @theme inline {
@@ -200,8 +207,8 @@ h1, h2, h3, h4, h5, h6, .font-display {
   justify-content: center;
   gap: 10px;
   padding: 14px 26px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #0f2044 0%, #0b1220 100%);
+  border-radius: var(--q-btn-radius, 999px);
+  background: linear-gradient(180deg, var(--q-primary, #0f2044) 0%, #0b1220 100%);
   color: #ffffff;
   font-weight: 600;
   font-family: 'Manrope', sans-serif;
@@ -223,9 +230,9 @@ h1, h2, h3, h4, h5, h6, .font-display {
   align-items: center;
   gap: 8px;
   padding: 12px 20px;
-  border-radius: 999px;
+  border-radius: var(--q-btn-radius, 999px);
   background: transparent;
-  color: #0f2044;
+  color: var(--q-primary, #0f2044);
   font-weight: 600;
   font-family: 'Manrope', sans-serif;
   border: 1px solid rgba(15, 32, 68, 0.14);
@@ -236,8 +243,28 @@ h1, h2, h3, h4, h5, h6, .font-display {
 .q-btn-ghost:hover {
   border-color: rgba(44, 123, 229, 0.4);
   background: rgba(44, 123, 229, 0.06);
-  color: #2c7be5;
+  color: var(--q-accent, #2c7be5);
 }
+
+/* ===== Announcement bar ===== */
+.q-announcement-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-family: 'Manrope', sans-serif;
+  font-weight: 500;
+  position: relative;
+  z-index: 60;
+}
+.q-announcement-bar a {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.q-announcement-bar a:hover { opacity: 0.8; }
 
 /* ===== Cursor glow ===== */
 .q-cursor-glow {

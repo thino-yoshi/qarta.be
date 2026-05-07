@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Save, Eye, Plus, Minus, ImageIcon } from "lucide-react";
 import LoyaltyCard, { CardDesign, DEFAULT_DESIGN, FONT_OPTIONS } from "@/app/components/LoyaltyCard";
 
@@ -115,7 +115,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
 
   /* ── Rendu ── */
   return (
-    <div className="flex flex-col xl:flex-row gap-6">
+    <div className="flex flex-col xl:flex-row gap-x-6 gap-y-4">
 
       {/* ── Panneau gauche : customisation ── */}
       <div className="flex-1 min-w-0 space-y-4">
@@ -295,29 +295,35 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
       </div>
 
       {/* ── Panneau droit : aperçu ── */}
-      <div className="xl:w-[480px] flex-shrink-0">
-      <div className="sticky top-6 space-y-4">
-        <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <div className="flex items-center gap-2 mb-4">
-            <Eye size={14} color="#4a9eff" />
-            <span className="text-[13px] font-semibold">Aperçu en temps réel</span>
+
+      {/* Spacer : réserve la place dans le flex sans contenu */}
+      <div className="hidden xl:block xl:w-[490px] xl:flex-shrink-0" />
+
+      {/* Panel fixe — couvre toute la hauteur viewport, passe sur le header */}
+      <div
+        className="xl:fixed xl:top-0 xl:right-0 xl:w-[490px] xl:h-screen xl:overflow-y-auto xl:z-20
+                   sticky top-0 w-full"
+        style={{ background: "#0b1220", borderLeft: "1px solid rgba(255,255,255,0.07)" }}
+      >
+        <div className="p-5 space-y-4">
+          <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+            <div className="flex items-center gap-2 mb-4">
+              <Eye size={14} color="#4a9eff" />
+              <span className="text-[13px] font-semibold">Aperçu en temps réel</span>
+            </div>
+            <LoyaltyCard design={design} clientName="Pierre" currentStamps={previewStamps} />
+            <p className="text-[11px] text-white/20 text-center mt-3">
+              {previewStamps} tampon{previewStamps > 1 ? "s" : ""} affichés pour l&apos;aperçu
+            </p>
           </div>
 
-          {/* Carte preview avec tampons exemple */}
-          <LoyaltyCard design={design} clientName="Pierre" currentStamps={previewStamps} />
-
-          <p className="text-[11px] text-white/20 text-center mt-3">
-            {previewStamps} tampon{previewStamps > 1 ? "s" : ""} affichés pour l&apos;aperçu
-          </p>
-        </div>
-
-        {/* Preview fond vide (0 tampon) */}
-        <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          <p className="text-[11px] text-white/30 mb-3 uppercase tracking-widest">Carte vierge (nouveau client)</p>
-          <LoyaltyCard design={design} clientName="Nouveau client" currentStamps={0} />
+          {/* Pass numérique QR */}
+          <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
+            <p className="text-[11px] text-white/30 mb-3 uppercase tracking-widest">Pass numérique (QR)</p>
+            <WalletPassCard design={design} clientName="Pierre" />
+          </div>
         </div>
       </div>
-      </div>{/* end sticky wrapper */}
 
     </div>
   );
@@ -351,5 +357,180 @@ function TextInput({ value, onChange, placeholder }: { value: string; onChange: 
       onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(74,158,255,0.5)"; }}
       onBlur={(e)  => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
     />
+  );
+}
+
+/* ─── QR placeholder SVG ──────────────────────────────────────────── */
+
+function QRPlaceholder({ size = 136 }: { size?: number }) {
+  const N = 21;
+  const cell = size / N;
+
+  const filled = (r: number, c: number): boolean => {
+    // Finder top-left (7×7)
+    if (r < 7 && c < 7) {
+      return r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4);
+    }
+    // Finder top-right (7×7)
+    if (r < 7 && c >= 14) {
+      const lc = c - 14;
+      return r === 0 || r === 6 || lc === 0 || lc === 6 || (r >= 2 && r <= 4 && lc >= 2 && lc <= 4);
+    }
+    // Finder bottom-left (7×7)
+    if (r >= 14 && c < 7) {
+      const lr = r - 14;
+      return lr === 0 || lr === 6 || c === 0 || c === 6 || (lr >= 2 && lr <= 4 && c >= 2 && c <= 4);
+    }
+    // Separator quiet zones
+    if (r === 7 || c === 7) return false;
+    // Timing strips
+    if (r === 6 && c >= 8 && c <= 12) return c % 2 === 0;
+    if (c === 6 && r >= 8 && r <= 12) return r % 2 === 0;
+    // Alignment pattern at (16,16)
+    if (r >= 14 && r <= 18 && c >= 14 && c <= 18) {
+      const lr = r - 14; const lc = c - 14;
+      return lr === 0 || lr === 4 || lc === 0 || lc === 4 || (lr === 2 && lc === 2);
+    }
+    // Data cells — pseudo-random deterministic
+    return ((r * 31 + c * 17 + r * c * 7 + r + c) % 100) > 48;
+  };
+
+  const rects: React.ReactElement[] = [];
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      if (filled(r, c)) {
+        rects.push(
+          <rect key={`${r}-${c}`} x={c * cell + 0.15} y={r * cell + 0.15}
+            width={cell - 0.3} height={cell - 0.3} fill="#000" rx={0.6} />
+        );
+      }
+    }
+  }
+
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>
+      {rects}
+    </svg>
+  );
+}
+
+/* ─── WalletPassCard ──────────────────────────────────────────────── */
+
+function WalletPassCard({ design: raw, clientName }: { design: CardDesign; clientName: string }) {
+  const d: CardDesign = { ...DEFAULT_DESIGN, ...raw };
+
+  const bgStyle =
+    d.bgType === "gradient" && d.bgColors?.length > 1
+      ? { background: `linear-gradient(${d.bgGradientAngle}deg, ${d.bgColors.join(", ")})` }
+      : { background: d.bgColors?.[0] ?? "#141626" };
+
+  const accentFirst = d.accentColors?.[0] ?? "#FF2D78";
+
+  return (
+    <div
+      style={{
+        ...bgStyle,
+        borderRadius: 24,
+        overflow: "hidden",
+        fontFamily: `'${d.fontFamily}', sans-serif`,
+        boxShadow: `0 24px 60px -16px ${accentFirst}44`,
+        position: "relative",
+        width: "100%",
+      }}
+    >
+      {/* Watermark Q */}
+      {d.showQ && (
+        <div
+          style={{
+            position: "absolute",
+            right: "4%",
+            top: "50%",
+            transform: "translateY(-48%)",
+            fontSize: 160,
+            fontWeight: 900,
+            color: d.textColor,
+            opacity: d.qOpacity,
+            lineHeight: 1,
+            pointerEvents: "none",
+            userSelect: "none",
+            fontFamily: `'${d.fontFamily}', sans-serif`,
+          }}
+        >Q</div>
+      )}
+
+      {/* Zone haut : identité */}
+      <div style={{ padding: "20px 20px 0", position: "relative", zIndex: 1 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+          <div>
+            <p style={{
+              fontSize: 20, fontWeight: 900, color: d.textColor,
+              textTransform: "uppercase", letterSpacing: "-0.02em", margin: 0,
+            }}>
+              {d.cardName}
+            </p>
+            <p style={{
+              fontSize: 9, fontWeight: 700, color: d.textColor,
+              opacity: 0.5, letterSpacing: "0.12em", margin: "3px 0 0",
+            }}>
+              CARTE FIDÉLITÉ
+            </p>
+          </div>
+
+          {/* Badge wallet */}
+          <div style={{
+            background: `${accentFirst}22`,
+            border: `1px solid ${accentFirst}44`,
+            borderRadius: 10,
+            padding: "7px 9px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            {/* Wallet icon */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <rect x="2" y="5" width="20" height="14" rx="3" stroke={d.textColor} strokeWidth="1.8" strokeOpacity="0.7"/>
+              <path d="M16 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0z" fill={d.textColor} fillOpacity="0.7"/>
+              <path d="M2 9h20" stroke={d.textColor} strokeWidth="1.8" strokeOpacity="0.5"/>
+            </svg>
+          </div>
+        </div>
+
+        {/* Titulaire */}
+        <div style={{ marginTop: 14 }}>
+          <p style={{ fontSize: 9, fontWeight: 600, color: d.textColor, opacity: 0.4, letterSpacing: "0.1em", margin: 0 }}>
+            TITULAIRE
+          </p>
+          <p style={{ fontSize: 14, fontWeight: 700, color: d.textColor, margin: "3px 0 0" }}>
+            {clientName}
+          </p>
+        </div>
+      </div>
+
+      {/* Séparateur */}
+      <div style={{ height: 1, background: "rgba(255,255,255,0.08)", margin: "18px 20px" }} />
+
+      {/* Zone QR */}
+      <div style={{
+        display: "flex", flexDirection: "column", alignItems: "center",
+        padding: "0 20px 26px", gap: 14, position: "relative", zIndex: 1,
+      }}>
+        <div style={{
+          background: "#ffffff",
+          borderRadius: 18,
+          padding: 14,
+          boxShadow: "0 12px 32px -8px rgba(0,0,0,0.35)",
+        }}>
+          <QRPlaceholder size={140} />
+        </div>
+
+        <p style={{
+          fontSize: 9, fontWeight: 600, color: d.textColor,
+          opacity: 0.3, letterSpacing: "0.1em", textTransform: "uppercase",
+          margin: 0, textAlign: "center",
+        }}>
+          Scanner pour accéder à votre carte
+        </p>
+      </div>
+    </div>
   );
 }

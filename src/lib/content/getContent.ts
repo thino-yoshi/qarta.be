@@ -1,8 +1,10 @@
+import { cache } from "react";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SECTION_DEFS, getDefaults } from "./sections";
 
-/** Fetches all sections for a page and merges with defaults. Server-side only. */
-export async function getPageContent(page: string): Promise<Record<string, Record<string, unknown>>> {
+/** Fetches all sections for a page and merges with defaults. Server-side only.
+ *  Wrapped with React cache() to deduplicate calls within one render (e.g. page + generateMetadata). */
+export const getPageContent = cache(async function getPageContent(page: string): Promise<Record<string, Record<string, unknown>>> {
   try {
     const db = createAdminClient();
     const { data } = await db
@@ -30,4 +32,4 @@ export async function getPageContent(page: string): Promise<Record<string, Recor
     }
     return result;
   }
-}
+});

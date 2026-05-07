@@ -47,8 +47,12 @@ const steps = [
 // ─── Component ───────────────────────────────────────────────────────────────
 export default function CTASection({ content }: { content?: Record<string, unknown> }) {
   const c = content ?? {};
+  const stepsBadge   = (c.stepsBadge   as string) ?? "Parcours commerçant";
+  const stepsTitle   = (c.stepsTitle   as string) ?? "Créer votre programme en 3 étapes.";
+  const pricingBadge = (c.pricingBadge as string) ?? "Abonnement";
   const pricingTitle = (c.pricingTitle as string) ?? "Des tarifs clairs, sans surprise.";
   const planName     = (c.planName     as string) ?? "Pro";
+  const planBadge    = (c.planBadge    as string) ?? "Populaire";
   const price        = (c.price        as string) ?? "20";
   const priceUnit    = (c.priceUnit    as string) ?? "/ mois";
   const features     = (c.features     as string[]) ?? ["Programmes illimités", "Clients illimités", "Notifications automatiques", "Avis Google intégrés", "Support prioritaire"];
@@ -99,14 +103,13 @@ export default function CTASection({ content }: { content?: Record<string, unkno
       <div className="mx-auto max-w-7xl px-6 lg:px-10 pt-20 pb-12">
         <div className="text-center max-w-2xl mx-auto">
           <span className="inline-block px-3 py-1 rounded-full bg-[#eaf2fd] text-[#2c7be5] text-[11px] font-semibold tracking-[0.18em] uppercase">
-            Parcours commerçant
+            {stepsBadge}
           </span>
           <h2
             className="mt-6 font-display text-[#0f2044]"
             style={{ fontSize: "clamp(2rem, 4.2vw, 3.4rem)", fontWeight: 400, letterSpacing: "0.06em", lineHeight: 1.15 }}
           >
-            Créer votre programme<br />
-            en <span className="text-[#2c7be5]">3 étapes</span>.
+            {stepsTitle}
           </h2>
         </div>
 
@@ -139,7 +142,7 @@ export default function CTASection({ content }: { content?: Record<string, unkno
         {/* Section header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
           <span className="inline-block px-3 py-1 rounded-full bg-[#eaf2fd] text-[#2c7be5] text-[11px] font-semibold tracking-[0.18em] uppercase">
-            Abonnement
+            {pricingBadge}
           </span>
           <h2
             className="mt-6 font-display text-[#0f2044]"
@@ -158,7 +161,7 @@ export default function CTASection({ content }: { content?: Record<string, unkno
             style={{ boxShadow: "0 30px 60px -30px rgba(44,123,229,.4)" }}
           >
             <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-[#0f2044] text-white text-[10px] font-bold uppercase tracking-widest">
-              Populaire
+              {planBadge}
             </div>
             <div className="text-[13px] font-semibold text-[#0f2044]/70 uppercase tracking-widest">{planName}</div>
             <div className="mt-4 flex items-end gap-2">

@@ -5,14 +5,16 @@ import { QartaLogo } from "@/app/components/QartaLogo";
 import {
   Save, RefreshCw, ChevronRight, Plus, Trash2,
   ArrowUp, ArrowDown, ExternalLink, LayoutPanelLeft,
+  Monitor, Smartphone, Eye, EyeOff,
 } from "lucide-react";
 import {
   SECTION_DEFS, SectionDef, FieldDef,
-  FieldListLink, FieldListText, getDefaults,
+  FieldListLink, FieldListText, FieldSelect, FieldNumber, getDefaults,
 } from "@/lib/content/sections";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type ContentMap = Record<string, unknown>;
+type Viewport   = "desktop" | "mobile";
 
 const PAGES = [
   { id: "home",      label: "🏠 Accueil" },
@@ -21,11 +23,12 @@ const PAGES = [
   { id: "dashboard", label: "🎛️ Dashboard" },
 ];
 
+// Use dedicated preview routes for pages that have auth redirects
 const PAGE_PREVIEW: Record<string, string> = {
-  home: "/",
-  login: "/login",
-  register: "/register",
-  dashboard: "/dashboard",
+  home:      "/",
+  login:     "/admin/editor/preview/login",
+  register:  "/admin/editor/preview/register",
+  dashboard: "/admin/editor/preview/dashboard",
 };
 
 // ─── Shared styles ────────────────────────────────────────────────────────────
@@ -41,18 +44,18 @@ const labelClass = "block text-[10px] font-bold uppercase tracking-widest text-w
 // ─── Main shell ───────────────────────────────────────────────────────────────
 export default function EditorShell({ userEmail }: { userEmail: string }) {
   const [activePage,    setActivePage]    = useState("home");
-  const [activeSection, setActiveSection] = useState("header");
+  const [activeSection, setActiveSection] = useState("branding");
   const [content,       setContent]       = useState<ContentMap>({});
   const [isDirty,       setIsDirty]       = useState(false);
   const [saving,        setSaving]        = useState(false);
   const [savedMsg,      setSavedMsg]      = useState(false);
   const [loading,       setLoading]       = useState(false);
+  const [viewport,      setViewport]      = useState<Viewport>("desktop");
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const sections    = SECTION_DEFS.filter(s => s.page === activePage);
   const sectionDef  = SECTION_DEFS.find(s => s.id === activeSection);
 
-  // Switch page → reset to first section of that page
   const switchPage = (pageId: string) => {
     setActivePage(pageId);
     const first = SECTION_DEFS.find(s => s.page === pageId);
@@ -91,15 +94,15 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
     setIsDirty(false);
     setSavedMsg(true);
     setTimeout(() => setSavedMsg(false), 2500);
-    // Refresh preview iframe
-    if (iframeRef.current) {
-      iframeRef.current.src = iframeRef.current.src;
-    }
+    // Refresh preview iframe after save
+    if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
   };
 
   const refreshPreview = () => {
     if (iframeRef.current) iframeRef.current.src = iframeRef.current.src;
   };
+
+  const mobileWidth = 390;
 
   return (
     <div
@@ -109,13 +112,9 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
       <header
         className="flex items-center gap-3 px-5 shrink-0"
-        style={{
-          height: 52,
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-          background: "rgba(255,255,255,0.02)",
-        }}
+        style={{ height: 52, borderBottom: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)" }}
       >
-        {/* Logo + label */}
+        {/* Logo */}
         <div className="flex items-center gap-2 mr-3">
           <QartaLogo size={26} variant="badge" />
           <div className="flex items-center gap-1.5 text-[12px] font-bold text-white/50">
@@ -134,7 +133,7 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
               style={
                 activePage === p.id
                   ? { background: "rgba(74,158,255,0.15)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.3)" }
-                  : { color: "rgba(255,255,255,0.4)",       border: "1px solid transparent" }
+                  : { color: "rgba(255,255,255,0.4)", border: "1px solid transparent" }
               }
             >
               {p.label}
@@ -142,11 +141,44 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
           ))}
         </div>
 
+        {/* Viewport toggle */}
+        <div
+          className="ml-3 flex items-center gap-0.5 rounded-lg p-0.5"
+          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)" }}
+        >
+          <button
+            onClick={() => setViewport("desktop")}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all"
+            style={viewport === "desktop"
+              ? { background: "rgba(74,158,255,0.2)", color: "#4a9eff" }
+              : { color: "rgba(255,255,255,0.35)" }}
+            title="Vue desktop"
+          >
+            <Monitor size={13} /> Desktop
+          </button>
+          <button
+            onClick={() => setViewport("mobile")}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-[11px] font-medium transition-all"
+            style={viewport === "mobile"
+              ? { background: "rgba(74,158,255,0.2)", color: "#4a9eff" }
+              : { color: "rgba(255,255,255,0.35)" }}
+            title="Vue mobile"
+          >
+            <Smartphone size={13} /> Mobile
+          </button>
+        </div>
+
         {/* Right actions */}
         <div className="ml-auto flex items-center gap-3">
           {isDirty && (
-            <span className="text-[11px] text-amber-400/80 flex items-center gap-1">
-              ● Modifications non sauvegardées
+            <span className="text-[11px] text-amber-400/80 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              Modifications non sauvegardées
+            </span>
+          )}
+          {savedMsg && (
+            <span className="text-[11px] text-emerald-400 flex items-center gap-1.5">
+              ✓ Sauvegardé — rechargez la prévisualisation
             </span>
           )}
           <button
@@ -158,16 +190,10 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
               color: isDirty ? "#0f2044" : "rgba(255,255,255,0.35)",
             }}
           >
-            {saving
-              ? <RefreshCw size={13} className="animate-spin" />
-              : <Save size={13} />
-            }
-            {savedMsg ? "Sauvegardé ✓" : saving ? "Sauvegarde…" : "Sauvegarder"}
+            {saving ? <RefreshCw size={13} className="animate-spin" /> : <Save size={13} />}
+            {saving ? "Sauvegarde…" : "Sauvegarder"}
           </button>
-          <a
-            href="/admin"
-            className="text-[12px] text-white/25 hover:text-white/60 transition-colors"
-          >
+          <a href="/admin" className="text-[12px] text-white/25 hover:text-white/60 transition-colors">
             ← Admin
           </a>
         </div>
@@ -179,15 +205,9 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
         {/* LEFT: sections list */}
         <aside
           className="shrink-0 overflow-y-auto"
-          style={{
-            width: 200,
-            borderRight: "1px solid rgba(255,255,255,0.07)",
-            background: "rgba(0,0,0,0.25)",
-          }}
+          style={{ width: 200, borderRight: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.25)" }}
         >
-          <p className="px-4 pt-4 pb-2 text-[10px] font-bold uppercase tracking-widest text-white/25">
-            Sections
-          </p>
+          <p className="px-4 pt-4 pb-2 text-[10px] font-bold uppercase tracking-widest text-white/25">Sections</p>
           {sections.map(s => {
             const active = activeSection === s.id;
             return (
@@ -196,13 +216,13 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
                 onClick={() => setActiveSection(s.id)}
                 className="w-full flex items-center gap-2.5 px-4 py-3 text-left transition-all"
                 style={{
-                  background:   active ? "rgba(74,158,255,0.08)" : "transparent",
-                  borderRight:  active ? "2px solid #4a9eff"     : "2px solid transparent",
-                  color:        active ? "#fff" : "rgba(255,255,255,0.45)",
+                  background:  active ? "rgba(74,158,255,0.08)" : "transparent",
+                  borderRight: active ? "2px solid #4a9eff" : "2px solid transparent",
+                  color:       active ? "#fff" : "rgba(255,255,255,0.45)",
                 }}
               >
                 <span className="text-[15px]">{s.icon}</span>
-                <span className="text-[12px] font-medium flex-1">{s.label}</span>
+                <span className="text-[12px] font-medium flex-1 leading-snug">{s.label}</span>
                 {active && <ChevronRight size={11} style={{ color: "#4a9eff" }} />}
               </button>
             );
@@ -212,12 +232,7 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
         {/* CENTER: field editor */}
         <div
           className="shrink-0 overflow-y-auto"
-          style={{
-            width: 360,
-            borderRight: "1px solid rgba(255,255,255,0.07)",
-            background: "rgba(255,255,255,0.015)",
-            padding: "20px",
-          }}
+          style={{ width: 360, borderRight: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.015)", padding: "20px" }}
         >
           {sectionDef ? (
             loading ? (
@@ -234,7 +249,6 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
                     </p>
                   )}
                 </div>
-
                 <div className="space-y-5">
                   {sectionDef.fields.map(field => (
                     <FieldEditor
@@ -253,37 +267,71 @@ export default function EditorShell({ userEmail }: { userEmail: string }) {
         </div>
 
         {/* RIGHT: preview iframe */}
-        <div className="flex-1 flex flex-col overflow-hidden" style={{ background: "#e8ecf0" }}>
+        <div className="flex-1 flex flex-col overflow-hidden" style={{ background: "#1a1f2e" }}>
           {/* Preview bar */}
           <div
             className="flex items-center gap-2 px-4 shrink-0 text-[11px]"
-            style={{
-              height: 36,
-              background: "rgba(0,0,0,0.5)",
-              borderBottom: "1px solid rgba(255,255,255,0.07)",
-              color: "rgba(255,255,255,0.35)",
-            }}
+            style={{ height: 36, background: "rgba(0,0,0,0.5)", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.35)" }}
           >
             <ExternalLink size={11} />
-            <span className="flex-1">
-              Aperçu — <span style={{ color: "rgba(255,255,255,0.5)" }}>{PAGE_PREVIEW[activePage]}</span>
-              &nbsp;· sauvegardez pour voir vos modifications
+            <span className="flex-1 truncate">
+              Aperçu —{" "}
+              <span style={{ color: "rgba(255,255,255,0.55)" }}>{PAGE_PREVIEW[activePage]}</span>
+              {isDirty && <span className="ml-2 text-amber-400/60">· sauvegardez pour voir vos modifications</span>}
             </span>
             <button
               onClick={refreshPreview}
-              className="flex items-center gap-1.5 hover:text-white/70 transition-colors"
+              className="flex items-center gap-1.5 hover:text-white/70 transition-colors shrink-0"
             >
               <RefreshCw size={11} /> Actualiser
             </button>
           </div>
 
-          {/* Iframe */}
-          <iframe
-            ref={iframeRef}
-            src={PAGE_PREVIEW[activePage]}
-            className="flex-1 w-full border-0"
-            title="Aperçu de la page"
-          />
+          {/* Iframe wrapper — center in mobile mode */}
+          <div
+            className="flex-1 overflow-auto flex items-start"
+            style={{
+              background: viewport === "mobile" ? "#0d1117" : "#e8ecf0",
+              justifyContent: viewport === "mobile" ? "center" : "stretch",
+              paddingTop: viewport === "mobile" ? "24px" : "0",
+              paddingBottom: viewport === "mobile" ? "24px" : "0",
+            }}
+          >
+            {viewport === "mobile" ? (
+              /* ── Mobile phone shell ── */
+              <div
+                style={{
+                  width: mobileWidth,
+                  height: 780,
+                  borderRadius: 44,
+                  background: "#111",
+                  boxShadow: "0 40px 80px -20px rgba(0,0,0,0.8), 0 0 0 2px rgba(255,255,255,0.08)",
+                  overflow: "hidden",
+                  flexShrink: 0,
+                  position: "relative",
+                }}
+              >
+                {/* Notch */}
+                <div style={{
+                  position: "absolute", top: 12, left: "50%", transform: "translateX(-50%)",
+                  width: 100, height: 26, background: "#111", borderRadius: 14, zIndex: 10,
+                }} />
+                <iframe
+                  ref={iframeRef}
+                  src={PAGE_PREVIEW[activePage]}
+                  style={{ width: "100%", height: "100%", border: "none", borderRadius: 44 }}
+                  title="Aperçu mobile"
+                />
+              </div>
+            ) : (
+              <iframe
+                ref={iframeRef}
+                src={PAGE_PREVIEW[activePage]}
+                className="flex-1 w-full border-0 h-full"
+                title="Aperçu desktop"
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -298,38 +346,159 @@ function FieldEditor({
   value: unknown;
   onChange: (v: unknown) => void;
 }) {
-  if (field.type === "text" || field.type === "url") {
+  // ── Text / textarea / url / image ─────────────────────────────────────────
+  if (field.type === "text" || field.type === "textarea" || field.type === "url" || field.type === "image") {
+    const strVal = (value as string) ?? "";
+    return (
+      <div>
+        <label className={labelClass}>{field.label}</label>
+        {field.type === "textarea" ? (
+          <textarea
+            rows={3}
+            value={strVal}
+            onChange={e => onChange(e.target.value)}
+            className={`${inputBase} resize-none`}
+            style={inputStyle}
+            placeholder={field.defaultValue}
+          />
+        ) : (
+          <>
+            <input
+              type="text"
+              value={strVal}
+              onChange={e => onChange(e.target.value)}
+              className={inputBase}
+              style={inputStyle}
+              placeholder={field.defaultValue}
+            />
+            {/* Image preview thumbnail */}
+            {field.type === "image" && strVal && (
+              <div className="mt-2 rounded-xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.10)" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={strVal} alt="aperçu" className="w-full max-h-32 object-cover" onError={(e) => (e.currentTarget.style.display = "none")} />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  // ── Color picker ─────────────────────────────────────────────────────────
+  if (field.type === "color") {
+    const hex = (value as string) ?? field.defaultValue;
+    return (
+      <div>
+        <label className={labelClass}>{field.label}</label>
+        <div className="flex items-center gap-3">
+          <label
+            className="relative cursor-pointer shrink-0"
+            style={{ width: 42, height: 42 }}
+            title="Choisir une couleur"
+          >
+            <div
+              className="w-full h-full rounded-xl border-2"
+              style={{ background: hex, borderColor: "rgba(255,255,255,0.15)" }}
+            />
+            <input
+              type="color"
+              value={hex}
+              onChange={e => onChange(e.target.value)}
+              className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+            />
+          </label>
+          <input
+            type="text"
+            value={hex}
+            onChange={e => onChange(e.target.value)}
+            className={inputBase}
+            style={{ ...inputStyle, fontFamily: "monospace", fontSize: "12px" }}
+            placeholder="#000000"
+            maxLength={9}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Toggle switch ─────────────────────────────────────────────────────────
+  if (field.type === "toggle") {
+    const checked = (value as boolean) ?? field.defaultValue;
+    return (
+      <div className="flex items-center justify-between gap-4">
+        <label className="text-[12px] font-semibold text-white/70 leading-snug">{field.label}</label>
+        <button
+          type="button"
+          role="switch"
+          aria-checked={checked}
+          onClick={() => onChange(!checked)}
+          className="shrink-0 relative transition-all duration-200"
+          style={{
+            width: 44, height: 24, borderRadius: 12,
+            background: checked ? "#4a9eff" : "rgba(255,255,255,0.12)",
+            border: checked ? "none" : "1px solid rgba(255,255,255,0.15)",
+          }}
+        >
+          <span
+            className="absolute top-[3px] transition-all duration-200"
+            style={{
+              left: checked ? 22 : 3,
+              width: 18, height: 18,
+              borderRadius: "50%",
+              background: "#fff",
+              boxShadow: "0 1px 4px rgba(0,0,0,0.3)",
+            }}
+          />
+        </button>
+      </div>
+    );
+  }
+
+  // ── Select dropdown ───────────────────────────────────────────────────────
+  if (field.type === "select") {
+    const f   = field as FieldSelect;
+    const val = (value as string) ?? f.defaultValue;
+    return (
+      <div>
+        <label className={labelClass}>{field.label}</label>
+        <select
+          value={val}
+          onChange={e => onChange(e.target.value)}
+          className={`${inputBase} cursor-pointer appearance-none`}
+          style={inputStyle}
+        >
+          {f.options.map((opt, i) => (
+            <option key={opt} value={opt} style={{ background: "#0b1220" }}>
+              {f.optionLabels?.[i] ?? opt}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
+  }
+
+  // ── Number ────────────────────────────────────────────────────────────────
+  if (field.type === "number") {
+    const f   = field as FieldNumber;
+    const val = (value as number) ?? f.defaultValue;
     return (
       <div>
         <label className={labelClass}>{field.label}</label>
         <input
-          type={field.type === "url" ? "text" : "text"}
-          value={(value as string) ?? ""}
-          onChange={e => onChange(e.target.value)}
+          type="number"
+          value={val}
+          min={f.min}
+          max={f.max}
+          step={f.step ?? 1}
+          onChange={e => onChange(Number(e.target.value))}
           className={inputBase}
           style={inputStyle}
-          placeholder={field.defaultValue}
         />
       </div>
     );
   }
 
-  if (field.type === "textarea") {
-    return (
-      <div>
-        <label className={labelClass}>{field.label}</label>
-        <textarea
-          rows={3}
-          value={(value as string) ?? ""}
-          onChange={e => onChange(e.target.value)}
-          className={`${inputBase} resize-none`}
-          style={inputStyle}
-          placeholder={field.defaultValue}
-        />
-      </div>
-    );
-  }
-
+  // ── List of strings ───────────────────────────────────────────────────────
   if (field.type === "list-text") {
     const f     = field as FieldListText;
     const items = (value as string[]) ?? f.defaultValue;
@@ -352,7 +521,7 @@ function FieldEditor({
               />
               <button
                 onClick={() => onChange(items.filter((_, i) => i !== idx))}
-                className="p-1.5 rounded-lg transition-colors"
+                className="p-1.5 rounded-lg transition-colors shrink-0"
                 style={{ color: "rgba(255,255,255,0.25)" }}
                 onMouseEnter={e => (e.currentTarget.style.color = "#f87171")}
                 onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.25)")}
@@ -373,10 +542,11 @@ function FieldEditor({
     );
   }
 
+  // ── List of links ─────────────────────────────────────────────────────────
   if (field.type === "list-link") {
     const f     = field as FieldListLink;
     const items = (value as { label: string; href: string }[]) ?? f.defaultValue;
-    const move = (from: number, to: number) => {
+    const move  = (from: number, to: number) => {
       const n = [...items];
       [n[from], n[to]] = [n[to], n[from]];
       onChange(n);
@@ -392,51 +562,30 @@ function FieldEditor({
               style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
             >
               <div className="flex items-start gap-2">
-                {/* Up/down */}
                 <div className="flex flex-col gap-1 pt-1">
-                  <button
-                    onClick={() => idx > 0 && move(idx, idx - 1)}
-                    disabled={idx === 0}
-                    className="disabled:opacity-20 transition-opacity"
-                    style={{ color: "rgba(255,255,255,0.4)" }}
-                  >
+                  <button onClick={() => idx > 0 && move(idx, idx - 1)} disabled={idx === 0}
+                    className="disabled:opacity-20 transition-opacity" style={{ color: "rgba(255,255,255,0.4)" }}>
                     <ArrowUp size={11} />
                   </button>
-                  <button
-                    onClick={() => idx < items.length - 1 && move(idx, idx + 1)}
-                    disabled={idx === items.length - 1}
-                    className="disabled:opacity-20 transition-opacity"
-                    style={{ color: "rgba(255,255,255,0.4)" }}
-                  >
+                  <button onClick={() => idx < items.length - 1 && move(idx, idx + 1)} disabled={idx === items.length - 1}
+                    className="disabled:opacity-20 transition-opacity" style={{ color: "rgba(255,255,255,0.4)" }}>
                     <ArrowDown size={11} />
                   </button>
                 </div>
-
-                {/* Inputs */}
                 <div className="flex-1 space-y-1.5">
                   <input
-                    type="text"
-                    value={item.label}
-                    onChange={e => {
-                      const n = [...items]; n[idx] = { ...n[idx], label: e.target.value }; onChange(n);
-                    }}
-                    placeholder="Libellé"
+                    type="text" value={item.label} placeholder="Libellé"
+                    onChange={e => { const n = [...items]; n[idx] = { ...n[idx], label: e.target.value }; onChange(n); }}
                     className={inputBase}
                     style={{ ...inputStyle, padding: "6px 10px", fontSize: "12px" }}
                   />
                   <input
-                    type="text"
-                    value={item.href}
-                    onChange={e => {
-                      const n = [...items]; n[idx] = { ...n[idx], href: e.target.value }; onChange(n);
-                    }}
-                    placeholder="Lien (ex: #hero ou /page)"
+                    type="text" value={item.href} placeholder="Lien (ex: #hero ou /page)"
+                    onChange={e => { const n = [...items]; n[idx] = { ...n[idx], href: e.target.value }; onChange(n); }}
                     className={inputBase}
                     style={{ ...inputStyle, padding: "6px 10px", fontSize: "12px" }}
                   />
                 </div>
-
-                {/* Delete */}
                 <button
                   onClick={() => onChange(items.filter((_, i) => i !== idx))}
                   className="p-1.5 rounded-lg mt-1 shrink-0 transition-colors"

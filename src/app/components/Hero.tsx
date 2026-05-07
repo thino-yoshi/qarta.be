@@ -14,7 +14,14 @@ class GradientErrorBoundary extends Component<{ children: ReactNode }, { crashed
   }
 }
 
-export default function Hero() {
+export default function Hero({ content }: { content?: Record<string, unknown> }) {
+  const c = content ?? {};
+  const badge           = (c.badge            as string) ?? "La Fidélité digitale Réinventée";
+  const subtitle        = (c.subtitle          as string) ?? "Toutes vos cartes de fidélité réunies dans une seule application.";
+  const ctaPrimaryLabel = (c.ctaPrimaryLabel   as string) ?? "Lancez votre fidélité";
+  const ctaPrimaryHref  = (c.ctaPrimaryHref    as string) ?? "#merchant";
+  const ctaContactLabel = (c.ctaContactLabel   as string) ?? "Contact";
+  const scrollLabel     = (c.scrollLabel       as string) ?? "Défiler";
   const heroRef = useRef<HTMLElement>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
 
@@ -75,7 +82,7 @@ export default function Hero() {
             style={{ background: "#0f2044", border: "1px solid rgba(74,158,255,0.2)" }}
           >
             <span className="text-[12px] font-medium tracking-widest uppercase text-[#faf8f4]/80">
-              La Fidélité digitale Réinventée
+              {badge}
             </span>
           </motion.div>
 
@@ -101,11 +108,7 @@ export default function Hero() {
             className="mt-6 max-w-2xl text-[#faf8f4]/90 text-[17px] md:text-[19px] leading-relaxed text-center"
             data-testid="hero-subtitle"
           >
-            Toutes vos cartes de fidélité{" "}
-            <span className="text-[#cfe3ff] font-semibold">réunies</span> dans une seule application.{" "}
-            <span className="block mt-1 text-[#faf8f4]/70 text-[15px] md:text-[16px]">
-              
-            </span>
+            {subtitle}
           </motion.p>
 
           <motion.div
@@ -116,15 +119,18 @@ export default function Hero() {
             style={{ opacity: subOpacity }}
           >
             <a
-              href="#merchant"
+              href={ctaPrimaryHref}
               onClick={(e) => {
-                e.preventDefault();
-                document.querySelector<HTMLElement>('[data-testid="scroll-merchant"]')?.scrollIntoView({ behavior: "smooth" });
+                if (ctaPrimaryHref.startsWith("#")) {
+                  e.preventDefault();
+                  const id = ctaPrimaryHref.replace("#", "");
+                  document.querySelector<HTMLElement>(`[data-testid="scroll-${id}"]`)?.scrollIntoView({ behavior: "smooth" });
+                }
               }}
               className="q-btn-primary"
               data-testid="hero-cta-merchant"
             >
-              Lancez votre fidélité
+              {ctaPrimaryLabel}
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
@@ -141,7 +147,7 @@ export default function Hero() {
               className="px-5 py-3.5 rounded-full font-semibold text-white border border-white/30 hover:bg-white/10 transition-colors backdrop-blur-md"
               data-testid="hero-cta-contact"
             >
-              Contact
+              {ctaContactLabel}
             </a>
           </motion.div>
 
@@ -151,7 +157,7 @@ export default function Hero() {
             transition={{ delay: 2, duration: 1 }}
             className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#faf8f4]/60"
           >
-            <span className="text-[10px] uppercase tracking-[0.3em]">Défiler</span>
+            <span className="text-[10px] uppercase tracking-[0.3em]">{scrollLabel}</span>
             <div className="w-px h-12 bg-gradient-to-b from-white/60 to-transparent" />
           </motion.div>
         </motion.div>
