@@ -168,7 +168,7 @@ export default function CTASection() {
             </div>
             <Link
               href="/register?role=merchant&plan=pro"
-              className="mt-7 w-full inline-flex items-center justify-center gap-2 py-3 rounded-full font-semibold bg-[#0f2044] text-white hover:bg-[#162040] transition-colors"
+              className="mt-7 w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-full font-semibold bg-[#0f2044] text-white hover:bg-[#162040] transition-colors"
             >
               Lancer mon programme <ArrowRight size={14} />
             </Link>
@@ -197,12 +197,6 @@ export default function CTASection() {
                 </div>
               ))}
 
-              <div className="mt-auto pt-4 border-t border-[#eaf0f8]">
-                <p className="text-[11px] text-[#7a96b0] mb-0.5">CA annuel estimé</p>
-                <p className="font-bold text-[#0f2044] tabular-nums" style={{ fontSize: "clamp(18px,2vw,22px)" }}>
-                  {fmtF(caAn)}
-                </p>
-              </div>
             </div>
 
             {/* Result panel */}
@@ -255,7 +249,7 @@ export default function CTASection() {
 
               <button
                 onClick={() => setShowDetail(v => !v)}
-                className="w-full py-2.5 rounded-full font-bold text-[13px] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                className="w-full py-3.5 rounded-full font-bold text-[13px] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
                 style={{ background: "#4a9eff", color: "#0f2044", boxShadow: "0 4px 20px rgba(74,158,255,0.35)" }}
               >
                 {showDetail ? "Masquer le détail" : "Voir le détail complet"}
