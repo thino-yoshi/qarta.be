@@ -9,10 +9,18 @@ export default function Footer() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    // TODO: wire up to backend when available
-    await new Promise((r) => setTimeout(r, 800));
-    setStatus("sent");
-    setForm({ name: "", email: "", message: "" });
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("sent");
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -119,6 +127,11 @@ export default function Footer() {
               >
                 {status === "sending" ? "Envoi…" : "Envoyer"}
               </button>
+              {status === "error" && (
+                <p className="text-center text-[13px] text-red-400 mt-2">
+                  Une erreur est survenue. Réessayez ou écrivez-nous directement à qarta.contact@gmail.com
+                </p>
+              )}
             </form>
           )}
         </div>

@@ -68,12 +68,12 @@ export default function CTASection() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const heroGains   = useMemo(() => getGains(heroSc), [heroSc, caAn]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const detailGains = useMemo(() => getGains("pess"),  [caAn]);
+  const detailGains = useMemo(() => getGains(heroSc), [heroSc, caAn]);
 
   const cum = useMemo(() => {
     let run = 0;
-    return SC["pess"].growth.map(gf => { run += Math.round(detailGains.total * gf); return run; });
-  }, [detailGains.total]);
+    return SC[heroSc].growth.map(gf => { run += Math.round(detailGains.total * gf); return run; });
+  }, [heroSc, detailGains.total]);
   const mx = cum[cum.length - 1] || 1;
 
   const sliders = [
@@ -140,8 +140,8 @@ export default function CTASection() {
           </h2>
         </div>
 
-        {/* 2-col: pricing card LEFT · simulator RIGHT */}
-        <div className="grid lg:grid-cols-[360px_1fr] gap-8 items-start">
+        {/* 3-col equal: pricing · sliders · result */}
+        <div className="grid lg:grid-cols-3 gap-8 items-stretch">
 
           {/* ── LEFT : pricing card ── */}
           <div
@@ -174,12 +174,9 @@ export default function CTASection() {
             </Link>
           </div>
 
-          {/* ── RIGHT : simulator hero ── */}
-          <div className="grid sm:grid-cols-2 gap-5">
-
-            {/* Sliders panel */}
-            <div className="bg-white rounded-2xl p-6 border border-[#e2eaf5]"
-              style={{ boxShadow: "0 4px 32px rgba(15,32,68,0.05)" }}>
+          {/* ── MIDDLE : sliders panel ── */}
+          <div className="bg-white rounded-2xl p-6 border border-[#e2eaf5] flex flex-col"
+            style={{ boxShadow: "0 4px 32px rgba(15,32,68,0.05)" }}>
               <p className="text-[11px] font-bold text-[#0f2044] mb-5 uppercase tracking-[0.14em]">Vos données</p>
 
               {sliders.map(({ label, val, set, min, max, step, suffix }) => (
@@ -264,7 +261,6 @@ export default function CTASection() {
                 Études sectorielles indépendantes
               </p>
             </div>
-          </div>
         </div>
 
         {/* ── Expandable detail (accordion) ──────────────────────────── */}
