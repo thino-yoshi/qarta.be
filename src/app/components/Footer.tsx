@@ -62,7 +62,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div>
+        <div id="contact">
           <h3
             className="font-display text-white text-[26px] font-bold"
             style={{ letterSpacing: "-0.02em" }}

@@ -130,13 +130,16 @@ export default function Hero() {
               </svg>
             </a>
             <a
-              href="#client"
+              href="#contact"
               onClick={(e) => {
                 e.preventDefault();
-                document.querySelector<HTMLElement>('[data-testid="scroll-client"]')?.scrollIntoView({ behavior: "smooth" });
+                const target = document.getElementById("contact");
+                if (target) {
+                  window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
+                }
               }}
               className="px-5 py-3.5 rounded-full font-semibold text-white border border-white/30 hover:bg-white/10 transition-colors backdrop-blur-md"
-              data-testid="hero-cta-client"
+              data-testid="hero-cta-contact"
             >
               Contact
             </a>

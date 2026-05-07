@@ -298,6 +298,41 @@ h1, h2, h3, h4, h5, h6, .font-display {
   background: rgba(255,255,255,0.10);
 }
 
+/* ===== Simulator range sliders ===== */
+.sim-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+.sim-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0f2044;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 0 0 2.5px #4a9eff, 0 2px 10px rgba(74,158,255,0.3);
+  cursor: grab;
+  transition: transform 0.15s, box-shadow 0.15s;
+  margin-top: -8px;
+}
+.sim-range::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.12); box-shadow: 0 0 0 3px #4a9eff, 0 4px 18px rgba(74,158,255,0.45); }
+.sim-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #0f2044;
+  border: 2.5px solid #ffffff;
+  box-shadow: 0 0 0 2.5px #4a9eff, 0 2px 10px rgba(74,158,255,0.3);
+  cursor: grab;
+}
+.sim-range::-moz-range-track { height: 4px; border-radius: 2px; border: none; }
+
 /* ===== Reduce motion ===== */
 @media (prefers-reduced-motion: reduce) {
   .animate-float,

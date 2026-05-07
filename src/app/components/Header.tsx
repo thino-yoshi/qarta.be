@@ -9,7 +9,7 @@ const NAV = [
   { label: "Immersion",  href: "#immersion",  scrollId: "scroll-immersion" },
   { label: "Client",     href: "#client",     scrollId: "scroll-client" },
   { label: "Commerçant", href: "#merchant",   scrollId: "scroll-merchant" },
-  { label: "Contact",    href: "/contact",    scrollId: "" },
+  { label: "Contact",    href: "#contact",    scrollId: "contact" },
   { label: "Tarif",      href: "#pricing",    scrollId: "pricing" },
 ];
 
