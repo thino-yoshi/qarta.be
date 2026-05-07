@@ -45,7 +45,16 @@ const steps = [
 ];
 
 // ─── Component ───────────────────────────────────────────────────────────────
-export default function CTASection() {
+export default function CTASection({ content }: { content?: Record<string, unknown> }) {
+  const c = content ?? {};
+  const pricingTitle = (c.pricingTitle as string) ?? "Des tarifs clairs, sans surprise.";
+  const planName     = (c.planName     as string) ?? "Pro";
+  const price        = (c.price        as string) ?? "20";
+  const priceUnit    = (c.priceUnit    as string) ?? "/ mois";
+  const features     = (c.features     as string[]) ?? ["Programmes illimités", "Clients illimités", "Notifications automatiques", "Avis Google intégrés", "Support prioritaire"];
+  const ctaLabel     = (c.ctaLabel     as string) ?? "Lancer mon programme";
+  const ctaHref      = (c.ctaHref      as string) ?? "/register?role=merchant&plan=pro";
+
   // Simulator state
   const [clients,  setClients]  = useState(50);
   const [jours,    setJours]    = useState(22);
@@ -136,7 +145,7 @@ export default function CTASection() {
             className="mt-6 font-display text-[#0f2044]"
             style={{ fontSize: "clamp(2rem, 4.2vw, 3.4rem)", fontWeight: 600, letterSpacing: "0.06em" }}
           >
-            Des tarifs <span className="text-[#2c7be5]">clairs</span>,<br />sans surprise.
+            {pricingTitle}
           </h2>
         </div>
 
@@ -151,13 +160,13 @@ export default function CTASection() {
             <div className="absolute -top-3 left-6 px-3 py-1 rounded-full bg-[#0f2044] text-white text-[10px] font-bold uppercase tracking-widest">
               Populaire
             </div>
-            <div className="text-[13px] font-semibold text-[#0f2044]/70 uppercase tracking-widest">Pro</div>
+            <div className="text-[13px] font-semibold text-[#0f2044]/70 uppercase tracking-widest">{planName}</div>
             <div className="mt-4 flex items-end gap-2">
-              <span className="font-display text-[42px] font-bold text-[#0f2044]">20€</span>
-              <span className="text-[#6a7388] text-[13px] mb-2">/ mois</span>
+              <span className="font-display text-[42px] font-bold text-[#0f2044]">{price}€</span>
+              <span className="text-[#6a7388] text-[13px] mb-2">{priceUnit}</span>
             </div>
             <div className="mt-5 space-y-3">
-              {["Programmes illimités", "Clients illimités", "Notifications automatiques", "Avis Google intégrés", "Support prioritaire"].map(f => (
+              {features.map(f => (
                 <div key={f} className="flex items-start gap-2.5">
                   <div className="w-5 h-5 rounded-full bg-[#e8eaf0] flex items-center justify-center flex-shrink-0 mt-0.5">
                     <Check size={12} color="#0f2044" strokeWidth={3} />
@@ -167,10 +176,10 @@ export default function CTASection() {
               ))}
             </div>
             <Link
-              href="/register?role=merchant&plan=pro"
+              href={ctaHref}
               className="mt-7 w-full inline-flex items-center justify-center gap-2 py-3.5 text-[15px] rounded-full font-semibold bg-[#0f2044] text-white hover:bg-[#162040] transition-colors"
             >
-              Lancer mon programme <ArrowRight size={14} />
+              {ctaLabel} <ArrowRight size={14} />
             </Link>
           </div>
 

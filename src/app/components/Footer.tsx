@@ -2,7 +2,22 @@
 import React, { useState } from "react";
 import { QartaLogo, QartaWordmark } from "./QartaLogo";
 
-export default function Footer() {
+export default function Footer({ content }: { content?: Record<string, unknown> }) {
+  const c = content ?? {};
+  const description     = (c.description     as string) ?? "QARTA réunit vos cartes de fidélité et aide les commerces locaux à tisser un lien durable avec leurs clients.";
+  const contactTitle    = (c.contactTitle    as string) ?? "Gardons le contact";
+  const contactSubtitle = (c.contactSubtitle as string) ?? "Questions, partenariats, démo — écrivez-nous.";
+  const productLinks    = (c.productLinks    as { label: string; href: string }[]) ?? [
+    { label: "Client",     href: "#client" },
+    { label: "Commerçant", href: "#merchant" },
+    { label: "Abonnement", href: "#pricing" },
+  ];
+  const companyLinks    = (c.companyLinks    as { label: string; href: string }[]) ?? [
+    { label: "À propos",         href: "#" },
+    { label: "Mentions légales", href: "#" },
+    { label: "Confidentialité",  href: "#" },
+  ];
+
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
@@ -41,8 +56,7 @@ export default function Footer() {
             <QartaWordmark color="#fff" />
           </div>
           <p className="mt-6 text-white/70 text-[15px] leading-relaxed max-w-md">
-            QARTA réunit vos cartes de fidélité et aide les commerces locaux à tisser un lien
-            durable avec leurs clients.
+            {description}
           </p>
           <div className="mt-8 flex flex-wrap gap-2 text-[12px] text-white/50">
             <span>© {new Date().getFullYear()} QARTA</span>
@@ -54,17 +68,17 @@ export default function Footer() {
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-widest text-white/40">Produit</div>
               <ul className="mt-3 space-y-2 text-[14px] text-white/75">
-                <li><a href="#client" className="hover:text-white transition-colors">Client</a></li>
-                <li><a href="#merchant" className="hover:text-white transition-colors">Commerçant</a></li>
-                <li><a href="#pricing" className="hover:text-white transition-colors">Abonnement</a></li>
+                {productLinks.map(l => (
+                  <li key={l.href + l.label}><a href={l.href} className="hover:text-white transition-colors">{l.label}</a></li>
+                ))}
               </ul>
             </div>
             <div>
               <div className="text-[11px] font-semibold uppercase tracking-widest text-white/40">Société</div>
               <ul className="mt-3 space-y-2 text-[14px] text-white/75">
-                <li><a href="#" className="hover:text-white transition-colors">À propos</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Mentions légales</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Confidentialité</a></li>
+                {companyLinks.map(l => (
+                  <li key={l.href + l.label}><a href={l.href} className="hover:text-white transition-colors">{l.label}</a></li>
+                ))}
               </ul>
             </div>
           </div>
@@ -75,10 +89,10 @@ export default function Footer() {
             className="font-display text-white text-[26px] font-bold"
             style={{ letterSpacing: "-0.02em" }}
           >
-            Gardons le contact
+            {contactTitle}
           </h3>
           <p className="text-white/60 text-[14px] mt-2">
-            Questions, partenariats, démo — écrivez-nous.
+            {contactSubtitle}
           </p>
 
           {status === "sent" ? (
