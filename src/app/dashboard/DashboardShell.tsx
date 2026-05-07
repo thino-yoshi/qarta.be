@@ -12,22 +12,37 @@ interface Props {
   user: { id: string; email: string };
   merchant: Record<string, unknown>;
   loyaltyCard: Record<string, unknown> | null;
+  content?: {
+    header?: Record<string, unknown>;
+    cards?: Record<string, unknown>;
+  };
 }
 
-export default function DashboardShell({ user, merchant, loyaltyCard }: Props) {
+export default function DashboardShell({ user, merchant, loyaltyCard, content }: Props) {
+  const h = content?.header ?? {};
+  const sidebarTitle  = (h.sidebarTitle  as string) ?? "Ma carte";
+  const sidebarStats  = (h.sidebarStats  as string) ?? "Statistiques";
+  const sidebarSub    = (h.sidebarSub    as string) ?? "Abonnement";
+  const cardTabTitle  = (h.cardTabTitle  as string) ?? "Ma carte de fidélité";
+  const cardTabSub    = (h.cardTabSub    as string) ?? "Personnalisez et prévisualisez votre carte";
+  const statsTabTitle = (h.statsTabTitle as string) ?? "Statistiques";
+  const statsTabSub   = (h.statsTabSub   as string) ?? "Vue d'ensemble de votre activité";
+  const subTabTitle   = (h.subTabTitle   as string) ?? "Abonnement";
+  const pendingNotice = (h.pendingNotice as string) ?? "Votre compte est en cours de validation. Vous recevrez un email dès que votre accès est activé.";
+
   const [activeTab, setActiveTab] = useState<Tab>("carte");
   const isActive = merchant?.subscription_status === "active";
 
   const tabs: { id: Tab; label: string; icon: LucideIcon }[] = [
-    { id: "carte",         label: "Ma carte",      icon: Store },
-    { id: "statistiques",  label: "Statistiques",  icon: BarChart2 },
-    { id: "abonnement",    label: "Abonnement",    icon: CreditCard },
+    { id: "carte",         label: sidebarTitle, icon: Store },
+    { id: "statistiques",  label: sidebarStats, icon: BarChart2 },
+    { id: "abonnement",    label: sidebarSub,   icon: CreditCard },
   ];
 
   const tabTitles: Record<Tab, { title: string; sub: string }> = {
-    carte:        { title: "Ma carte de fidélité", sub: "Personnalisez et prévisualisez votre carte" },
-    statistiques: { title: "Statistiques",         sub: "Vue d'ensemble de votre activité" },
-    abonnement:   { title: "Abonnement",           sub: isActive ? "Votre plan en cours" : "Choisissez votre abonnement" },
+    carte:        { title: cardTabTitle,  sub: cardTabSub },
+    statistiques: { title: statsTabTitle, sub: statsTabSub },
+    abonnement:   { title: subTabTitle,   sub: isActive ? "Votre plan en cours" : "Choisissez votre abonnement" },
   };
 
   return (
@@ -148,7 +163,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard }: Props) {
         {/* Pending banner */}
         {!isActive && (
           <div
-            className="mx-6 mt-5 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
+            className="mx-6 my-3 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
             style={{
               background: "rgba(243,156,18,0.07)",
               border: "1px solid rgba(243,156,18,0.2)",
@@ -157,9 +172,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard }: Props) {
             <AlertTriangle size={15} color="#f39c12" strokeWidth={2} className="flex-shrink-0" />
             <p className="text-[13px] flex-1">
               <span className="font-semibold text-[#f39c12]">Compte non activé</span>
-              <span className="text-white/45">
-                {" "}— Pas encore accès à l'application ni au scan QR.
-              </span>
+              <span className="text-white/45"> — {pendingNotice}</span>
             </p>
             <button
               onClick={() => setActiveTab("abonnement")}
@@ -177,7 +190,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard }: Props) {
 
         {/* Tab content — tous les onglets restent montés (display:none) pour
              préserver l'état React (design de la carte, etc.) entre les navigations */}
-        <div className="flex-1 min-h-0 px-6 py-6 overflow-auto">
+        <div className="flex-1 min-h-0 px-6 pt-0 pb-6 overflow-auto">
           <div style={{ display: activeTab === "carte" ? "block" : "none" }}>
             <CarteTab merchant={merchant} loyaltyCard={loyaltyCard} isActive={isActive} />
           </div>
