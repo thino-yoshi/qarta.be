@@ -196,6 +196,13 @@ export default function CTASection() {
                   />
                 </div>
               ))}
+
+              <div className="mt-auto pt-4 border-t border-[#eaf0f8]">
+                <p className="text-[11px] text-[#7a96b0] mb-0.5">CA annuel estimé</p>
+                <p className="font-bold text-[#0f2044] tabular-nums" style={{ fontSize: "clamp(18px,2vw,22px)" }}>
+                  {fmtF(caAn)}
+                </p>
+              </div>
             </div>
 
             {/* Result panel */}
