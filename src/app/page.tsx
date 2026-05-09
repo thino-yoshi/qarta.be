@@ -7,6 +7,7 @@ import ScrollClient from "./components/ScrollClient";
 import ScrollMerchant from "./components/ScrollMerchant";
 import ScrollBusinesses from "./components/ScrollBusinesses";
 import CTASection from "./components/CTASection";
+import MenuSection from "./components/MenuSection";
 import Footer from "./components/Footer";
 import { getPageContent } from "@/lib/content/getContent";
 
@@ -60,11 +61,13 @@ export default async function Home() {
       <AnnouncementBar content={content.announcement} />
       <Header content={content.header} />
       <Hero content={content.hero} />
-      <ScrollImmersion />
-      <ScrollClient />
-      <ScrollMerchant />
-      <ScrollBusinesses />
+      <ScrollImmersion content={content["scroll-immersion"]} />
+      <ScrollClient    content={content["scroll-client"]} />
+      <ScrollMerchant  content={content["scroll-merchant"]} />
+      <ScrollBusinesses content={content["scroll-businesses"]} />
       <CTASection content={content.cta} />
+      {/* Menu — visible uniquement si activé dans l'éditeur et qu'il y a des cartes */}
+      <MenuSection content={content["menu-builder"]} />
       <Footer content={content.footer} />
     </main>
   );

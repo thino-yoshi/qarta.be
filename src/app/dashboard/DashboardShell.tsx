@@ -13,8 +13,10 @@ interface Props {
   merchant: Record<string, unknown>;
   loyaltyCard: Record<string, unknown> | null;
   content?: {
-    header?: Record<string, unknown>;
-    cards?: Record<string, unknown>;
+    header?:       Record<string, unknown>;
+    cards?:        Record<string, unknown>;
+    subscription?: Record<string, unknown>;
+    stats?:        Record<string, unknown>;
   };
 }
 
@@ -195,10 +197,10 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
             <CarteTab merchant={merchant} loyaltyCard={loyaltyCard} isActive={isActive} />
           </div>
           <div style={{ display: activeTab === "statistiques" ? "block" : "none" }}>
-            <StatistiquesTab merchant={merchant} isActive={isActive} />
+            <StatistiquesTab merchant={merchant} isActive={isActive} content={content?.stats} />
           </div>
           <div style={{ display: activeTab === "abonnement" ? "block" : "none" }}>
-            <AbonnementTab merchant={merchant} isActive={isActive} />
+            <AbonnementTab merchant={merchant} isActive={isActive} content={content?.subscription} />
           </div>
         </div>
       </main>

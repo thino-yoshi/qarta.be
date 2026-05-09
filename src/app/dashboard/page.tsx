@@ -28,8 +28,10 @@ export default async function DashboardPage() {
       merchant={merchantResult.data}
       loyaltyCard={loyaltyCardResult.data ?? null}
       content={{
-        header: content["dashboard-header"],
-        cards:  content["dashboard-cards"],
+        header:       content["dashboard-header"],
+        cards:        content["dashboard-cards"],
+        subscription: content["dashboard-subscription"],
+        stats:        content["dashboard-stats"],
       }}
     />
   );

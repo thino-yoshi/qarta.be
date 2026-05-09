@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import LiveThemeListener from "./components/LiveThemeListener";
 
 export const metadata: Metadata = {
   title: "Qarta — Fidélité digitale",
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className="h-full antialiased">
-      <body className="min-h-full">{children}</body>
+      <body className="min-h-full">
+        <LiveThemeListener />
+        {children}
+      </body>
     </html>
   );
 }

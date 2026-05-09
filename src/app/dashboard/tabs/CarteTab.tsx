@@ -1,7 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import { Save, Eye, Plus, Minus, ImageIcon } from "lucide-react";
-import LoyaltyCard, { CardDesign, DEFAULT_DESIGN, FONT_OPTIONS } from "@/app/components/LoyaltyCard";
+import React, { useState, useEffect } from "react";
+import { Save, Plus, Minus, ImageIcon } from "lucide-react";
+import { WalletCard, CardDesign, DEFAULT_DESIGN, FONT_OPTIONS } from "@/app/components/LoyaltyCard";
 
 interface Props {
   merchant:    Record<string, unknown>;
@@ -87,10 +87,19 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
     ...saved,
   });
 
-  const [saving,   setSaving]   = useState(false);
-  const [saveOk,   setSaveOk]   = useState(false);
-  const [saveErr,  setSaveErr]  = useState<string | null>(null);
-  const [previewStamps] = useState(3); // tampons affichés en preview
+  const [saving,        setSaving]        = useState(false);
+  const [saveOk,        setSaveOk]        = useState(false);
+  const [saveErr,       setSaveErr]       = useState<string | null>(null);
+  const [previewStamps] = useState(3);
+  const [previewPoints] = useState(720);
+  const [loyaltyTab,    setLoyaltyTab]    = useState<"stamps" | "points">("stamps");
+  const [editorTab,     setEditorTab]     = useState<"compact" | "wallet">("compact");
+
+  // Sync loyaltyTab → design.loyaltyMode
+  useEffect(() => {
+    set("loyaltyMode", loyaltyTab);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loyaltyTab]);
 
   const set = <K extends keyof CardDesign>(key: K, val: CardDesign[K]) =>
     setDesign((d) => ({ ...d, [key]: val }));
@@ -120,20 +129,59 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
       {/* ── Panneau gauche : customisation ── */}
       <div className="flex-1 min-w-0 space-y-4">
 
+        {/* ── Onglets mode fidélité (niveau 1) ── */}
+        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
+          {([["stamps", "🎯  Tampons"], ["points", "⭐  Points"]] as const).map(([tab, label]) => (
+            <button
+              key={tab}
+              onClick={() => setLoyaltyTab(tab)}
+              className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all"
+              style={loyaltyTab === tab
+                ? { background: "linear-gradient(135deg,rgba(74,158,255,0.18),rgba(155,89,182,0.12))", color: "#fff", border: "1px solid rgba(74,158,255,0.3)" }
+                : { color: "rgba(255,255,255,0.3)", border: "1px solid transparent" }
+              }
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* ── Onglets Compact / Wallet (niveau 2) ── */}
+        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+          {(["compact", "wallet"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setEditorTab(tab)}
+              className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all"
+              style={editorTab === tab
+                ? { background: "rgba(74,158,255,0.15)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.25)" }
+                : { color: "rgba(255,255,255,0.35)", border: "1px solid transparent" }
+              }
+            >
+              {tab === "compact" ? "🃏  Carte compacte" : "📱  Carte Wallet"}
+            </button>
+          ))}
+        </div>
+
+        {/* ─── Onglet COMPACT ─── */}
+        {editorTab === "compact" && <>
+
         {/* Identité */}
         <Section title="Identité de la carte">
           <Field label="Nom affiché sur la carte">
             <TextInput value={design.cardName} onChange={(v) => set("cardName", v)} placeholder="Ex : BARBER" />
           </Field>
-          <Field label="Label des tampons">
-            <TextInput value={design.stampLabel} onChange={(v) => set("stampLabel", v)} placeholder="Ex : COUPES COLLECTÉES" />
+          <Field label={loyaltyTab === "points" ? "Label des points" : "Label des tampons"}>
+            <TextInput value={design.stampLabel} onChange={(v) => set("stampLabel", v)}
+              placeholder={loyaltyTab === "points" ? "Ex : POINTS CUMULÉS" : "Ex : COUPES COLLECTÉES"} />
           </Field>
           <Field label="Récompense">
             <TextInput value={design.rewardDescription} onChange={(v) => set("rewardDescription", v)} placeholder="Ex : coupe offerte" />
           </Field>
         </Section>
 
-        {/* Tampons */}
+        {/* Tampons ou Objectif points */}
+        {loyaltyTab === "stamps" ? (
         <Section title="Nombre de tampons">
           <div className="flex items-center gap-4">
             <input
@@ -148,6 +196,22 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
             </div>
           </div>
         </Section>
+        ) : (
+        <Section title="Objectif de points">
+          <Field label={`Points nécessaires pour la récompense : ${design.pointsGoal.toLocaleString()}`}>
+            <input type="range" min={100} max={5000} step={50} value={design.pointsGoal}
+              onChange={(e) => set("pointsGoal", Number(e.target.value))}
+              className="q-range w-full"
+              style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+          </Field>
+          <Field label={`Taille du chiffre principal : ${design.compactPointsSize}px`}>
+            <input type="range" min={28} max={96} value={design.compactPointsSize}
+              onChange={(e) => set("compactPointsSize", Number(e.target.value))}
+              className="q-range w-full"
+              style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+          </Field>
+        </Section>
+        )}
 
         {/* Fond */}
         <Section title="Fond de la carte">
@@ -274,54 +338,137 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
         </Section>
 
         {/* Sauvegarder */}
-        {saveErr && (
-          <p className="text-[12px] text-red-400 px-1">{saveErr}</p>
-        )}
-        <button
-          onClick={handleSave} disabled={saving}
-          className="w-full py-3.5 rounded-2xl text-[14px] font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-60"
-          style={saveOk
-            ? { background: "rgba(39,174,96,0.12)", border: "1px solid rgba(39,174,96,0.3)", color: "#27ae60" }
-            : { background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 8px 24px -8px rgba(44,123,229,0.5)", color: "#fff", border: "none" }
-          }
-        >
-          {saving ? (
-            <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"/>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-            </svg>
-          ) : saveOk ? "✓ Carte sauvegardée !" : <><Save size={15}/> Sauvegarder la carte</>}
-        </button>
+        {saveErr && <p className="text-[12px] text-red-400 px-1">{saveErr}</p>}
+        <SaveButton saving={saving} saveOk={saveOk} onClick={handleSave} />
+
+        </> /* fin onglet compact */}
+
+        {/* ─── Onglet WALLET ─── */}
+        {editorTab === "wallet" && <>
+
+          {/* Typographie */}
+          <Section title="Typographie">
+            <Field label="Police">
+              <div className="grid grid-cols-2 gap-2 mt-1">
+                {FONT_OPTIONS.map((f) => (
+                  <button key={f.value} onClick={() => set("fontFamily", f.value)}
+                    className="px-3 py-2.5 rounded-xl text-[13px] text-left transition-all"
+                    style={{
+                      fontFamily: `'${f.value}', sans-serif`,
+                      ...(design.fontFamily === f.value
+                        ? { background: "rgba(74,158,255,0.12)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.3)" }
+                        : { background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }
+                      ),
+                    }}>
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </Field>
+
+            <Field label={`Taille — nom du commerce : ${design.walletTitleSize}px`}>
+              <input type="range" min={20} max={54} value={design.walletTitleSize}
+                onChange={(e) => set("walletTitleSize", Number(e.target.value))}
+                className="q-range w-full"
+                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+            </Field>
+
+            <Field label={`Taille — nom du client : ${design.walletNameSize}px`}>
+              <input type="range" min={14} max={44} value={design.walletNameSize}
+                onChange={(e) => set("walletNameSize", Number(e.target.value))}
+                className="q-range w-full"
+                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+            </Field>
+          </Section>
+
+          {/* Grille de tampons — masquée en mode points */}
+          {loyaltyTab === "stamps" && (
+          <Section title="Grille de tampons">
+            <Field label={`Colonnes : ${Math.min(design.walletStampCols, design.stampsRequired)}`}>
+              <div className="flex gap-1">
+                {[3, 4, 5].map((n) => (
+                  <button key={n} onClick={() => set("walletStampCols", n)}
+                    className="flex-1 py-2 rounded-xl text-[13px] font-semibold transition-all"
+                    style={design.walletStampCols === n
+                      ? { background: "rgba(74,158,255,0.15)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.3)" }
+                      : { background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }
+                    }>
+                    {n} col.
+                  </button>
+                ))}
+              </div>
+            </Field>
+          </Section>
+          )}
+
+          {/* Taille du chiffre — visible uniquement en mode points */}
+          {loyaltyTab === "points" && (
+          <Section title="Affichage des points">
+            <Field label={`Taille du chiffre principal : ${design.walletPointsSize}px`}>
+              <input type="range" min={28} max={96} value={design.walletPointsSize}
+                onChange={(e) => set("walletPointsSize", Number(e.target.value))}
+                className="q-range w-full"
+                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+            </Field>
+          </Section>
+          )}
+
+          {/* QR Code */}
+          <Section title="QR Code">
+            <Field label={`Taille : ${design.walletQRSize}px`}>
+              <input type="range" min={80} max={200} value={design.walletQRSize}
+                onChange={(e) => set("walletQRSize", Number(e.target.value))}
+                className="q-range w-full"
+                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+            </Field>
+          </Section>
+
+          {/* Mise en page */}
+          <Section title="Mise en page">
+            <Field label={`Padding interne : ${design.walletPadding}px`}>
+              <input type="range" min={12} max={48} value={design.walletPadding}
+                onChange={(e) => set("walletPadding", Number(e.target.value))}
+                className="q-range w-full"
+                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+            </Field>
+
+            <div className="flex items-center justify-between">
+              <span className="text-[13px] text-white/60">Cercles décoratifs en fond</span>
+              <button onClick={() => set("walletShowCircles", !design.walletShowCircles)}
+                className="w-11 h-6 rounded-full transition-all relative"
+                style={{ background: design.walletShowCircles ? "rgba(74,158,255,0.5)" : "rgba(255,255,255,0.1)" }}>
+                <span className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all"
+                  style={{ left: design.walletShowCircles ? "calc(100% - 20px)" : 4 }} />
+              </button>
+            </div>
+          </Section>
+
+          {saveErr && <p className="text-[12px] text-red-400 px-1">{saveErr}</p>}
+          <SaveButton saving={saving} saveOk={saveOk} onClick={handleSave} />
+
+        </> /* fin onglet wallet */}
+
       </div>
 
       {/* ── Panneau droit : aperçu ── */}
 
-      {/* Spacer : réserve la place dans le flex sans contenu */}
+      {/* Spacer */}
       <div className="hidden xl:block xl:w-[490px] xl:flex-shrink-0" />
 
-      {/* Panel fixe — couvre toute la hauteur viewport, passe sur le header */}
+      {/* Panel fixe */}
       <div
         className="xl:fixed xl:top-0 xl:right-0 xl:w-[490px] xl:h-screen xl:overflow-y-auto xl:z-20
                    sticky top-0 w-full"
         style={{ background: "#0b1220", borderLeft: "1px solid rgba(255,255,255,0.07)" }}
       >
-        <div className="p-5 space-y-4">
-          <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Eye size={14} color="#4a9eff" />
-              <span className="text-[13px] font-semibold">Aperçu en temps réel</span>
-            </div>
-            <LoyaltyCard design={design} clientName="Pierre" currentStamps={previewStamps} />
-            <p className="text-[11px] text-white/20 text-center mt-3">
-              {previewStamps} tampon{previewStamps > 1 ? "s" : ""} affichés pour l&apos;aperçu
-            </p>
-          </div>
-
-          {/* Pass numérique QR */}
-          <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <p className="text-[11px] text-white/30 mb-3 uppercase tracking-widest">Pass numérique (QR)</p>
-            <WalletPassCard design={design} clientName="Pierre" />
-          </div>
+        <div className="p-5">
+          <WalletCard
+            design={design}
+            clientName="Pierre Dubois"
+            currentStamps={previewStamps}
+            currentPoints={previewPoints}
+            defaultExpanded={editorTab === "wallet"}
+          />
         </div>
       </div>
 
@@ -330,6 +477,26 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
 }
 
 /* ─── Micro-composants ────────────────────────────────────────────── */
+
+function SaveButton({ saving, saveOk, onClick }: { saving: boolean; saveOk: boolean; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick} disabled={saving}
+      className="w-full py-3.5 rounded-2xl text-[14px] font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-60"
+      style={saveOk
+        ? { background: "rgba(39,174,96,0.12)", border: "1px solid rgba(39,174,96,0.3)", color: "#27ae60" }
+        : { background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 8px 24px -8px rgba(44,123,229,0.5)", color: "#fff", border: "none" }
+      }
+    >
+      {saving ? (
+        <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"/>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+        </svg>
+      ) : saveOk ? "✓ Carte sauvegardée !" : <><Save size={15}/> Sauvegarder la carte</>}
+    </button>
+  );
+}
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -360,177 +527,3 @@ function TextInput({ value, onChange, placeholder }: { value: string; onChange: 
   );
 }
 
-/* ─── QR placeholder SVG ──────────────────────────────────────────── */
-
-function QRPlaceholder({ size = 136 }: { size?: number }) {
-  const N = 21;
-  const cell = size / N;
-
-  const filled = (r: number, c: number): boolean => {
-    // Finder top-left (7×7)
-    if (r < 7 && c < 7) {
-      return r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4);
-    }
-    // Finder top-right (7×7)
-    if (r < 7 && c >= 14) {
-      const lc = c - 14;
-      return r === 0 || r === 6 || lc === 0 || lc === 6 || (r >= 2 && r <= 4 && lc >= 2 && lc <= 4);
-    }
-    // Finder bottom-left (7×7)
-    if (r >= 14 && c < 7) {
-      const lr = r - 14;
-      return lr === 0 || lr === 6 || c === 0 || c === 6 || (lr >= 2 && lr <= 4 && c >= 2 && c <= 4);
-    }
-    // Separator quiet zones
-    if (r === 7 || c === 7) return false;
-    // Timing strips
-    if (r === 6 && c >= 8 && c <= 12) return c % 2 === 0;
-    if (c === 6 && r >= 8 && r <= 12) return r % 2 === 0;
-    // Alignment pattern at (16,16)
-    if (r >= 14 && r <= 18 && c >= 14 && c <= 18) {
-      const lr = r - 14; const lc = c - 14;
-      return lr === 0 || lr === 4 || lc === 0 || lc === 4 || (lr === 2 && lc === 2);
-    }
-    // Data cells — pseudo-random deterministic
-    return ((r * 31 + c * 17 + r * c * 7 + r + c) % 100) > 48;
-  };
-
-  const rects: React.ReactElement[] = [];
-  for (let r = 0; r < N; r++) {
-    for (let c = 0; c < N; c++) {
-      if (filled(r, c)) {
-        rects.push(
-          <rect key={`${r}-${c}`} x={c * cell + 0.15} y={r * cell + 0.15}
-            width={cell - 0.3} height={cell - 0.3} fill="#000" rx={0.6} />
-        );
-      }
-    }
-  }
-
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>
-      {rects}
-    </svg>
-  );
-}
-
-/* ─── WalletPassCard ──────────────────────────────────────────────── */
-
-function WalletPassCard({ design: raw, clientName }: { design: CardDesign; clientName: string }) {
-  const d: CardDesign = { ...DEFAULT_DESIGN, ...raw };
-
-  const bgStyle =
-    d.bgType === "gradient" && d.bgColors?.length > 1
-      ? { background: `linear-gradient(${d.bgGradientAngle}deg, ${d.bgColors.join(", ")})` }
-      : { background: d.bgColors?.[0] ?? "#141626" };
-
-  const accentFirst = d.accentColors?.[0] ?? "#FF2D78";
-
-  return (
-    <div
-      style={{
-        ...bgStyle,
-        borderRadius: 24,
-        overflow: "hidden",
-        fontFamily: `'${d.fontFamily}', sans-serif`,
-        boxShadow: `0 24px 60px -16px ${accentFirst}44`,
-        position: "relative",
-        width: "100%",
-      }}
-    >
-      {/* Watermark Q */}
-      {d.showQ && (
-        <div
-          style={{
-            position: "absolute",
-            right: "4%",
-            top: "50%",
-            transform: "translateY(-48%)",
-            fontSize: 160,
-            fontWeight: 900,
-            color: d.textColor,
-            opacity: d.qOpacity,
-            lineHeight: 1,
-            pointerEvents: "none",
-            userSelect: "none",
-            fontFamily: `'${d.fontFamily}', sans-serif`,
-          }}
-        >Q</div>
-      )}
-
-      {/* Zone haut : identité */}
-      <div style={{ padding: "20px 20px 0", position: "relative", zIndex: 1 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-          <div>
-            <p style={{
-              fontSize: 20, fontWeight: 900, color: d.textColor,
-              textTransform: "uppercase", letterSpacing: "-0.02em", margin: 0,
-            }}>
-              {d.cardName}
-            </p>
-            <p style={{
-              fontSize: 9, fontWeight: 700, color: d.textColor,
-              opacity: 0.5, letterSpacing: "0.12em", margin: "3px 0 0",
-            }}>
-              CARTE FIDÉLITÉ
-            </p>
-          </div>
-
-          {/* Badge wallet */}
-          <div style={{
-            background: `${accentFirst}22`,
-            border: `1px solid ${accentFirst}44`,
-            borderRadius: 10,
-            padding: "7px 9px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-            {/* Wallet icon */}
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <rect x="2" y="5" width="20" height="14" rx="3" stroke={d.textColor} strokeWidth="1.8" strokeOpacity="0.7"/>
-              <path d="M16 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0z" fill={d.textColor} fillOpacity="0.7"/>
-              <path d="M2 9h20" stroke={d.textColor} strokeWidth="1.8" strokeOpacity="0.5"/>
-            </svg>
-          </div>
-        </div>
-
-        {/* Titulaire */}
-        <div style={{ marginTop: 14 }}>
-          <p style={{ fontSize: 9, fontWeight: 600, color: d.textColor, opacity: 0.4, letterSpacing: "0.1em", margin: 0 }}>
-            TITULAIRE
-          </p>
-          <p style={{ fontSize: 14, fontWeight: 700, color: d.textColor, margin: "3px 0 0" }}>
-            {clientName}
-          </p>
-        </div>
-      </div>
-
-      {/* Séparateur */}
-      <div style={{ height: 1, background: "rgba(255,255,255,0.08)", margin: "18px 20px" }} />
-
-      {/* Zone QR */}
-      <div style={{
-        display: "flex", flexDirection: "column", alignItems: "center",
-        padding: "0 20px 26px", gap: 14, position: "relative", zIndex: 1,
-      }}>
-        <div style={{
-          background: "#ffffff",
-          borderRadius: 18,
-          padding: 14,
-          boxShadow: "0 12px 32px -8px rgba(0,0,0,0.35)",
-        }}>
-          <QRPlaceholder size={140} />
-        </div>
-
-        <p style={{
-          fontSize: 9, fontWeight: 600, color: d.textColor,
-          opacity: 0.3, letterSpacing: "0.1em", textTransform: "uppercase",
-          margin: 0, textAlign: "center",
-        }}>
-          Scanner pour accéder à votre carte
-        </p>
-      </div>
-    </div>
-  );
-}

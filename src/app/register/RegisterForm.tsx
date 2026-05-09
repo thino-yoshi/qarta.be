@@ -67,12 +67,34 @@ function Field({
 /* ─── Composant principal ─── */
 export default function RegisterForm({ content }: { content?: Record<string, unknown> }) {
   const c = content ?? {};
+  // ── Étapes ──
+  const tab1Label  = (c.tab1Label  as string) ?? "Commerce";
+  const tab2Label  = (c.tab2Label  as string) ?? "Compte";
+  const tab3Label  = (c.tab3Label  as string) ?? "Vérification";
+  // ── Étape 1 ──
   const step1Title = (c.step1Title as string) ?? "Votre commerce";
   const step1Sub   = (c.step1Sub   as string) ?? "Informations sur votre établissement";
-  const step2Title = (c.step2Title as string) ?? "Votre compte";
-  const step2Sub   = (c.step2Sub   as string) ?? "Informations personnelles et accès";
   const step1CTA   = (c.step1CTA   as string) ?? "Continuer";
-  const step2CTA   = (c.step2CTA   as string) ?? "Créer mon compte";
+  // ── Étape 2 ──
+  const step2Title          = (c.step2Title          as string) ?? "Votre compte";
+  const step2Sub            = (c.step2Sub            as string) ?? "Informations personnelles et accès";
+  const firstNameLabel      = (c.firstNameLabel      as string) ?? "Prénom";
+  const lastNameLabel       = (c.lastNameLabel       as string) ?? "Nom";
+  const phoneLabel          = (c.phoneLabel          as string) ?? "Téléphone";
+  const emailLabel          = (c.emailLabel          as string) ?? "Email";
+  const passwordLabel       = (c.passwordLabel       as string) ?? "Mot de passe";
+  const confirmPasswordLabel= (c.confirmPasswordLabel as string) ?? "Confirmer le mot de passe";
+  const numLocationsLabel   = (c.numLocationsLabel   as string) ?? "Nombre d'établissements";
+  const siretLabel          = (c.siretLabel          as string) ?? "SIRET (optionnel)";
+  const step2CTA            = (c.step2CTA            as string) ?? "Créer mon compte";
+  // ── Étape 3 ──
+  const step3Title     = (c.step3Title     as string) ?? "Vérifiez votre email";
+  const step3Sub       = (c.step3Sub       as string) ?? "Code à 8 chiffres envoyé à";
+  const step3CTA       = (c.step3CTA       as string) ?? "Vérifier et accéder au dashboard";
+  const resendHint     = (c.resendHint     as string) ?? "Pas reçu le code ?";
+  const resendLabel    = (c.resendLabel    as string) ?? "Renvoyer";
+  const editEmailLabel = (c.editEmailLabel as string) ?? "Modifier mon email";
+  // ── Global ──
   const loginPrompt = (c.loginPrompt as string) ?? "Déjà un compte ?";
 
   const router = useRouter();
@@ -316,7 +338,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
                     {step > s ? <CheckCircle size={14} strokeWidth={2.5} /> : s}
                   </div>
                   <span className={`text-[12px] font-medium hidden sm:block ${step === s ? "text-white" : "text-white/30"}`}>
-                    {s === 1 ? "Commerce" : s === 2 ? "Compte" : "Vérification"}
+                    {s === 1 ? tab1Label : s === 2 ? tab2Label : tab3Label}
                   </span>
                 </div>
                 {s < 3 && <div className="flex-1 h-px" style={{ background: step > s ? "rgba(44,123,229,0.5)" : "rgba(255,255,255,0.08)" }} />}
@@ -405,31 +427,31 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
-                  <Field label="Prénom *" icon={User}>
+                  <Field label={`${firstNameLabel} *`} icon={User}>
                     <input type="text" placeholder="Jean" value={form.first_name}
                       onChange={(e) => set("first_name", e.target.value)}
                       className={inputClass()} style={inputBase} onFocus={inputFocus} onBlur={inputBlur} />
                   </Field>
-                  <Field label="Nom *" icon={User}>
+                  <Field label={`${lastNameLabel} *`} icon={User}>
                     <input type="text" placeholder="Dupont" value={form.last_name}
                       onChange={(e) => set("last_name", e.target.value)}
                       className={inputClass()} style={inputBase} onFocus={inputFocus} onBlur={inputBlur} />
                   </Field>
                 </div>
 
-                <Field label="Téléphone *" icon={Phone}>
+                <Field label={`${phoneLabel} *`} icon={Phone}>
                   <input type="tel" placeholder="+32 470 00 00 00" value={form.phone}
                     onChange={(e) => set("phone", e.target.value)}
                     className={inputClass()} style={inputBase} onFocus={inputFocus} onBlur={inputBlur} />
                 </Field>
 
-                <Field label="Email *" icon={Mail}>
+                <Field label={`${emailLabel} *`} icon={Mail}>
                   <input type="email" placeholder="jean@votrecommerce.be" value={form.email}
                     onChange={(e) => set("email", e.target.value)}
                     className={inputClass()} style={inputBase} onFocus={inputFocus} onBlur={inputBlur} />
                 </Field>
 
-                <Field label="Mot de passe *" icon={Lock}>
+                <Field label={`${passwordLabel} *`} icon={Lock}>
                   <input type={showPassword ? "text" : "password"} placeholder="Minimum 8 caractères" value={form.password}
                     onChange={(e) => set("password", e.target.value)}
                     className={`${inputClass()} pr-11`} style={inputBase} onFocus={inputFocus} onBlur={inputBlur} />
@@ -439,7 +461,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
                   </button>
                 </Field>
 
-                <Field label="Confirmer le mot de passe *" icon={Lock}>
+                <Field label={`${confirmPasswordLabel} *`} icon={Lock}>
                   <input type={showConfirm ? "text" : "password"} placeholder="Répétez le mot de passe" value={form.confirm_password}
                     onChange={(e) => set("confirm_password", e.target.value)}
                     className={`${inputClass()} pr-11`} style={inputBase} onFocus={inputFocus} onBlur={inputBlur} />
@@ -449,7 +471,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
                   </button>
                 </Field>
 
-                <Field label="Nombre d'établissements *">
+                <Field label={`${numLocationsLabel} *`}>
                   <div className="flex gap-2 flex-wrap">
                     {NUM_LOCATIONS.map((n) => (
                       <button key={n} type="button" onClick={() => set("num_locations", n)}
@@ -465,7 +487,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
                   </div>
                 </Field>
 
-                <Field label="SIRET (optionnel)" icon={Hash}>
+                <Field label={siretLabel} icon={Hash}>
                   <input type="text" placeholder="123 456 789 00010" value={form.siret}
                     onChange={(e) => set("siret", e.target.value)}
                     className={inputClass()} style={inputBase} onFocus={inputFocus} onBlur={inputBlur} />
@@ -495,9 +517,9 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
                 <Mail size={28} color="#4a9eff" strokeWidth={1.8} />
               </div>
               <h1 className="text-white text-[22px] font-bold mb-2" style={{ fontFamily: "Manrope, sans-serif", letterSpacing: "-0.02em" }}>
-                Vérifiez votre email
+                {step3Title}
               </h1>
-              <p className="text-white/45 text-[14px] mb-1">Code à 8 chiffres envoyé à</p>
+              <p className="text-white/45 text-[14px] mb-1">{step3Sub}</p>
               <p className="text-[#4a9eff] font-semibold text-[14px] mb-8">{form.email}</p>
 
               {error && <ErrorBox msg={error} />}
@@ -527,20 +549,20 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
                 disabled={loading || otp.join("").length < 8}
                 className="w-full py-3.5 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
                 style={{ background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
-                {loading ? <Spinner /> : <> Vérifier et accéder au dashboard <ArrowRight size={16} strokeWidth={2.2} /> </>}
+                {loading ? <Spinner /> : <> {step3CTA} <ArrowRight size={16} strokeWidth={2.2} /> </>}
               </button>
 
               <p className="mt-5 text-[13px] text-white/35">
-                Pas reçu le code ?{" "}
+                {resendHint}{" "}
                 <button onClick={resendCode} disabled={resendCooldown > 0}
                   className="text-[#4a9eff] font-semibold disabled:text-white/25 transition-colors">
-                  {resendCooldown > 0 ? `Renvoyer dans ${resendCooldown}s` : "Renvoyer"}
+                  {resendCooldown > 0 ? `${resendLabel} dans ${resendCooldown}s` : resendLabel}
                 </button>
               </p>
 
               <button onClick={() => { setStep(2); setError(null); setOtp(["","","","","","","",""]); }}
                 className="mt-3 text-[12px] text-white/25 hover:text-white/50 transition-colors flex items-center gap-1 mx-auto">
-                <ArrowLeft size={12} /> Modifier mon email
+                <ArrowLeft size={12} /> {editEmailLabel}
               </button>
             </div>
           )}

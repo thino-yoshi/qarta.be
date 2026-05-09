@@ -47,8 +47,10 @@ export default async function PreviewDashboardPage() {
       merchant={MOCK_MERCHANT}
       loyaltyCard={MOCK_LOYALTY_CARD}
       content={{
-        header: content["dashboard-header"],
-        cards:  content["dashboard-cards"],
+        header:       content["dashboard-header"],
+        cards:        content["dashboard-cards"],
+        subscription: content["dashboard-subscription"],
+        stats:        content["dashboard-stats"],
       }}
     />
   );
