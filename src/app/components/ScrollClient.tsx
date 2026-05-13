@@ -58,7 +58,7 @@ export default function ScrollClient({ content }: Props) {
       id="client"
       data-testid="scroll-client"
       className="relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg, #f4f7fc 0%, #faf8f4 8%, #f3f0ea 100%)" }}
+      style={{ background: "#faf8f4" }}
     >
       <div className="flex flex-col items-center justify-center py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-6 lg:px-10 w-full grid lg:grid-cols-2 gap-16 items-center">

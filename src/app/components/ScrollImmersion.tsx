@@ -9,7 +9,7 @@ interface Props {
 
 export default function ScrollImmersion({ content }: Props) {
   const c = content ?? {};
-  const badge    = (c.badge    as string) ?? "Chapitre 01 · Immersion";
+  const badge    = "Chapitre 01 · À propos";
   const title    = (c.title    as string) ?? "Entrez dans";
   const accent   = (c.accent   as string) ?? "l'univers";
   const suffix   = (c.suffix   as string) ?? "QARTA.";
@@ -36,20 +36,6 @@ export default function ScrollImmersion({ content }: Props) {
       className="relative overflow-hidden"
       style={{ background: "#faf8f4" }}
     >
-      {/* decorative blobs */}
-      <div
-        className="absolute top-1/3 left-[-8%] w-[40vw] h-[40vw] rounded-full opacity-40 blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(74,158,255,0.4), transparent 60%)" }}
-      />
-      <div
-        className="absolute top-[20%] right-[-10%] w-[45vw] h-[45vw] rounded-full opacity-25 blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(44,123,229,0.35), transparent 60%)" }}
-      />
-      {/* bottom fade */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-[35vh] pointer-events-none"
-        style={{ background: "linear-gradient(to bottom, transparent, #faf8f4)" }}
-      />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-[8rem] pb-20 grid lg:grid-cols-2 gap-16 items-center">
         <motion.div style={{ y: textY, opacity: textOpacity }} className="order-2 lg:order-1">
@@ -77,7 +63,7 @@ export default function ScrollImmersion({ content }: Props) {
             {features.map((t, i) => (
               <div
                 key={t}
-                className="px-4 py-2 rounded-full bg-white border border-[#eaf0fb] text-[#0f2044] text-[13px] font-medium"
+                className="px-4 py-2 rounded-xl bg-white border-2 border-[#0f2044] text-[#0f2044] text-[13px] font-medium"
                 style={{ boxShadow: "0 6px 16px -10px rgba(15,32,68,.18)" }}
               >
                 <span className="text-[#2c7be5] font-semibold mr-1.5">0{i + 1}</span>

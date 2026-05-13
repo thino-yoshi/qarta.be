@@ -166,7 +166,6 @@ h1, h2, h3, h4, h5, h6, .font-display {
   padding: 10px;
   background: linear-gradient(160deg, #1a2a44 0%, #0b1220 60%, #0f2044 100%);
   box-shadow:
-    0 60px 140px -30px rgba(8, 16, 40, 0.55),
     0 0 0 1px rgba(255, 255, 255, 0.06),
     inset 0 0 0 1px rgba(74, 158, 255, 0.1);
   position: relative;
