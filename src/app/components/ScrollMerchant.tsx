@@ -141,7 +141,7 @@ export default function ScrollMerchant({ content }: Props) {
               {featureLabels.slice(0, 4).map((label, idx) => {
                 const Icon = FEATURE_ICONS[idx % FEATURE_ICONS.length];
                 return (
-                  <div key={label} className="flex items-center gap-2.5 p-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                  <div key={label} className="flex items-center gap-2.5 p-3 rounded-2xl bg-white/5 border border-[#faf8f4]/40 backdrop-blur-sm">
                     <div className="w-9 h-9 rounded-xl bg-[#4a9eff]/15 flex items-center justify-center">
                       <Icon size={16} color="#4a9eff" strokeWidth={2} />
                     </div>

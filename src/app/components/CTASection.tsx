@@ -66,6 +66,10 @@ export default function CTASection({ content }: { content?: Record<string, unkno
   const [pdv,      setPdv]      = useState(1);
   const [heroSc,   setHeroSc]   = useState<ScKey>("real");
   const [showDetail, setShowDetail] = useState(false);
+  // Raw text values for number inputs (allows empty/partial during typing)
+  const [rawVals, setRawVals] = useState<Record<string, string>>({});
+  // Validation errors per field
+  const [inputErrors, setInputErrors] = useState<Record<string, string>>({});
 
   const caAn = useMemo(
     () => clients * jours * 12 * panier * pdv,
@@ -97,7 +101,7 @@ export default function CTASection({ content }: { content?: Record<string, unkno
   ] as const;
 
   return (
-    <section id="pricing" data-testid="cta-section" className="relative" style={{ background: "#faf8f4" }}>
+    <section data-testid="cta-section" className="relative" style={{ background: "#faf8f4" }}>
 
       {/* ── Steps ─────────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-7xl px-6 lg:px-10 pt-20 pb-12">
@@ -115,10 +119,9 @@ export default function CTASection({ content }: { content?: Record<string, unkno
 
         <div className="mt-14 grid md:grid-cols-3 gap-5">
           {steps.map((s, i) => (
-            <div key={s.n} className="p-7 rounded-3xl bg-white border border-[#eaf0fb] relative overflow-hidden"
+            <div key={s.n} className="p-7 rounded-3xl bg-white border-2 border-[#0f2044] relative overflow-hidden"
               style={{ boxShadow: "0 10px 30px -18px rgba(15,32,68,0.18)" }}>
-              <div className="flex items-start justify-between">
-                <div className="text-[11px] font-mono text-[#2c7be5] font-bold tracking-widest">ÉTAPE {s.n}</div>
+              <div className="flex items-start justify-start">
                 <div className="w-9 h-9 rounded-xl bg-[#eaf2fd] flex items-center justify-center text-[#2c7be5] font-bold text-[14px]">{i + 1}</div>
               </div>
               <h3 className="mt-4 font-display text-[20px] font-bold text-[#0f2044]">{s.t}</h3>
@@ -137,7 +140,7 @@ export default function CTASection({ content }: { content?: Record<string, unkno
       </div>
 
       {/* ── Pricing + Simulator ───────────────────────────────────────── */}
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pb-10">
+      <div id="pricing" className="relative mx-auto max-w-7xl px-6 lg:px-10 pb-10">
 
         {/* Section header */}
         <div className="text-center max-w-2xl mx-auto mb-14">
@@ -145,15 +148,20 @@ export default function CTASection({ content }: { content?: Record<string, unkno
             {pricingBadge}
           </span>
           <h2
-            className="mt-6 font-display text-[#0f2044]"
-            style={{ fontSize: "clamp(2rem, 4.2vw, 3.4rem)", fontWeight: 600, letterSpacing: "0.06em" }}
+            className="mt-6 font-display text-[#0f2044] whitespace-nowrap"
+            style={{ fontSize: "clamp(1.4rem, 3vw, 2.6rem)", fontWeight: 600, letterSpacing: "0.06em" }}
           >
             {pricingTitle}
           </h2>
         </div>
 
-        {/* 3-col equal: pricing · sliders · result */}
-        <div className="grid lg:grid-cols-3 gap-8 items-stretch">
+        {/* pricing · separator · sliders · result */}
+        <div className="grid lg:grid-cols-[1fr_2px_1fr_1fr] gap-x-8 gap-y-3 items-stretch">
+
+          {/* ── ROW 0 : column titles ── */}
+          <p className="text-[12px] font-semibold text-[#0f2044]/60 uppercase tracking-[0.15em]">Notre offre de lancement</p>
+          <div />
+          <p className="lg:col-span-2 text-[12px] font-semibold text-[#0f2044]/60 uppercase tracking-[0.15em]">Calculer ce que vous perdez sans Qarta</p>
 
           {/* ── LEFT : pricing card ── */}
           <div
@@ -186,6 +194,9 @@ export default function CTASection({ content }: { content?: Record<string, unkno
             </Link>
           </div>
 
+          {/* ── SEPARATOR ── */}
+          <div className="hidden lg:block self-stretch w-px bg-[#0f2044]/15 mx-auto" />
+
           {/* ── MIDDLE : sliders panel ── */}
           <div className="bg-white rounded-2xl p-6 border border-[#e2eaf5] flex flex-col"
             style={{ boxShadow: "0 4px 32px rgba(15,32,68,0.05)" }}>
@@ -195,10 +206,40 @@ export default function CTASection({ content }: { content?: Record<string, unkno
                 <div key={label} className="mb-5 last:mb-0">
                   <div className="flex justify-between items-center mb-2.5">
                     <span className="text-[12px] text-[#4a637d] font-medium">{label}</span>
-                    <span className="text-[12px] font-bold text-[#0f2044] bg-[#eaf0f8] px-2.5 py-0.5 rounded-lg tabular-nums min-w-[52px] text-center">
-                      {val}{suffix}
-                    </span>
+                    <div className="flex items-center bg-[#eaf0f8] rounded-lg overflow-hidden">
+                      <input
+                        type="number"
+                        min={min} max={max} step={step}
+                        value={rawVals[label] !== undefined ? rawVals[label] : val}
+                        onChange={e => {
+                          const raw = e.target.value;
+                          setRawVals(r => ({ ...r, [label]: raw }));
+                          if (raw !== "") {
+                            const n = Number(raw);
+                            if (!isNaN(n)) {
+                              if (n < min) setInputErrors(r => ({ ...r, [label]: `Min : ${min}` }));
+                              else if (n > max) setInputErrors(r => ({ ...r, [label]: `Max : ${max}` }));
+                              else setInputErrors(r => { const x = { ...r }; delete x[label]; return x; });
+                            }
+                          } else {
+                            setInputErrors(r => { const x = { ...r }; delete x[label]; return x; });
+                          }
+                        }}
+                        onBlur={e => {
+                          const parsed = Number(e.target.value);
+                          const clamped = isNaN(parsed) || e.target.value === "" ? min : Math.min(max, Math.max(min, parsed));
+                          set(clamped as never);
+                          setRawVals(r => { const n = { ...r }; delete n[label]; return n; });
+                          setInputErrors(r => { const x = { ...r }; delete x[label]; return x; });
+                        }}
+                        className="text-[12px] font-bold text-[#0f2044] bg-transparent tabular-nums w-[52px] text-center outline-none py-0.5 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-auto [&::-webkit-inner-spin-button]:appearance-auto"
+                      />
+                      {suffix && <span className="text-[12px] font-bold text-[#0f2044] pr-2 -ml-1">{suffix.trim()}</span>}
+                    </div>
                   </div>
+                  {inputErrors[label] && (
+                    <p className="text-[10px] text-red-500 font-medium mb-1.5">{inputErrors[label]}</p>
+                  )}
                   <input
                     type="range"
                     min={min} max={max} step={step} value={val}

@@ -29,10 +29,12 @@ export default function Hero({ content }: { content?: Record<string, unknown> })
     target: heroRef,
     offset: ["start start", "end start"],
   });
+  const { scrollY } = useScroll();
 
   const titleY = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const titleOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
   const subOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const scrollHintOpacity = useTransform(scrollY, [0, 1], [1, 0]);
 
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
@@ -152,13 +154,25 @@ export default function Hero({ content }: { content?: Record<string, unknown> })
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2, duration: 1 }}
-            className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#faf8f4]/60"
+            style={{ opacity: scrollHintOpacity }}
+            className="absolute bottom-12 left-1/2 -translate-x-1/2"
           >
-            <span className="text-[10px] uppercase tracking-[0.3em]">{scrollLabel}</span>
-            <div className="w-px h-12 bg-gradient-to-b from-white/60 to-transparent" />
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2, duration: 1 }}
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              className="flex flex-col items-center gap-2 text-[#faf8f4]/60 cursor-pointer hover:text-white/80 transition-colors"
+            >
+              <span className="text-[10px] uppercase tracking-[0.3em]">{scrollLabel}</span>
+              <motion.svg
+                width="16" height="24" viewBox="0 0 16 24" fill="none"
+                animate={{ y: [0, 6, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <path d="M8 2 L8 18 M2 12 L8 20 L14 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </motion.svg>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, ArrowLeft, Building2, User, Mail, Lock, Phone, MapPin, Globe, Hash, CheckCircle, AlertCircle, Eye, EyeOff, type LucideIcon } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
 import { createClient } from "@/lib/supabase/client";
+import HeroGradient from "../components/HeroGradient";
 
 /* ─── Types de commerce ─── */
 const BUSINESS_TYPES = [
@@ -293,18 +294,13 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
   };
 
   const inputClass = (hasIcon = true) =>
-    `w-full ${hasIcon ? "pl-10" : "pl-4"} pr-4 py-3 rounded-2xl text-[14px] text-white placeholder-white/25 outline-none transition-all`;
+    `w-full ${hasIcon ? "pl-10" : "pl-4"} pr-4 py-2.5 rounded-2xl text-[14px] text-white placeholder-white/25 outline-none transition-all`;
 
   /* ══════════════════════════ RENDER ══════════════════════════ */
   return (
-    <div className="fixed inset-0 flex flex-col overflow-y-auto" style={{ background: "#0b1220" }}>
-      {/* Glows */}
-      <div className="absolute -top-40 right-0 w-[500px] h-[500px] rounded-full opacity-35 blur-3xl pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(74,158,255,0.45), transparent 65%)" }} />
-      <div className="absolute bottom-0 -left-40 w-[450px] h-[450px] rounded-full opacity-25 blur-3xl pointer-events-none"
-        style={{ background: "radial-gradient(circle, rgba(44,123,229,0.5), transparent 65%)" }} />
-      <div className="absolute inset-0 opacity-15 pointer-events-none"
-        style={{ backgroundImage: "linear-gradient(rgba(74,158,255,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(74,158,255,0.07) 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
+    <div className="fixed inset-0 flex flex-col overflow-hidden" style={{ background: "#000000" }}>
+      {/* Hero gradient background */}
+      <HeroGradient />
 
       {/* Header */}
       <div className="relative z-10 flex items-center justify-between px-8 pt-7">
@@ -319,12 +315,12 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
       </div>
 
       {/* Card */}
-      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-10">
-        <div className="w-full max-w-lg rounded-3xl p-8 sm:p-10"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.10)", backdropFilter: "blur(24px)", boxShadow: "0 40px 80px -30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07)" }}>
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-1 overflow-y-auto">
+        <div className="w-full max-w-lg rounded-3xl p-5 sm:p-7"
+          style={{ background: "#0b1220", border: "1px solid rgba(255,255,255,0.10)", boxShadow: "0 40px 80px -30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07)" }}>
 
           {/* Steps indicator */}
-          <div className="flex items-center gap-2 mb-8">
+          <div className="flex items-center gap-2 mb-2">
             {[1, 2, 3].map((s) => (
               <React.Fragment key={s}>
                 <div className="flex items-center gap-2">
@@ -352,11 +348,11 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
               <h1 className="text-white text-[22px] font-bold mb-1" style={{ fontFamily: "Manrope, sans-serif", letterSpacing: "-0.02em" }}>
                 {step1Title}
               </h1>
-              <p className="text-white/40 text-[13px] mb-6">{step1Sub}</p>
+              <p className="text-white/40 text-[13px] mb-2">{step1Sub}</p>
 
               {error && <ErrorBox msg={error} />}
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <Field label="Nom du commerce *" icon={Building2}>
                   <input type="text" placeholder="Ex : Café du Coin" value={form.business_name}
                     onChange={(e) => set("business_name", e.target.value)}
@@ -408,7 +404,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
               </div>
 
               <button onClick={handleStep1}
-                className="w-full mt-7 py-3.5 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                className="w-full mt-4 py-3 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
                 style={{ background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
                 {step1CTA} <ArrowRight size={16} strokeWidth={2.2} />
               </button>
@@ -425,7 +421,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
 
               {error && <ErrorBox msg={error} />}
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="grid grid-cols-2 gap-3">
                   <Field label={`${firstNameLabel} *`} icon={User}>
                     <input type="text" placeholder="Jean" value={form.first_name}

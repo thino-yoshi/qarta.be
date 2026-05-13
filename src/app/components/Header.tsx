@@ -6,11 +6,11 @@ import { QartaLogo, QartaWordmark } from "./QartaLogo";
 
 const NAV_DEFAULT = [
   { label: "Accueil",    href: "#hero",       scrollId: "hero" },
-  { label: "Immersion",  href: "#immersion",  scrollId: "scroll-immersion" },
+  { label: "À propos",   href: "#immersion",  scrollId: "scroll-immersion" },
   { label: "Client",     href: "#client",     scrollId: "scroll-client" },
   { label: "Commerçant", href: "#merchant",   scrollId: "scroll-merchant" },
-  { label: "Contact",    href: "#contact",    scrollId: "contact" },
   { label: "Tarif",      href: "#pricing",    scrollId: "pricing" },
+  { label: "Contact",    href: "#contact",    scrollId: "contact" },
 ];
 
 export default function Header({ content }: { content?: Record<string, unknown> }) {
@@ -20,11 +20,7 @@ export default function Header({ content }: { content?: Record<string, unknown> 
 
   // Merge DB content with defaults
   const c = content ?? {};
-  const rawLinks = (c.navLinks as { label: string; href: string }[] | undefined) ?? NAV_DEFAULT;
-  const NAV = rawLinks.map(link => {
-    const def = NAV_DEFAULT.find(d => d.href === link.href);
-    return { label: link.label, href: link.href, scrollId: def?.scrollId ?? link.href.replace("#", "") };
-  });
+  const NAV = NAV_DEFAULT;
   const DEMO         = { label: (c.demoLabel as string)     ?? "Démo",            href: (c.demoHref as string)  ?? "/register?role=merchant" };
   const loginLabel   = (c.loginLabel    as string) ?? "Connexion";
   const registerLabel = (c.registerLabel as string) ?? "Créer un compte";

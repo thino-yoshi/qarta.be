@@ -85,7 +85,7 @@ export default function ScrollClient({ content }: Props) {
                 return (
                   <div
                     key={label}
-                    className="flex items-center gap-2.5 p-3 rounded-2xl bg-white border border-[#eaf0fb]"
+                    className="flex items-center gap-2.5 p-3 rounded-2xl bg-white border-2 border-[#0f2044]"
                     style={{ boxShadow: "0 4px 14px -8px rgba(15,32,68,.12)" }}
                   >
                     <div className="w-9 h-9 rounded-xl bg-[#eaf2fd] flex items-center justify-center">
