@@ -121,11 +121,6 @@ export default function ScrollMerchant({ content }: Props) {
 
   return (
     <section ref={ref} id="merchant" data-testid="scroll-merchant" className="relative overflow-hidden" style={{ background: "#0b1220" }}>
-      <div className="absolute top-1/4 right-[-10%] w-[55vw] h-[55vw] rounded-full opacity-30 blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(74,158,255,0.5), transparent 60%)" }} />
-      <div className="absolute bottom-0 left-[-10%] w-[45vw] h-[45vw] rounded-full opacity-20 blur-3xl"
-        style={{ background: "radial-gradient(circle, rgba(44,123,229,0.6), transparent 60%)" }} />
-
       <div className="flex items-center py-20 lg:py-28">
         <div className="relative mx-auto max-w-7xl px-6 lg:px-10 w-full grid lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-5">

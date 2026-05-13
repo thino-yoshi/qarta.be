@@ -159,9 +159,9 @@ export default function CTASection({ content }: { content?: Record<string, unkno
         <div className="grid lg:grid-cols-[1fr_2px_1fr_1fr] gap-x-8 gap-y-3 items-stretch">
 
           {/* ── ROW 0 : column titles ── */}
-          <p className="text-[12px] font-semibold text-[#0f2044]/60 uppercase tracking-[0.15em]">Notre offre de lancement</p>
+          <p className="text-[12px] font-semibold text-[#0f2044]/60 uppercase tracking-[0.15em] text-center">Notre offre de lancement</p>
           <div />
-          <p className="lg:col-span-2 text-[12px] font-semibold text-[#0f2044]/60 uppercase tracking-[0.15em]">Calculer ce que vous perdez sans Qarta</p>
+          <p className="lg:col-span-2 text-[12px] font-semibold text-[#0f2044]/60 uppercase tracking-[0.15em] text-center">Calculer ce que vous perdez sans Qarta</p>
 
           {/* ── LEFT : pricing card ── */}
           <div
