@@ -13,7 +13,7 @@ export default function ScrollImmersion({ content }: Props) {
   const title    = (c.title    as string) ?? "Entrez dans";
   const accent   = (c.accent   as string) ?? "l'univers";
   const suffix   = (c.suffix   as string) ?? "QARTA.";
-  const subtitle = (c.subtitle as string) ?? "Un univers pensé pour faire disparaître les cartes en papier et créer, d'un seul geste, un lien durable entre les clients et les commerçants.";
+  const subtitle = (c.subtitle as string) ?? "Plongez dans un écosystème où commerçants et clients interagissent en toute fluidité : une interface unique pour centraliser vos avantages, valoriser l'engagement local et transformer chaque échange en une relation durable.";
   const features = (c.features as string[]) ?? ["Intuitif", "Pratique", "Rapide"];
 
   const ref = useRef<HTMLElement>(null);

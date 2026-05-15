@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QARTA — Ma carte de fidélité</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Bebas+Neue&family=Poppins:wght@400;600;700&family=Oswald:wght@400;600;700&family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: #0b1120;
+      color: #e2e8f0;
+      height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 200px; min-width: 200px;
+      background: #0d1526;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex; flex-direction: column; padding: 24px 0;
+    }
+    .sidebar-logo { display:flex; align-items:center; gap:10px; padding:0 20px 24px; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .logo-icon { width:34px; height:34px; background:linear-gradient(135deg,#2c7be5,#1a4fa0); border-radius:8px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:#fff; letter-spacing:-1px; }
+    .logo-text { font-weight:700; font-size:15px; letter-spacing:0.05em; color:#fff; }
+    .sidebar-merchant { padding:18px 20px; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .merchant-name { font-weight:700; font-size:13px; color:#fff; }
+    .merchant-email { font-size:11px; color:rgba(255,255,255,0.4); margin-top:3px; }
+    .badge-actif { display:inline-flex; align-items:center; gap:5px; margin-top:8px; padding:3px 9px; border-radius:999px; background:rgba(39,174,96,0.15); border:1px solid rgba(39,174,96,0.3); font-size:10px; font-weight:700; color:#27ae60; letter-spacing:0.06em; }
+    .badge-actif::before { content:''; width:6px; height:6px; border-radius:50%; background:#27ae60; }
+    .sidebar-nav { padding:12px; flex:1; }
+    .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; font-size:13px; font-weight:500; color:rgba(255,255,255,0.55); cursor:pointer; transition:all .15s; margin-bottom:2px; }
+    .nav-item:hover { background:rgba(255,255,255,0.05); color:#fff; }
+    .nav-item.active { background:rgba(44,123,229,0.15); color:#4a9eff; font-weight:600; }
+    .nav-arrow { margin-left:auto; opacity:.4; }
+    .sidebar-footer { padding:12px; border-top:1px solid rgba(255,255,255,0.06); }
+    .deconnexion { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:10px; font-size:12px; color:rgba(255,255,255,0.35); cursor:pointer; }
+
+    /* ── MAIN ── */
+    .main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+    .main-header { padding:22px 32px 0; }
+    .main-title { font-size:20px; font-weight:700; color:#fff; }
+    .main-subtitle { font-size:13px; color:rgba(255,255,255,0.4); margin-top:3px; }
+    .main-body { flex:1; overflow-y:auto; padding:20px 32px 32px; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,0.1) transparent; }
+
+    /* ── TABS ── */
+    .tab-group { display:flex; background:#131e35; border-radius:12px; padding:4px; margin-bottom:12px; }
+    .tab-btn { flex:1; padding:9px 16px; border-radius:9px; border:none; background:transparent; color:rgba(255,255,255,0.45); font-family:'Manrope',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:all .15s; }
+    .tab-btn:hover { color:rgba(255,255,255,0.7); }
+    .tab-btn.active { background:#1e2f50; color:#fff; }
+    .tab-dot { width:7px; height:7px; border-radius:50%; background:#FF2D78; }
+    .tab-star { color:#f59e0b; font-size:12px; }
+
+    /* ── SECTIONS ── */
+    .section-card { background:#131e35; border-radius:14px; padding:20px; margin-bottom:12px; }
+    .section-label { font-size:10px; font-weight:700; letter-spacing:0.16em; color:rgba(255,255,255,0.35); text-transform:uppercase; margin-bottom:14px; }
+    .form-group { margin-bottom:12px; }
+    .form-group:last-child { margin-bottom:0; }
+    .form-label { font-size:11px; color:rgba(255,255,255,0.45); margin-bottom:6px; display:block; }
+    .form-input { width:100%; background:#0d1526; border:1px solid rgba(255,255,255,0.08); border-radius:9px; padding:10px 14px; color:#e2e8f0; font-family:'Manrope',sans-serif; font-size:13px; outline:none; transition:border-color .15s; }
+    .form-input:focus { border-color:rgba(44,123,229,0.5); }
+
+    /* ── SLIDER ── */
+    .slider-row { display:flex; align-items:center; gap:14px; }
+    .slider-wrap { flex:1; }
+    input[type=range] { -webkit-appearance:none; width:100%; height:5px; border-radius:999px; background:rgba(255,255,255,0.08); outline:none; cursor:pointer; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:#fff; border:2.5px solid #0d1526; box-shadow:0 0 0 3px #FF2D78; cursor:grab; }
+    .slider-val { width:36px; height:36px; border-radius:50%; background:#FF2D78; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:#fff; flex-shrink:0; }
+
+    /* ── COLORS ── */
+    .color-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+    .color-swatch { width:28px; height:28px; border-radius:7px; border:2px solid rgba(255,255,255,0.12); flex-shrink:0; cursor:pointer; position:relative; overflow:hidden; }
+    .color-swatch input[type=color] { position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; border:none; }
+    .color-hex { background:#0d1526; border:1px solid rgba(255,255,255,0.08); border-radius:7px; padding:5px 10px; font-size:12px; font-family:monospace; color:rgba(255,255,255,0.7); width:90px; outline:none; }
+    .add-color { font-size:12px; color:rgba(255,255,255,0.4); cursor:pointer; display:flex; align-items:center; gap:5px; padding:4px 0; }
+    .add-color:hover { color:#4a9eff; }
+    .angle-row { display:flex; align-items:center; gap:10px; margin-top:12px; }
+    .angle-label { font-size:12px; color:rgba(255,255,255,0.4); width:42px; flex-shrink:0; }
+    .angle-val { font-size:12px; color:rgba(255,255,255,0.4); width:32px; text-align:right; }
+
+    /* Couleur unique */
+    #single-color-section { display:none; }
+    #gradient-section { display:block; }
+    #image-section { display:none; }
+    .image-drop { border:2px dashed rgba(255,255,255,0.15); border-radius:10px; padding:30px; text-align:center; color:rgba(255,255,255,0.3); font-size:13px; cursor:pointer; }
+    .image-drop:hover { border-color:rgba(44,123,229,0.4); color:#4a9eff; }
+
+    /* ── FONTS ── */
+    .font-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .font-btn { padding:9px 14px; border-radius:9px; background:#0d1526; border:1px solid rgba(255,255,255,0.08); color:rgba(255,255,255,0.6); font-size:13px; cursor:pointer; text-align:left; transition:all .15s; font-family:'Manrope',sans-serif; }
+    .font-btn:hover { background:#1a2640; color:#fff; }
+    .font-btn.active { background:#1e2f50; border-color:rgba(44,123,229,0.4); color:#4a9eff; }
+
+    /* ── TOGGLE ── */
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; }
+    .toggle-label { font-size:13px; color:rgba(255,255,255,0.75); }
+    .toggle { width:44px; height:24px; border-radius:999px; background:#2c7be5; position:relative; cursor:pointer; flex-shrink:0; transition:background .2s; }
+    .toggle.off { background:rgba(255,255,255,0.15); }
+    .toggle::after { content:''; position:absolute; width:18px; height:18px; border-radius:50%; background:#fff; top:3px; right:4px; box-shadow:0 1px 4px rgba(0,0,0,0.3); transition:transform .2s; }
+    .toggle.off::after { transform:translateX(-20px); }
+    .opacity-label { font-size:11px; color:rgba(255,255,255,0.35); margin:10px 0 8px; }
+
+    /* ── SAVE BTN ── */
+    .save-btn { width:100%; padding:14px; background:#2c7be5; border:none; border-radius:12px; color:#fff; font-family:'Manrope',sans-serif; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; margin-top:4px; transition:background .15s, transform .1s; }
+    .save-btn:hover { background:#1e63c7; transform:translateY(-1px); }
+    .save-btn:active { transform:translateY(0); }
+
+    /* ── TOAST ── */
+    .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px); background:#27ae60; color:#fff; padding:10px 22px; border-radius:999px; font-size:13px; font-weight:700; transition:transform .3s cubic-bezier(.22,1,.36,1); z-index:999; pointer-events:none; }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+
+    /* ── PREVIEW PANEL ── */
+    .preview-panel { width:360px; min-width:360px; background:#0d1526; border-left:1px solid rgba(255,255,255,0.06); display:flex; flex-direction:column; padding:20px 24px; overflow-y:auto; }
+    .preview-link { font-size:10px; font-weight:700; letter-spacing:0.12em; color:rgba(255,255,255,0.3); text-transform:uppercase; text-align:right; margin-bottom:20px; cursor:pointer; }
+    .preview-link:hover { color:#4a9eff; }
+    .preview-label { font-size:10px; font-weight:700; letter-spacing:0.14em; color:rgba(255,255,255,0.3); text-transform:uppercase; margin-bottom:10px; }
+
+    /* ── CARTE COMPACTE ── */
+    #card-compact { display:block; }
+    .card-preview { border-radius:20px; padding:22px; position:relative; overflow:hidden; min-height:210px; box-shadow:0 24px 60px -20px rgba(0,0,0,0.5); transition:background 0.4s; }
+    .card-watermark { position:absolute; font-size:160px; font-weight:900; color:rgba(255,255,255,0.05); right:-20px; bottom:-30px; line-height:1; pointer-events:none; }
+    .card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; }
+    .card-name { font-size:20px; font-weight:800; letter-spacing:0.04em; line-height:1.1; transition:color .3s, font-family .3s; }
+    .card-subtitle { font-size:10px; color:rgba(255,255,255,0.5); letter-spacing:0.12em; text-transform:uppercase; margin-top:4px; }
+    .card-holder-block { text-align:right; }
+    .card-holder-label { font-size:9px; color:rgba(255,255,255,0.4); letter-spacing:0.1em; text-transform:uppercase; }
+    .card-holder-name { font-size:13px; font-weight:700; color:#fff; margin-top:2px; }
+    .card-grid-btn { width:36px; height:36px; background:rgba(255,255,255,0.1); border-radius:8px; display:flex; align-items:center; justify-content:center; margin-top:8px; margin-left:auto; }
+    .card-grid-icon { display:grid; grid-template-columns:1fr 1fr; gap:3px; }
+    .card-grid-icon span { width:8px; height:8px; border-radius:2px; background:rgba(255,255,255,0.6); }
+    .points-label-card { font-size:9px; font-weight:700; letter-spacing:0.14em; color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:10px; }
+    .points-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+    .point { width:32px; height:32px; border-radius:50%; border:2px solid rgba(255,255,255,0.2); transition:background .3s, border-color .3s; }
+    .point.filled { border-color:transparent; }
+    .card-footer { display:flex; align-items:center; justify-content:space-between; }
+    .card-progress-text { font-size:11px; color:rgba(255,255,255,0.55); }
+    .card-progress-text strong { font-weight:700; }
+    .card-count { font-size:13px; font-weight:700; color:rgba(255,255,255,0.6); }
+    .card-count span { color:#fff; }
+
+    /* ── CARTE WALLET ── */
+    #card-wallet { display:none; }
+    .wallet-card { border-radius:16px; overflow:hidden; box-shadow:0 20px 60px -20px rgba(0,0,0,0.6); transition:background .4s; }
+    .wallet-header { padding:16px 20px; display:flex; align-items:center; justify-content:space-between; }
+    .wallet-logo { font-size:20px; font-weight:900; letter-spacing:0.05em; transition:color .3s, font-family .3s; }
+    .wallet-type { font-size:10px; color:rgba(255,255,255,0.5); letter-spacing:0.1em; text-transform:uppercase; margin-top:2px; }
+    .wallet-qr { width:52px; height:52px; background:rgba(255,255,255,0.95); border-radius:8px; display:flex; align-items:center; justify-content:center; }
+    .wallet-qr svg { opacity:0.8; }
+    .wallet-body { background:rgba(0,0,0,0.25); padding:16px 20px; }
+    .wallet-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .wallet-field-label { font-size:9px; color:rgba(255,255,255,0.4); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:2px; }
+    .wallet-field-val { font-size:14px; font-weight:700; color:#fff; }
+    .wallet-stamps { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+    .wallet-stamp { width:26px; height:26px; border-radius:6px; border:1.5px solid rgba(255,255,255,0.25); transition:background .3s, border-color .3s; }
+    .wallet-stamp.filled { border-color:transparent; }
+    .wallet-progress { height:4px; border-radius:999px; background:rgba(255,255,255,0.12); overflow:hidden; }
+    .wallet-progress-bar { height:100%; border-radius:999px; background:rgba(255,255,255,0.8); transition:width .3s; }
+
+    /* ── POINTS MODE ── */
+    #points-display { display:none; }
+    #stamps-display { display:block; }
+    .points-big { font-size:48px; font-weight:800; color:#fff; text-align:center; line-height:1; }
+    .points-unit { font-size:12px; color:rgba(255,255,255,0.5); text-align:center; margin-top:4px; letter-spacing:0.1em; text-transform:uppercase; }
+    .points-bar { height:6px; border-radius:999px; background:rgba(255,255,255,0.12); overflow:hidden; margin-top:16px; }
+    .points-bar-fill { height:100%; border-radius:999px; background:rgba(255,255,255,0.8); width:60%; transition:width .3s; }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">Q</div>
+      <span class="logo-text">QARTA</span>
+    </div>
+    <div class="sidebar-merchant">
+      <div class="merchant-name">Café du Test</div>
+      <div class="merchant-email">gobinthib99@qarta.com</div>
+      <div class="badge-actif">ACTIF</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
+        Ma carte
+        <svg class="nav-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+      <div class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Statistiques
+      </div>
+      <div class="nav-item">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        Abonnement
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="deconnexion">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Déconnexion
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="main-header">
+      <div class="main-title">Ma carte de fidélité</div>
+      <div class="main-subtitle">Personnalisez et prévisualisez votre carte</div>
+    </div>
+    <div class="main-body">
+
+      <!-- Tampons / Points -->
+      <div class="tab-group">
+        <button class="tab-btn active" onclick="switchMode('tampons', this, 0)">
+          <span class="tab-dot"></span> Tampons
+        </button>
+        <button class="tab-btn" onclick="switchMode('points', this, 0)">
+          <span class="tab-star">★</span> Points
+        </button>
+      </div>
+
+      <!-- Carte compacte / Wallet -->
+      <div class="tab-group">
+        <button class="tab-btn active" onclick="switchCard('compact', this)">▣ Carte compacte</button>
+        <button class="tab-btn" onclick="switchCard('wallet', this)">▤ Carte Wallet</button>
+      </div>
+
+      <!-- Identité -->
+      <div class="section-card">
+        <div class="section-label">Identité de la carte</div>
+        <div class="form-group">
+          <label class="form-label">Nom affiché sur la carte</label>
+          <input class="form-input" id="input-name" type="text" value="Café du Test" oninput="updateName(this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Label des tampons</label>
+          <input class="form-input" id="input-label" type="text" value="POINTS COLLECTÉS" oninput="updateStampLabel(this.value)" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Récompense</label>
+          <input class="form-input" id="input-reward" type="text" value="récompense offerte" oninput="updateReward(this.value)" />
+        </div>
+      </div>
+
+      <!-- Nombre de tampons -->
+      <div class="section-card">
+        <div class="section-label">Nombre de tampons</div>
+        <div class="slider-row">
+          <div class="slider-wrap">
+            <input type="range" id="slider-stamps" min="3" max="20" value="5" oninput="updateStamps(this.value)" />
+          </div>
+          <div class="slider-val" id="stamp-count-badge">5</div>
+        </div>
+      </div>
+
+      <!-- Fond de la carte -->
+      <div class="section-card">
+        <div class="section-label">Fond de la carte</div>
+        <div class="tab-group" style="margin-bottom:14px">
+          <button class="tab-btn" onclick="switchBg('couleur', this)" style="padding:7px 10px;font-size:12px">Couleur</button>
+          <button class="tab-btn active" onclick="switchBg('degrade', this)" style="padding:7px 10px;font-size:12px">Dégradé</button>
+          <button class="tab-btn" onclick="switchBg('image', this)" style="padding:7px 10px;font-size:12px">Image</button>
+        </div>
+
+        <!-- Couleur unique -->
+        <div id="single-color-section">
+          <div class="color-row">
+            <div class="color-swatch" id="swatch-solo" style="background:#FF2D78">
+              <input type="color" value="#FF2D78" oninput="updateSoloColor(this.value)" />
+            </div>
+            <input class="color-hex" id="hex-solo" type="text" value="#FF2D78" oninput="updateSoloColorHex(this.value)" />
+          </div>
+        </div>
+
+        <!-- Dégradé -->
+        <div id="gradient-section">
+          <div class="color-row">
+            <div class="color-swatch" id="swatch-1" style="background:#FF2D78">
+              <input type="color" value="#FF2D78" oninput="updateGradient('c1', this.value)" />
+            </div>
+            <input class="color-hex" id="hex-1" type="text" value="#FF2D78" oninput="updateGradientHex('c1', this.value)" />
+          </div>
+          <div class="color-row">
+            <div class="color-swatch" id="swatch-2" style="background:#985986">
+              <input type="color" value="#985986" oninput="updateGradient('c2', this.value)" />
+            </div>
+            <input class="color-hex" id="hex-2" type="text" value="#985986" oninput="updateGradientHex('c2', this.value)" />
+          </div>
+          <div class="add-color">+ Ajouter une couleur</div>
+          <div class="angle-row">
+            <span class="angle-label">Angle</span>
+            <div class="slider-wrap">
+              <input type="range" id="angle-slider" min="0" max="360" value="135" oninput="updateAngle(this.value)" />
+            </div>
+            <span class="angle-val" id="angle-val">135°</span>
+          </div>
+        </div>
+
+        <!-- Image -->
+        <div id="image-section">
+          <div class="image-drop" onclick="document.getElementById('img-input').click()">
+            📁 Cliquez pour choisir une image de fond
+            <input type="file" id="img-input" accept="image/*" style="display:none" onchange="loadBgImage(this)" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Texte & Police -->
+      <div class="section-card">
+        <div class="section-label">Texte &amp; Police</div>
+        <div class="form-group">
+          <label class="form-label">Couleur du texte principal</label>
+          <div class="color-row">
+            <div class="color-swatch" id="swatch-text" style="background:#FF2D78">
+              <input type="color" value="#FF2D78" oninput="updateTextColor(this.value)" />
+            </div>
+            <input class="color-hex" id="hex-text" type="text" value="#FF2D78" oninput="updateTextColorHex(this.value)" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Police</label>
+          <div class="font-grid" id="font-grid">
+            <button class="font-btn active" onclick="setFont('Manrope', this)" style="font-family:'Manrope'">Manrope</button>
+            <button class="font-btn" onclick="setFont('Bebas Neue', this)" style="font-family:'Bebas Neue'">Bebas Neue</button>
+            <button class="font-btn" onclick="setFont('Poppins', this)" style="font-family:'Poppins'">Poppins</button>
+            <button class="font-btn" onclick="setFont('Oswald', this)" style="font-family:'Oswald'">Oswald</button>
+            <button class="font-btn" onclick="setFont('Space Grotesk', this)" style="font-family:'Space Grotesk'">Space Grotesk</button>
+            <button class="font-btn" onclick="setFont('Inter', this)" style="font-family:'Inter'">Inter</button>
+            <button class="font-btn" onclick="setFont('Montserrat', this)" style="font-family:'Montserrat'">Montserrat</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filigrane -->
+      <div class="section-card">
+        <div class="section-label">Filigrane Q</div>
+        <div class="toggle-row">
+          <span class="toggle-label">Afficher le « Q » en fond</span>
+          <div class="toggle" id="watermark-toggle" onclick="toggleWatermark()"></div>
+        </div>
+        <div class="opacity-label" id="opacity-label">Opacité : 5%</div>
+        <input type="range" id="opacity-slider" min="0" max="30" value="5" oninput="updateOpacity(this.value)" />
+      </div>
+
+      <!-- Save -->
+      <button class="save-btn" onclick="showToast()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        Sauvegarder la carte
+      </button>
+    </div>
+  </div>
+
+  <!-- PREVIEW PANEL -->
+  <aside class="preview-panel">
+    <div class="preview-link">↓ Voir la carte ouverte dans le Wallet</div>
+
+    <!-- CARTE COMPACTE -->
+    <div id="card-compact">
+      <div class="preview-label">Aperçu carte</div>
+      <div class="card-preview" id="card-bg">
+        <div class="card-watermark" id="card-watermark">Q</div>
+        <div class="card-top">
+          <div>
+            <div class="card-name" id="card-name">CAFÉ DU TEST</div>
+            <div class="card-subtitle">Carte fidélité</div>
+          </div>
+          <div>
+            <div class="card-holder-block">
+              <div class="card-holder-label">Titulaire</div>
+              <div class="card-holder-name">Pierre Dubois</div>
+            </div>
+            <div class="card-grid-btn">
+              <div class="card-grid-icon">
+                <span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="stamps-display">
+          <div class="points-label-card" id="stamp-label-card">POINTS COLLECTÉS</div>
+          <div class="points-row" id="points-row"></div>
+          <div class="card-footer">
+            <div class="card-progress-text">Encore <strong id="remaining">2</strong> pour votre <strong id="reward-text">récompense offerte</strong></div>
+            <div class="card-count"><span id="count-current">3</span> / <span id="count-total">5</span></div>
+          </div>
+        </div>
+        <div id="points-display">
+          <div style="padding:10px 0">
+            <div class="points-big" id="points-big">1 240</div>
+            <div class="points-unit">points accumulés</div>
+            <div class="points-bar"><div class="points-bar-fill" id="points-bar-fill"></div></div>
+            <div style="display:flex;justify-content:space-between;margin-top:6px">
+              <span style="font-size:10px;color:rgba(255,255,255,0.4)">0</span>
+              <span style="font-size:10px;color:rgba(255,255,255,0.4)">Prochain palier : 2 000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARTE WALLET -->
+    <div id="card-wallet">
+      <div class="preview-label">Aperçu Wallet</div>
+      <div class="wallet-card" id="wallet-bg">
+        <div class="wallet-header">
+          <div>
+            <div class="wallet-logo" id="wallet-name">CAFÉ DU TEST</div>
+            <div class="wallet-type">Carte fidélité · QARTA</div>
+          </div>
+          <div class="wallet-qr">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="#111">
+              <rect x="2" y="2" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/>
+              <rect x="5" y="5" width="8" height="8" rx="1"/>
+              <rect x="20" y="2" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/>
+              <rect x="23" y="5" width="8" height="8" rx="1"/>
+              <rect x="2" y="20" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/>
+              <rect x="5" y="23" width="8" height="8" rx="1"/>
+              <rect x="20" y="20" width="4" height="4"/><rect x="26" y="20" width="4" height="4"/>
+              <rect x="20" y="26" width="4" height="4"/><rect x="26" y="26" width="4" height="4"/>
+              <rect x="32" y="20" width="2" height="2"/><rect x="32" y="26" width="2" height="4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="wallet-body">
+          <div class="wallet-row">
+            <div>
+              <div class="wallet-field-label">Titulaire</div>
+              <div class="wallet-field-val">Pierre Dubois</div>
+            </div>
+            <div style="text-align:right">
+              <div class="wallet-field-label" id="wallet-stamp-label">Tampons</div>
+              <div class="wallet-field-val"><span id="wallet-count">3</span> / <span id="wallet-total">5</span></div>
+            </div>
+          </div>
+          <div class="wallet-stamps" id="wallet-stamps"></div>
+          <div class="wallet-progress">
+            <div class="wallet-progress-bar" id="wallet-bar"></div>
+          </div>
+          <div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,0.45)">
+            Récompense : <span id="wallet-reward">récompense offerte</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="toast" id="toast">✓ Carte sauvegardée !</div>
+
+  <script>
+    // ── STATE ──
+    let state = {
+      mode: 'tampons',    // tampons | points
+      cardType: 'compact', // compact | wallet
+      bgType: 'degrade',   // couleur | degrade | image
+      c1: '#FF2D78', c2: '#985986', angle: 135,
+      soloColor: '#FF2D78',
+      textColor: '#FF2D78',
+      font: 'Manrope',
+      name: 'Café du Test',
+      stampLabel: 'POINTS COLLECTÉS',
+      reward: 'récompense offerte',
+      total: 5, filled: 3,
+      watermark: true,
+      opacity: 5,
+    };
+
+    // ── INIT ──
+    function init() {
+      renderStamps();
+      renderWalletStamps();
+      applyCardBg();
+    }
+
+    // ── TABS ──
+    function setActiveTab(group, btn) {
+      group.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function switchMode(mode, btn, groupIdx) {
+      state.mode = mode;
+      setActiveTab(btn.closest('.tab-group'), btn);
+      document.getElementById('stamps-display').style.display = mode === 'tampons' ? 'block' : 'none';
+      document.getElementById('points-display').style.display  = mode === 'points'  ? 'block' : 'none';
+      // also update wallet label
+      document.getElementById('wallet-stamp-label').textContent = mode === 'tampons' ? 'Tampons' : 'Points';
+    }
+
+    function switchCard(type, btn) {
+      state.cardType = type;
+      setActiveTab(btn.closest('.tab-group'), btn);
+      document.getElementById('card-compact').style.display = type === 'compact' ? 'block' : 'none';
+      document.getElementById('card-wallet').style.display  = type === 'wallet'  ? 'block' : 'none';
+    }
+
+    function switchBg(type, btn) {
+      state.bgType = type;
+      setActiveTab(btn.closest('.tab-group'), btn);
+      document.getElementById('single-color-section').style.display = type === 'couleur' ? 'block' : 'none';
+      document.getElementById('gradient-section').style.display      = type === 'degrade' ? 'block' : 'none';
+      document.getElementById('image-section').style.display         = type === 'image'   ? 'block' : 'none';
+      applyCardBg();
+    }
+
+    // ── BACKGROUND ──
+    function applyCardBg() {
+      let bg;
+      if (state.bgType === 'couleur') {
+        bg = state.soloColor;
+      } else if (state.bgType === 'degrade') {
+        bg = `linear-gradient(${state.angle}deg, #1a0a2e 0%, ${state.c1} 50%, ${state.c2} 100%)`;
+      } else if (state.bgType === 'image' && state._imgUrl) {
+        bg = `url(${state._imgUrl}) center/cover`;
+      } else {
+        bg = `linear-gradient(${state.angle}deg, #1a0a2e 0%, ${state.c1} 50%, ${state.c2} 100%)`;
+      }
+      document.getElementById('card-bg').style.background = bg;
+      document.getElementById('wallet-bg').style.background = bg;
+    }
+
+    function updateGradient(which, val) {
+      if (which === 'c1') { state.c1 = val; document.getElementById('swatch-1').style.background = val; document.getElementById('hex-1').value = val; }
+      else                { state.c2 = val; document.getElementById('swatch-2').style.background = val; document.getElementById('hex-2').value = val; }
+      applyCardBg();
+    }
+    function updateGradientHex(which, val) {
+      if (!/^#[0-9a-fA-F]{6}$/.test(val)) return;
+      updateGradient(which, val);
+    }
+    function updateSoloColor(val) {
+      state.soloColor = val;
+      document.getElementById('swatch-solo').style.background = val;
+      document.getElementById('hex-solo').value = val;
+      applyCardBg();
+    }
+    function updateSoloColorHex(val) {
+      if (!/^#[0-9a-fA-F]{6}$/.test(val)) return;
+      updateSoloColor(val);
+    }
+    function updateAngle(val) {
+      state.angle = val;
+      document.getElementById('angle-val').textContent = val + '°';
+      applyCardBg();
+    }
+    function loadBgImage(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => { state._imgUrl = e.target.result; applyCardBg(); };
+      reader.readAsDataURL(file);
+    }
+
+    // ── TEXT COLOR ──
+    function updateTextColor(val) {
+      state.textColor = val;
+      document.getElementById('swatch-text').style.background = val;
+      document.getElementById('hex-text').value = val;
+      document.getElementById('card-name').style.color = val;
+      document.getElementById('wallet-name').style.color = val;
+    }
+    function updateTextColorHex(val) {
+      if (!/^#[0-9a-fA-F]{6}$/.test(val)) return;
+      updateTextColor(val);
+    }
+
+    // ── FONT ──
+    function setFont(font, btn) {
+      state.font = font;
+      document.querySelectorAll('#font-grid .font-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('card-name').style.fontFamily = `'${font}', sans-serif`;
+      document.getElementById('wallet-name').style.fontFamily = `'${font}', sans-serif`;
+    }
+
+    // ── NAME ──
+    function updateName(val) {
+      state.name = val;
+      const upper = val.toUpperCase();
+      document.getElementById('card-name').textContent = upper;
+      document.getElementById('wallet-name').textContent = upper;
+    }
+
+    // ── STAMP LABEL ──
+    function updateStampLabel(val) {
+      state.stampLabel = val;
+      document.getElementById('stamp-label-card').textContent = val.toUpperCase();
+    }
+
+    // ── REWARD ──
+    function updateReward(val) {
+      state.reward = val;
+      document.getElementById('reward-text').textContent = val;
+      document.getElementById('wallet-reward').textContent = val;
+    }
+
+    // ── STAMPS ──
+    function updateStamps(val) {
+      state.total = parseInt(val);
+      state.filled = Math.min(state.filled, state.total);
+      document.getElementById('stamp-count-badge').textContent = val;
+      document.getElementById('count-total').textContent = val;
+      document.getElementById('wallet-total').textContent = val;
+      const remaining = state.total - state.filled;
+      document.getElementById('remaining').textContent = remaining;
+      renderStamps();
+      renderWalletStamps();
+      updateWalletBar();
+    }
+
+    function renderStamps() {
+      const row = document.getElementById('points-row');
+      row.innerHTML = '';
+      for (let i = 0; i < state.total; i++) {
+        const d = document.createElement('div');
+        d.className = 'point' + (i < state.filled ? ' filled' : '');
+        if (i < state.filled) d.style.background = state.c1;
+        row.appendChild(d);
+      }
+    }
+
+    function renderWalletStamps() {
+      const row = document.getElementById('wallet-stamps');
+      row.innerHTML = '';
+      for (let i = 0; i < state.total; i++) {
+        const d = document.createElement('div');
+        d.className = 'wallet-stamp' + (i < state.filled ? ' filled' : '');
+        if (i < state.filled) d.style.background = 'rgba(255,255,255,0.85)';
+        row.appendChild(d);
+      }
+    }
+
+    function updateWalletBar() {
+      const pct = (state.filled / state.total) * 100;
+      document.getElementById('wallet-bar').style.width = pct + '%';
+    }
+
+    // ── WATERMARK ──
+    function toggleWatermark() {
+      state.watermark = !state.watermark;
+      const t = document.getElementById('watermark-toggle');
+      t.classList.toggle('off', !state.watermark);
+      document.getElementById('card-watermark').style.display = state.watermark ? 'block' : 'none';
+    }
+
+    function updateOpacity(val) {
+      state.opacity = val;
+      document.getElementById('opacity-label').textContent = `Opacité : ${val}%`;
+      document.getElementById('card-watermark').style.color = `rgba(255,255,255,${val/100})`;
+    }
+
+    // ── TOAST ──
+    function showToast() {
+      const t = document.getElementById('toast');
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    init();
+  </script>
+</body>
+</html>
