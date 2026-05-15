@@ -193,8 +193,6 @@
     <div class="nav-step" id="ns2"><div class="nav-num" id="nn2">2</div><span class="nav-label">Personnalisation</span></div>
     <div class="nav-div" id="nd2"></div>
     <div class="nav-step" id="ns3"><div class="nav-num" id="nn3">3</div><span class="nav-label">Récapitulatif</span></div>
-    <div class="nav-div" id="nd3"></div>
-    <div class="nav-step" id="ns4"><div class="nav-num" id="nn4">4</div><span class="nav-label">Dashboard</span></div>
   </nav>
   <div class="tbar-r">Déjà un compte ? <a href="https://www.qarta.be/login">Se connecter</a></div>
 </header>
@@ -472,19 +470,7 @@
         <div class="mrow"><span>ID carte</span><span id="mid" style="font-family:monospace;font-size:11px;color:var(--mut)">—</span></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px;margin:0 auto">
-        <button class="btn-b" onclick="goTo('s5')">Accéder au dashboard <span class="arr">→</span></button>
-        <button class="btn-g" style="width:100%;justify-content:center" onclick="reset()">Créer une autre carte</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="screen" id="s5">
-    <div style="text-align:center;width:100%;max-width:440px">
-      <div style="width:72px;height:72px;border-radius:50%;background:rgba(74,143,232,.12);border:1px solid rgba(74,143,232,.3);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 1.5rem">🚀</div>
-      <h1 class="ttl" style="font-size:2rem;margin-bottom:.5rem">Tout est prêt !</h1>
-      <p class="sub" style="margin-bottom:2rem">Votre programme de fidélité est actif. Gérez vos clients et suivez vos statistiques depuis le dashboard Qarta.</p>
-      <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:300px;margin:0 auto">
-        <a href="https://www.qarta.be/dashboard" class="btn-b" style="text-decoration:none">Ouvrir mon dashboard →</a>
+        <a href="https://www.qarta.be/dashboard" class="btn-b" style="text-decoration:none">Accéder au dashboard <span class="arr">→</span></a>
         <button class="btn-g" style="width:100%;justify-content:center" onclick="reset()">Créer une autre carte</button>
       </div>
     </div>
@@ -501,8 +487,8 @@ function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
-  const idx={s1:-1,s2:0,s3:1,s4:2,s5:3}[id]??-1;
-  ['ns1','ns2','ns3','ns4'].forEach((nid,i)=>{
+  const idx={s1:-1,s2:0,s3:1,s4:2}[id]??-1;
+  ['ns1','ns2','ns3'].forEach((nid,i)=>{
     const el=document.getElementById(nid);if(!el)return;
     const num=document.getElementById('nn'+(i+1));
     el.classList.remove('active','done');
@@ -510,7 +496,7 @@ function goTo(id){
     else if(i===idx){el.classList.add('active');num.textContent=i+1;}
     else{num.textContent=i+1;}
   });
-  ['nd1','nd2','nd3'].forEach((did,i)=>{const d=document.getElementById(did);if(d)d.classList.toggle('done',idx>i);});
+  ['nd1','nd2'].forEach((did,i)=>{const d=document.getElementById(did);if(d)d.classList.toggle('done',idx>i);});
   const line=document.getElementById('s3-cream-line');
   if(line)line.style.display=id==='s3'?'block':'none';
 }
