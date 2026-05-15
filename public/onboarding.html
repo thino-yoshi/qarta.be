@@ -590,6 +590,19 @@ async function submit(){
   btn.disabled=true;lbl.textContent='Enregistrement...';
   try{
     const cardDesign=buildCardDesign();
+    // Upload de l'image de fond si l'utilisateur en a choisi une
+    if(dbSt.bgType==='image'&&dbSt._imgUrl&&dbSt._imgUrl.startsWith('data:')){
+      lbl.textContent='Upload image...';
+      try{
+        const blob=await(await fetch(dbSt._imgUrl)).blob();
+        const ext=(blob.type.split('/')[1]||'jpg').replace('jpeg','jpg');
+        const fd=new FormData();
+        fd.append('file',new File([blob],'card-bg.'+ext,{type:blob.type}));
+        const r=await fetch('/api/loyalty-card/upload-image',{method:'POST',body:fd});
+        if(r.ok){const d=await r.json();cardDesign.bgImageUrl=d.url;}
+      }catch(e){}
+      lbl.textContent='Enregistrement...';
+    }
     // Sauvegarde en base (source de vérité) + localStorage (fallback UI)
     const [res]=await Promise.all([
       fetch('/api/loyalty-card/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({card_design:cardDesign})}).catch(()=>null),
