@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle, type LucideIcon } from "lucide-react";
+import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle, Rocket, type LucideIcon } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
 import CarteTab from "./tabs/CarteTab";
 import StatistiquesTab from "./tabs/StatistiquesTab";
@@ -131,6 +131,24 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
             );
           })}
         </nav>
+
+        {/* Onboarding shortcut */}
+        <div className="px-3 pb-2">
+          <a
+            href="/onboarding.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all"
+            style={{
+              background: "rgba(74,158,255,0.08)",
+              border: "1px solid rgba(74,158,255,0.15)",
+              color: "rgba(74,158,255,0.7)",
+            }}
+          >
+            <Rocket size={14} strokeWidth={2} />
+            Revoir l&apos;onboarding
+          </a>
+        </div>
 
         {/* Logout */}
         <div className="px-3 py-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
