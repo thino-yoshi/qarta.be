@@ -136,8 +136,6 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
         <div className="px-3 pb-2">
           <a
             href="/onboarding.html"
-            target="_blank"
-            rel="noopener noreferrer"
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all"
             style={{
               background: "rgba(74,158,255,0.08)",
