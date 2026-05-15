@@ -463,7 +463,7 @@
       <p class="sub" style="margin-bottom:1.5rem">Votre programme est maintenant actif sur Qarta.</p>
       <div style="display:flex;gap:24px;align-items:flex-start;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem">
         <div style="width:100%;max-width:340px;flex-shrink:0" id="fcard-wrap">
-          <div id="fcard" class="db-card-preview"></div>
+          <div id="fcard"></div>
         </div>
         <div class="mbox" style="margin:0;flex:1;min-width:220px;max-width:320px">
           <div class="mrow"><span>Commerce</span><span id="mn">—</span></div>
@@ -600,31 +600,56 @@ function buildCardDesign(){
 }
 
 function renderS4Card(){
-  const bg=dbGetBg();const acc=dbGetAccentBg();
+  const bg=dbGetBg();
+  const acc=dbGetAccentBg();
+  const accFirst=dbSt.acc1;
+  const accLast=dbSt.accentMode==='degrade'?dbSt.acc2:dbSt.acc1;
   const name=(dbSt.name||'—').toUpperCase();
   const reward=dbSt.reward||'récompense';
-  const total=dbSt.total;const filled=Math.min(3,total);
+  const total=dbSt.total;
+  const filled=Math.min(3,total);
+  const remaining=total-filled;
+  const progress=total>0?filled/total:0;
+  const pct=Math.round(progress*100);
+  const textC=dbSt.textColor;
+  const font=dbSt.font;
+  const stampPx=total<=5?40:total<=8?32:total<=12?26:20;
   const stamps=Array.from({length:total},(_,i)=>{
     const on=i<filled;
-    return '<div class="db-point'+(on?' filled':'')+'" style="'+(on?'background:'+acc+';border-color:transparent':'')+';width:24px;height:24px;flex-shrink:0"></div>';
+    return '<div style="width:'+stampPx+'px;height:'+stampPx+'px;border-radius:50%;flex-shrink:0;'+(on?'background:'+acc+';box-shadow:0 2px 10px '+accFirst+'55':'border:1.5px solid '+accFirst+'44;background:transparent')+'"></div>';
   }).join('');
-  const wm=dbSt.watermark?'<div class="db-card-watermark" style="color:rgba(255,255,255,'+dbSt.opacity/100+')">Q</div>':'';
-  document.getElementById('fcard').innerHTML=
-    wm+
-    '<div class="db-card-top">'+
-      '<div><div class="db-card-name" style="color:'+dbSt.textColor+';font-family:'+dbSt.font+',sans-serif">'+name+'</div>'+
-      '<div class="db-card-subtitle">Carte fidélité</div></div>'+
-      '<div><div class="db-card-holder-block"><div class="db-card-holder-label">Titulaire</div>'+
-      '<div class="db-card-holder-name">Pierre Dubois</div></div>'+
-      '<div class="db-card-grid-btn"><div class="db-card-grid-icon"><span></span><span></span><span></span><span></span></div></div></div>'+
-    '</div>'+
-    '<div class="db-points-label-card">'+dbSt.stampLabel.toUpperCase()+'</div>'+
-    '<div class="db-points-row" style="margin-bottom:12px">'+stamps+'</div>'+
-    '<div class="db-card-footer">'+
-      '<div class="db-card-progress-text">Encore <strong>'+(total-filled)+'</strong> pour votre <strong>'+reward+'</strong></div>'+
-      '<div class="db-card-count"><span>'+filled+'</span> / <span>'+total+'</span></div>'+
+  const qr='<div style="position:absolute;top:5%;right:4%;width:13%;aspect-ratio:1/1;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;padding:1.8%;gap:10%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1)"><div style="border-radius:2px;background:rgba(255,255,255,0.18)"></div><div style="border-radius:2px;background:rgba(255,255,255,0.18)"></div><div style="border-radius:2px;background:rgba(255,255,255,0.18)"></div><div style="border-radius:2px;background:rgba(255,255,255,0.18)"></div></div>';
+  const wm=dbSt.watermark?'<div style="position:absolute;right:6%;top:50%;transform:translateY(-48%);font-size:140px;font-weight:900;color:rgba(255,255,255,'+dbSt.opacity/100+');line-height:1;pointer-events:none">Q</div>':'';
+  const el=document.getElementById('fcard');
+  el.innerHTML=
+    wm+qr+
+    '<div style="position:relative;z-index:10;height:100%;display:flex;flex-direction:column;padding:5% 6% 4%;box-sizing:border-box">'+
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between">'+
+        '<div>'+
+          '<h2 style="margin:0;font-weight:900;line-height:1;color:'+textC+';font-size:clamp(16px,5.5cqw,30px);letter-spacing:0.01em;text-transform:uppercase">'+name+'</h2>'+
+          '<p style="margin:4px 0 0;color:'+textC+'99;font-size:clamp(7px,1.6cqw,10px);font-weight:600;letter-spacing:0.22em;text-transform:uppercase">Carte Fidélité</p>'+
+        '</div>'+
+        '<div style="text-align:right;margin-right:19%">'+
+          '<p style="margin:0;color:'+textC+'99;font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.18em;text-transform:uppercase">Titulaire</p>'+
+          '<p style="margin:2px 0 0;font-weight:700;color:#fff;font-size:clamp(10px,2.4cqw,15px)">Pierre Dubois</p>'+
+        '</div>'+
+      '</div>'+
+      '<div style="margin-top:auto">'+
+        '<p style="margin:0 0 8px;color:rgba(255,255,255,0.3);font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.2em;text-transform:uppercase">'+dbSt.stampLabel.toUpperCase()+'</p>'+
+        '<div style="display:flex;flex-wrap:wrap;gap:8px">'+stamps+'</div>'+
+      '</div>'+
+      '<div style="margin-top:4%">'+
+        '<div style="width:100%;border-radius:999px;overflow:hidden;height:2px;background:rgba(255,255,255,0.1);margin-bottom:8px">'+
+          '<div style="height:100%;border-radius:999px;width:'+pct+'%;background:linear-gradient(90deg,'+accFirst+','+accLast+')"></div>'+
+        '</div>'+
+        '<div style="display:flex;align-items:center;justify-content:space-between">'+
+          '<p style="margin:0;color:rgba(255,255,255,0.4);font-size:clamp(7px,1.5cqw,9px)">Encore <span style="color:'+textC+';font-weight:700">'+remaining+'</span> pour votre <span style="color:'+textC+'">'+reward+'</span></p>'+
+          '<p style="margin:0;color:'+textC+';font-weight:700;font-size:clamp(9px,1.8cqw,12px)">'+filled+' / '+total+'</p>'+
+        '</div>'+
+      '</div>'+
     '</div>';
-  document.getElementById('fcard').style.background=bg;
+  el.style.cssText='background:'+bg+';border-radius:16px;overflow:hidden;width:100%;aspect-ratio:1.6/1;position:relative;box-shadow:0 24px 60px -16px '+accFirst+'33;container-type:inline-size';
+  el.style.fontFamily="'"+font+"',sans-serif";
 }
 
 function showSuccess(card){
