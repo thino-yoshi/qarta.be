@@ -589,7 +589,14 @@ async function submit(){
   const btn=document.getElementById('db-sbtn');const lbl=document.getElementById('db-slbl');
   btn.disabled=true;lbl.textContent='Enregistrement...';
   try{
-    await new Promise(r=>setTimeout(r,1400));
+    const cardDesign=buildCardDesign();
+    // Sauvegarde en base (source de vérité) + localStorage (fallback UI)
+    const [res]=await Promise.all([
+      fetch('/api/loyalty-card/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({card_design:cardDesign})}).catch(()=>null),
+      new Promise(r=>setTimeout(r,800))
+    ]);
+    if(res&&!res.ok){const d=await res.json().catch(()=>({}));throw new Error(d.error||'Erreur serveur');}
+    try{localStorage.setItem('qarta_pending_card',JSON.stringify(cardDesign));}catch(e){}
     const card={id:'qrt_'+Math.random().toString(36).slice(2,10),name,type:typ,color:dbGetBg(),goal,reward};
     showSuccess(card);
   }catch(e){
@@ -674,7 +681,6 @@ function showSuccess(card){
   document.getElementById('mg').textContent=card.goal+(dbSt.mode==='points'?' points':' visites');
   document.getElementById('mr').textContent=card.reward;
   document.getElementById('mid').textContent=card.id;
-  try{localStorage.setItem('qarta_pending_card',JSON.stringify(buildCardDesign()));}catch(e){}
   goTo('s4');toast('Carte créée avec succès !');
 }
 
