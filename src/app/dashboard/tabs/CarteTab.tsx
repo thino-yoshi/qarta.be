@@ -94,6 +94,8 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
   const [previewPoints] = useState(720);
   const [loyaltyTab,    setLoyaltyTab]    = useState<"stamps" | "points">("stamps");
   const [editorTab,     setEditorTab]     = useState<"compact" | "wallet">("compact");
+  const [imgUploading,  setImgUploading]  = useState(false);
+  const [imgError,      setImgError]      = useState<string | null>(null);
 
   // Charger la carte créée pendant l'onboarding (si présente)
   useEffect(() => {
@@ -117,6 +119,26 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
 
   const set = <K extends keyof CardDesign>(key: K, val: CardDesign[K]) =>
     setDesign((d) => ({ ...d, [key]: val }));
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImgUploading(true);
+    setImgError(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res  = await fetch("/api/loyalty-card/upload-image", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Erreur upload");
+      set("bgImageUrl", data.url);
+    } catch (e: unknown) {
+      setImgError(e instanceof Error ? e.message : "Erreur");
+    }
+    setImgUploading(false);
+    // reset input so même fichier peut être re-sélectionné
+    e.target.value = "";
+  };
 
   const handleSave = async () => {
     setSaving(true); setSaveErr(null);
@@ -257,15 +279,64 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
           )}
 
           {design.bgType === "image" && (
-            <div className="flex items-center gap-3 px-4 py-3 rounded-xl"
-              style={{ background: "rgba(255,255,255,0.04)", border: "1px dashed rgba(255,255,255,0.15)" }}>
-              <ImageIcon size={16} className="text-white/25" />
-              <div>
-                <p className="text-[12px] text-white/40">Upload d&apos;image</p>
-                <p className="text-[11px] text-white/20 mt-0.5">Disponible prochainement</p>
-              </div>
-              <span className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full"
-                style={{ background: "rgba(74,158,255,0.12)", color: "#4a9eff" }}>Soon</span>
+            <div className="space-y-3">
+              {/* Zone upload / aperçu */}
+              {design.bgImageUrl ? (
+                <div className="relative rounded-xl overflow-hidden"
+                  style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
+                  {/* Aperçu */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={design.bgImageUrl} alt="Fond de carte"
+                    className="w-full object-cover"
+                    style={{ height: 100 }}
+                  />
+                  {/* Overlay actions */}
+                  <div className="absolute inset-0 flex items-center justify-center gap-2"
+                    style={{ background: "rgba(0,0,0,0.45)" }}>
+                    <label className="px-3 py-1.5 rounded-lg text-[12px] font-semibold cursor-pointer transition-all hover:scale-105"
+                      style={{ background: "rgba(74,158,255,0.25)", border: "1px solid rgba(74,158,255,0.4)", color: "#4a9eff" }}>
+                      <input type="file" accept="image/*" className="sr-only" onChange={handleImageUpload} />
+                      {imgUploading ? "Upload…" : "Changer"}
+                    </label>
+                    <button
+                      onClick={() => { set("bgImageUrl", null); setImgError(null); }}
+                      className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all hover:scale-105"
+                      style={{ background: "rgba(231,76,60,0.2)", border: "1px solid rgba(231,76,60,0.35)", color: "#e74c3c" }}>
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center gap-2 px-4 py-6 rounded-xl cursor-pointer transition-all hover:border-white/25"
+                  style={{ background: "rgba(255,255,255,0.03)", border: "1px dashed rgba(255,255,255,0.15)" }}>
+                  <input type="file" accept="image/*" className="sr-only" onChange={handleImageUpload} disabled={imgUploading} />
+                  {imgUploading
+                    ? <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="3"/>
+                        <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+                      </svg>
+                    : <ImageIcon size={20} className="text-white/25" />
+                  }
+                  <p className="text-[12px] text-white/50 font-medium">
+                    {imgUploading ? "Upload en cours…" : "Cliquer pour choisir une image"}
+                  </p>
+                  <p className="text-[11px] text-white/25">JPG, PNG, WebP · max 5 MB</p>
+                </label>
+              )}
+
+              {/* Erreur */}
+              {imgError && <p className="text-[12px] text-red-400">{imgError}</p>}
+
+              {/* Opacité — visible seulement si image chargée */}
+              {design.bgImageUrl && (
+                <Field label={`Opacité de l'image : ${Math.round(design.bgImageOpacity * 100)}%`}>
+                  <input type="range" min={5} max={100} value={Math.round(design.bgImageOpacity * 100)}
+                    onChange={(e) => set("bgImageOpacity", Number(e.target.value) / 100)}
+                    className="q-range w-full"
+                    style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+                </Field>
+              )}
             </div>
           )}
         </Section>
