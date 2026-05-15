@@ -95,6 +95,20 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
   const [loyaltyTab,    setLoyaltyTab]    = useState<"stamps" | "points">("stamps");
   const [editorTab,     setEditorTab]     = useState<"compact" | "wallet">("compact");
 
+  // Charger la carte créée pendant l'onboarding (si présente)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("qarta_pending_card");
+      if (raw) {
+        const parsed = JSON.parse(raw) as Partial<CardDesign>;
+        setDesign((d) => ({ ...d, ...parsed }));
+        if (parsed.loyaltyMode) setLoyaltyTab(parsed.loyaltyMode);
+        localStorage.removeItem("qarta_pending_card");
+      }
+    } catch (_) {}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Sync loyaltyTab → design.loyaltyMode
   useEffect(() => {
     set("loyaltyMode", loyaltyTab);

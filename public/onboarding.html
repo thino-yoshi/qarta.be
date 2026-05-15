@@ -457,17 +457,21 @@
   </section>
 
   <section class="screen" id="s4">
-    <div style="text-align:center;width:100%">
+    <div style="text-align:center;width:100%;max-width:760px">
       <div class="sbadge">✓</div>
       <h1 class="ttl" style="font-size:2rem;margin-bottom:.5rem">Votre carte est prête !</h1>
       <p class="sub" style="margin-bottom:1.5rem">Votre programme est maintenant actif sur Qarta.</p>
-      <div style="width:100%;max-width:320px;margin:0 auto 1.5rem"><div id="fcard"></div></div>
-      <div class="mbox">
-        <div class="mrow"><span>Commerce</span><span id="mn">—</span></div>
-        <div class="mrow"><span>Type</span><span id="mt">—</span></div>
-        <div class="mrow"><span>Objectif</span><span id="mg">—</span></div>
-        <div class="mrow"><span>Récompense</span><span id="mr">—</span></div>
-        <div class="mrow"><span>ID carte</span><span id="mid" style="font-family:monospace;font-size:11px;color:var(--mut)">—</span></div>
+      <div style="display:flex;gap:24px;align-items:flex-start;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem">
+        <div style="width:100%;max-width:340px;flex-shrink:0" id="fcard-wrap">
+          <div id="fcard" class="db-card-preview"></div>
+        </div>
+        <div class="mbox" style="margin:0;flex:1;min-width:220px;max-width:320px">
+          <div class="mrow"><span>Commerce</span><span id="mn">—</span></div>
+          <div class="mrow"><span>Type</span><span id="mt">—</span></div>
+          <div class="mrow"><span>Objectif</span><span id="mg">—</span></div>
+          <div class="mrow"><span>Récompense</span><span id="mr">—</span></div>
+          <div class="mrow"><span>ID carte</span><span id="mid" style="font-family:monospace;font-size:11px;color:var(--mut)">—</span></div>
+        </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px;margin:0 auto">
         <a href="https://www.qarta.be/dashboard" class="btn-b" style="text-decoration:none">Accéder au dashboard <span class="arr">→</span></a>
@@ -579,14 +583,58 @@ async function submit(){
   }finally{busy=false;btn.disabled=false;lbl.textContent='Créer ma carte';}
 }
 
+function buildCardDesign(){
+  let bgType='color',bgColors=[dbSt.soloColor];
+  if(dbSt.bgType==='degrade'){bgType='gradient';bgColors=[dbSt.c1,dbSt.c2];}
+  else if(dbSt.bgType==='image'){bgType='image';bgColors=[dbSt.soloColor];}
+  const accentColors=dbSt.accentMode==='degrade'?[dbSt.acc1,dbSt.acc2]:[dbSt.acc1];
+  return{
+    cardName:dbSt.name,stampLabel:dbSt.stampLabel,stampsRequired:dbSt.total,rewardDescription:dbSt.reward,
+    bgType,bgColors,bgGradientAngle:dbSt.angle,bgImageUrl:null,bgImageOpacity:0.3,
+    accentColors,accentAngle:135,textColor:dbSt.textColor,fontFamily:dbSt.font,
+    showQ:dbSt.watermark,qOpacity:dbSt.opacity/100,
+    walletTitleSize:34,walletNameSize:26,walletStampCols:5,walletQRSize:130,
+    walletShowCircles:true,walletPadding:26,walletPointsSize:52,compactPointsSize:68,
+    loyaltyMode:dbSt.mode==='points'?'points':'stamps',pointsGoal:dbSt.pointsGoal
+  };
+}
+
+function renderS4Card(){
+  const bg=dbGetBg();const acc=dbGetAccentBg();
+  const name=(dbSt.name||'—').toUpperCase();
+  const reward=dbSt.reward||'récompense';
+  const total=dbSt.total;const filled=Math.min(3,total);
+  const stamps=Array.from({length:total},(_,i)=>{
+    const on=i<filled;
+    return '<div class="db-point'+(on?' filled':'')+'" style="'+(on?'background:'+acc+';border-color:transparent':'')+';width:24px;height:24px;flex-shrink:0"></div>';
+  }).join('');
+  const wm=dbSt.watermark?'<div class="db-card-watermark" style="color:rgba(255,255,255,'+dbSt.opacity/100+')">Q</div>':'';
+  document.getElementById('fcard').innerHTML=
+    wm+
+    '<div class="db-card-top">'+
+      '<div><div class="db-card-name" style="color:'+dbSt.textColor+';font-family:''+dbSt.font+'',sans-serif">'+name+'</div>'+
+      '<div class="db-card-subtitle">Carte fidélité</div></div>'+
+      '<div><div class="db-card-holder-block"><div class="db-card-holder-label">Titulaire</div>'+
+      '<div class="db-card-holder-name">Pierre Dubois</div></div>'+
+      '<div class="db-card-grid-btn"><div class="db-card-grid-icon"><span></span><span></span><span></span><span></span></div></div></div>'+
+    '</div>'+
+    '<div class="db-points-label-card">'+dbSt.stampLabel.toUpperCase()+'</div>'+
+    '<div class="db-points-row" style="margin-bottom:12px">'+stamps+'</div>'+
+    '<div class="db-card-footer">'+
+      '<div class="db-card-progress-text">Encore <strong>'+(total-filled)+'</strong> pour votre <strong>'+reward+'</strong></div>'+
+      '<div class="db-card-count"><span>'+filled+'</span> / <span>'+total+'</span></div>'+
+    '</div>';
+  document.getElementById('fcard').style.background=bg;
+}
+
 function showSuccess(card){
-  const count=Math.min(card.goal,10);
-  document.getElementById('fcard').innerHTML='<div class="card" style="background:'+card.color+'"><div class="ctop"><div class="clogo">'+card.name.charAt(0).toUpperCase()+'</div><div class="cpill">Par visite</div></div><div class="stamps">'+Array.from({length:count},(_,i)=>'<div class="stamp'+(i<3?' on':'')+'">'+(i<3?'✓':'○')+'</div>').join('')+'</div><div class="cbot"><div class="cname">'+card.name+'</div><div class="cgoalb"><span class="cgoall">Récompense</span><span class="cgoalv" style="font-size:11px;font-style:italic">'+card.reward+'</span></div></div></div>';
+  renderS4Card();
   document.getElementById('mn').textContent=card.name;
   document.getElementById('mt').textContent=typ==='visit'?'Tampons par visite':'Points par euro';
   document.getElementById('mg').textContent=card.goal+(dbSt.mode==='points'?' points':' visites');
   document.getElementById('mr').textContent=card.reward;
   document.getElementById('mid').textContent=card.id;
+  try{localStorage.setItem('qarta_pending_card',JSON.stringify(buildCardDesign()));}catch(e){}
   goTo('s4');toast('Carte créée avec succès !');
 }
 
