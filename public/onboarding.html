@@ -314,7 +314,11 @@
             </div>
           </div>
           <div id="db-image-section">
-            <div class="db-image-drop" onclick="document.getElementById('db-img-input').click()">📁 Cliquez pour choisir une image de fond<input type="file" id="db-img-input" accept="image/*" style="display:none" onchange="dbLoadBgImage(this)"/></div>
+            <div class="db-image-drop" onclick="document.getElementById('db-img-input').click()">
+              <span id="db-img-label">📁 Cliquez pour choisir une image de fond</span>
+              <div style="font-size:11px;margin-top:6px;color:rgba(255,255,255,0.2)">JPG, PNG, WebP · max 5 MB</div>
+              <input type="file" id="db-img-input" accept="image/*" style="display:none" onchange="dbLoadBgImage(this)"/>
+            </div>
           </div>
         </div>
         <div class="db-section">
@@ -532,7 +536,18 @@ function dbUpdateGradientHex(which,val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdat
 function dbUpdateSoloColor(val){dbSt.soloColor=val;document.getElementById('db-swatch-solo').style.background=val;document.getElementById('db-hex-solo').value=val;dbApplyCardBg();}
 function dbUpdateSoloColorHex(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateSoloColor(val);}
 function dbUpdateAngle(val){dbSt.angle=val;document.getElementById('db-angle-val').textContent=val+'°';dbApplyCardBg();}
-function dbLoadBgImage(input){const f=input.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{dbSt._imgUrl=e.target.result;dbApplyCardBg();};r.readAsDataURL(f);}
+function dbLoadBgImage(input){
+  const f=input.files[0];if(!f)return;
+  if(f.size>5*1024*1024){toast('Image trop grande — maximum 5 MB',true);input.value='';return;}
+  const r=new FileReader();
+  r.onload=e=>{
+    dbSt._imgUrl=e.target.result;
+    dbApplyCardBg();
+    const lbl=document.getElementById('db-img-label');
+    if(lbl)lbl.textContent='✅ '+f.name;
+  };
+  r.readAsDataURL(f);
+}
 function dbUpdateAccent1(val){dbSt.acc1=val;['db-swatch-acc1','db-swatch-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.background=val;});['db-hex-acc1','db-hex-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=val;});dbRenderStamps();}
 function dbUpdateAccentHex1(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent1(val);}
 function dbUpdateAccent2(val){dbSt.acc2=val;const s=document.getElementById('db-swatch-acc2');if(s)s.style.background=val;const h=document.getElementById('db-hex-acc2');if(h)h.value=val;dbRenderStamps();}
