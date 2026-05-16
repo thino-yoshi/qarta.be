@@ -82,13 +82,13 @@
     .cgoall{font-size:8px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;display:block}
     .cgoalv{font-family:'Fraunces',serif;font-size:14px;color:#fff;font-weight:400}
     /* S3 */
-    #s3{max-width:1100px;text-align:left;align-items:stretch}
+    #s3{max-width:100%;width:100%;text-align:left;align-items:stretch}
     .s3-header{margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.06);width:100%}
     #s3-cream-line{display:none;position:fixed;top:58px;left:0;right:0;height:2px;background:#5bb8f5;z-index:99}
     .db-layout{display:flex;gap:0;width:100%;position:relative}
-    .db-main{flex:1;overflow-y:auto;overflow-x:hidden;padding-right:18px;max-height:78vh;scrollbar-width:none;position:relative;z-index:1;border-right:1.5px solid rgba(200,180,140,0.45)}
+    .db-main{flex:1;overflow-y:auto;overflow-x:hidden;padding-right:18px;max-height:calc(100vh - 210px);scrollbar-width:none;position:relative;z-index:1;border-right:1.5px solid rgba(200,180,140,0.45)}
     .db-main::-webkit-scrollbar{display:none}
-    .db-preview-panel{width:360px;min-width:360px;background:#0d1526;border-left:1px solid rgba(255,255,255,0.06);padding:24px;overflow-y:auto;max-height:78vh;position:sticky;top:80px}
+    .db-preview-panel{width:400px;min-width:400px;background:#ede9e0;border-left:1.5px solid rgba(200,180,140,0.45);padding:24px;overflow-y:auto;max-height:calc(100vh - 210px);position:sticky;top:80px;display:flex;flex-direction:column}
     .db-section{background:#131e35;border-radius:14px;padding:18px;margin-bottom:10px}
     .db-label{font-size:10px;font-weight:700;letter-spacing:0.16em;color:#5bb8f5;text-transform:uppercase;margin-bottom:12px;font-family:'Manrope',sans-serif}
     .db-form-group{margin-bottom:10px}.db-form-group:last-child{margin-bottom:0}
@@ -116,6 +116,8 @@
     .db-tab-btn{flex:1;padding:8px 12px;border-radius:9px;border:none;background:transparent;color:rgba(255,255,255,0.45);font-family:'Manrope',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
     .db-tab-btn:hover{color:rgba(255,255,255,0.7)}
     .db-tab-btn.active{background:#1e2f50;color:#fff}
+    .db-preview-panel .db-tab-btn.active{background:rgba(58,48,40,0.15);color:#3a3028}
+    .db-preview-panel .db-tab-btn:hover{color:#3a3028}
     .db-font-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
     .db-font-btn{padding:8px 12px;border-radius:9px;background:#0d1526;border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);font-size:12px;cursor:pointer;text-align:left;transition:all .15s}
     .db-font-btn:hover{background:#1a2640;color:#fff}
@@ -130,9 +132,10 @@
     .db-save-btn{flex:1;padding:13px;background:#2c7be5;border:none;border-radius:12px;color:#fff;font-family:'Manrope',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,transform .1s}
     .db-save-btn:hover{background:#1e63c7;transform:translateY(-1px)}
     .db-save-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-    .db-preview-link{font-size:10px;font-weight:700;letter-spacing:0.12em;color:rgba(255,255,255,0.3);text-transform:uppercase;text-align:right;margin-bottom:16px;font-family:'Manrope',sans-serif}
-    .db-preview-label{font-size:10px;font-weight:700;letter-spacing:0.14em;color:#5bb8f5;text-transform:uppercase;margin-bottom:10px;font-family:'Manrope',sans-serif}
-    .db-card-preview{border-radius:18px;padding:20px;position:relative;overflow:hidden;min-height:200px;box-shadow:0 20px 50px -15px rgba(0,0,0,0.6);transition:background 0.4s}
+    .db-preview-link{font-size:10px;font-weight:700;letter-spacing:0.12em;color:rgba(58,48,40,0.4);text-transform:uppercase;text-align:right;margin-bottom:16px;font-family:'Manrope',sans-serif}
+    .db-preview-label{font-size:10px;font-weight:700;letter-spacing:0.14em;color:rgba(58,48,40,0.5);text-transform:uppercase;margin-bottom:10px;font-family:'Manrope',sans-serif}
+    .db-card-canvas{border-radius:20px;padding:22px 18px;background:radial-gradient(ellipse 92% 58% at 50% 50%,rgba(0,0,0,0.30) 0%,transparent 72%);margin:0 auto 4px;width:360px;max-width:100%}
+    .db-card-preview{border-radius:18px;padding:20px;position:relative;overflow:hidden;aspect-ratio:380/240;display:flex;flex-direction:column;box-shadow:0 20px 50px -15px rgba(0,0,0,0.6);transition:background 0.4s}
     .db-card-watermark{position:absolute;font-size:140px;font-weight:900;color:rgba(255,255,255,0.05);right:-15px;bottom:-25px;line-height:1;pointer-events:none;font-family:'Manrope',sans-serif}
     .db-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
     .db-card-name{font-size:18px;font-weight:800;letter-spacing:0.04em;line-height:1.1;transition:color .3s,font-family .3s}
@@ -145,37 +148,47 @@
     .db-card-grid-icon span{width:7px;height:7px;border-radius:2px;background:rgba(255,255,255,0.6)}
     .db-points-label-card{font-size:8px;font-weight:700;letter-spacing:0.14em;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:8px;font-family:'Manrope',sans-serif}
     .db-points-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-    .db-point{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,0.2);transition:background .3s,border-color .3s}
+    .db-point{border-radius:50%;border:2px solid rgba(255,255,255,0.2);transition:background .3s,border-color .3s,width .15s,height .15s;flex-shrink:0}
     .db-point.filled{border-color:transparent}
     .db-card-footer{display:flex;align-items:center;justify-content:space-between}
     .db-card-progress-text{font-size:10px;color:rgba(255,255,255,0.55);font-family:'Manrope',sans-serif}
     .db-card-progress-text strong{font-weight:700}
     .db-card-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.6);font-family:'Manrope',sans-serif}
     .db-card-count span{color:#fff}
-    .db-wallet-card{border-radius:14px;overflow:hidden;box-shadow:0 16px 50px -15px rgba(0,0,0,0.6);transition:background .4s}
-    .db-wallet-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
-    .db-wallet-logo{font-size:18px;font-weight:900;letter-spacing:0.05em;color:#fff;transition:color .3s,font-family .3s;font-family:'Manrope',sans-serif}
-    .db-wallet-type{font-size:9px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;font-family:'Manrope',sans-serif}
-    .db-wallet-qr{width:48px;height:48px;background:rgba(255,255,255,0.95);border-radius:7px;display:flex;align-items:center;justify-content:center}
-    .db-wallet-body{background:rgba(0,0,0,0.25);padding:14px 18px}
-    .db-wallet-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-    .db-wallet-field-label{font-size:8px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:2px;font-family:'Manrope',sans-serif}
-    .db-wallet-field-val{font-size:13px;font-weight:700;color:#fff;font-family:'Manrope',sans-serif}
-    .db-wallet-stamps{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px}
-    .db-wallet-stamp{width:22px;height:22px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.25);transition:background .3s,border-color .3s}
-    .db-wallet-stamp.filled{border-color:transparent}
-    .db-wallet-progress{height:4px;border-radius:999px;background:rgba(255,255,255,0.12);overflow:hidden}
-    .db-wallet-progress-bar{height:100%;border-radius:999px;background:rgba(255,255,255,0.8);transition:width .3s}
+    .db-wallet-card{border-radius:20px;overflow:hidden;position:relative;transition:background .4s;padding:28px;font-family:'Manrope',sans-serif}
+    .db-wallet-deco{position:absolute;border-radius:50%;pointer-events:none}
+    .db-wallet-name{font-size:28px;font-weight:900;letter-spacing:-0.01em;line-height:1.1;margin:0;font-family:'Manrope',sans-serif;transition:color .3s,font-family .3s}
+    .db-wallet-subtitle{font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;margin:5px 0 22px;font-family:'Manrope',sans-serif}
+    .db-wallet-lbl{font-size:9px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;margin:0 0 5px;font-family:'Manrope',sans-serif}
+    .db-wallet-client{font-size:22px;font-weight:800;letter-spacing:-0.01em;margin:5px 0 0;font-family:'Manrope',sans-serif;transition:color .3s}
+    .db-wallet-sep{height:1px;margin:20px 0}
+    .db-wallet-stamps-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+    .db-wallet-stamp-item{border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .3s;flex-shrink:0}
+    .db-wallet-bar-wrap{height:3px;border-radius:999px;overflow:hidden;margin-bottom:10px;background:rgba(255,255,255,0.12)}
+    .db-wallet-bar{height:100%;border-radius:999px;transition:width .3s}
+    .db-wallet-foot{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+    .db-wallet-foot-text{font-size:12px;font-family:'Manrope',sans-serif}
+    .db-wallet-foot-count{font-size:14px;font-weight:700;font-family:'Manrope',sans-serif}
+    .db-wallet-pts-big{font-size:52px;font-weight:900;line-height:1;font-family:'Manrope',sans-serif;transition:color .3s}
+    .db-wallet-pts-unit{font-size:20px;font-weight:700;opacity:.75;font-family:'Manrope',sans-serif;transition:color .3s}
+    .db-wallet-qr-section{display:flex;flex-direction:column;align-items:center;gap:12px}
+    .db-wallet-qr-frame{position:relative;padding:14px;background:#fff;border-radius:16px;box-shadow:0 16px 48px -8px rgba(0,0,0,0.45)}
+    .db-wallet-br{position:absolute;width:22px;height:22px}
+    .db-wallet-br.tl{top:-3px;left:-3px;border-top:3px solid transparent;border-left:3px solid transparent;border-radius:6px 0 0 0}
+    .db-wallet-br.tr{top:-3px;right:-3px;border-top:3px solid transparent;border-right:3px solid transparent;border-radius:0 6px 0 0}
+    .db-wallet-br.bl{bottom:-3px;left:-3px;border-bottom:3px solid transparent;border-left:3px solid transparent;border-radius:0 0 0 6px}
+    .db-wallet-br.br{bottom:-3px;right:-3px;border-bottom:3px solid transparent;border-right:3px solid transparent;border-radius:0 0 6px 0}
+    .db-wallet-scan-lbl{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;font-family:'Manrope',sans-serif}
     #db-card-compact{display:block}
     #db-card-wallet{display:none}
-    #db-stamps-display{display:block}
-    #db-points-display{display:none}
+    #db-stamps-display{display:block;margin-top:auto}
+    #db-points-display{display:none;margin-top:auto}
     .db-points-big{font-size:44px;font-weight:800;color:#fff;text-align:center;line-height:1;font-family:'Manrope',sans-serif}
     .db-points-unit{font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;font-family:'Manrope',sans-serif}
     .db-points-bar{height:5px;border-radius:999px;background:rgba(255,255,255,0.12);overflow:hidden;margin-top:14px}
     .db-points-bar-fill{height:100%;border-radius:999px;background:rgba(255,255,255,0.8);width:60%}
     #db-err{font-size:12px;color:var(--err);margin-top:.6rem;display:none;font-family:'Manrope',sans-serif}
-    @media(max-width:900px){#s3{max-width:100%}.db-layout{flex-direction:column}.db-preview-panel{width:100%;min-width:0;position:static;max-height:none;border-radius:16px}.db-main{max-height:none;padding-right:0;border-right:none}}
+    @media(max-width:900px){#s3{max-width:100%}.db-layout{flex-direction:column}.db-preview-panel{width:100%;min-width:0;position:static;max-height:none;border-radius:16px;border-left:none;border-top:1.5px solid rgba(200,180,140,0.45)}.db-main{max-height:none;padding-right:0;border-right:none}}
     @media(max-width:700px){.nav-steps,.tbar-r{display:none}.tgrid{grid-template-columns:1fr}h1.ttl{font-size:1.7rem}}
   </style>
 </head>
@@ -247,14 +260,6 @@
     </div>
     <div class="db-layout">
       <div class="db-main">
-        <div class="db-tab-group">
-          <button class="db-tab-btn active" onclick="dbSwitchMode('tampons',this)">🎯 Tampons</button>
-          <button class="db-tab-btn" onclick="dbSwitchMode('points',this)">⭐ Points</button>
-        </div>
-        <div class="db-tab-group">
-          <button class="db-tab-btn active" onclick="dbSwitchCard('compact',this)">🃏 Carte compacte</button>
-          <button class="db-tab-btn" onclick="dbSwitchCard('wallet',this)">📱 Carte Wallet</button>
-        </div>
         <div class="db-section">
           <div class="db-label">Identité de la carte</div>
           <div class="db-form-group">
@@ -385,9 +390,15 @@
         </div>
       </div>
       <div class="db-preview-panel">
+        <div class="db-tab-group" style="margin-bottom:20px;background:rgba(58,48,40,0.1)">
+          <button class="db-tab-btn active" onclick="dbSwitchCard('compact',this)" style="color:rgba(58,48,40,0.5)">🃏 Carte compacte</button>
+          <button class="db-tab-btn" onclick="dbSwitchCard('wallet',this)" style="color:rgba(58,48,40,0.5)">📱 Carte Wallet</button>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
         <div class="db-preview-link">↓ Voir la carte ouverte dans le Wallet</div>
         <div id="db-card-compact">
           <div class="db-preview-label">Aperçu carte</div>
+          <div class="db-card-canvas">
           <div class="db-card-preview" id="db-card-bg">
             <div class="db-card-watermark" id="db-card-watermark">Q</div>
             <div class="db-card-top">
@@ -423,17 +434,43 @@
               </div>
             </div>
           </div>
+          </div><!-- /db-card-canvas -->
         </div>
         <div id="db-card-wallet">
           <div class="db-preview-label">Aperçu Wallet</div>
+          <div class="db-card-canvas">
           <div class="db-wallet-card" id="db-wallet-bg">
-            <div class="db-wallet-header">
-              <div>
-                <div class="db-wallet-logo" id="db-wallet-name">—</div>
-                <div class="db-wallet-type">Carte fidélité · QARTA</div>
+            <div class="db-wallet-deco" id="db-wallet-deco1" style="bottom:-90px;right:-90px;width:260px;height:260px"></div>
+            <div class="db-wallet-deco" id="db-wallet-deco2" style="bottom:20px;right:-30px;width:190px;height:190px"></div>
+            <h2 class="db-wallet-name" id="db-wallet-name">—</h2>
+            <p class="db-wallet-subtitle" id="db-wallet-subtitle">Carte Fidélité</p>
+            <p class="db-wallet-lbl" id="db-wallet-titulaire-lbl">Titulaire</p>
+            <h3 class="db-wallet-client" id="db-wallet-client">Pierre Dubois</h3>
+            <div class="db-wallet-sep" id="db-wallet-sep1"></div>
+            <div id="db-wallet-stamps-block">
+              <p class="db-wallet-lbl" id="db-wallet-stamp-lbl">TAMPONS COLLECTÉS</p>
+              <div class="db-wallet-stamps-grid" id="db-wallet-stamps"></div>
+            </div>
+            <div id="db-wallet-points-block" style="display:none">
+              <p class="db-wallet-lbl" id="db-wallet-pts-lbl-top">Points cumulés</p>
+              <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:20px">
+                <span class="db-wallet-pts-big" id="db-wallet-pts-num">1 240</span>
+                <span class="db-wallet-pts-unit" id="db-wallet-pts-unit">PTS</span>
               </div>
-              <div class="db-wallet-qr">
-                <svg width="34" height="34" viewBox="0 0 36 36" fill="#111">
+            </div>
+            <div class="db-wallet-bar-wrap"><div class="db-wallet-bar" id="db-wallet-bar"></div></div>
+            <div class="db-wallet-foot">
+              <span class="db-wallet-foot-text" id="db-wallet-foot-left">Encore <strong id="db-wallet-rem">2</strong> pour votre <span id="db-wallet-reward">—</span></span>
+              <span class="db-wallet-foot-count" id="db-wallet-foot-count"><span id="db-wallet-count">3</span> / <span id="db-wallet-total">5</span></span>
+            </div>
+            <div class="db-wallet-sep" id="db-wallet-sep2"></div>
+            <div class="db-wallet-qr-section">
+              <div class="db-wallet-qr-frame">
+                <div class="db-wallet-br tl" id="db-wallet-br-tl"></div>
+                <div class="db-wallet-br tr" id="db-wallet-br-tr"></div>
+                <div class="db-wallet-br bl" id="db-wallet-br-bl"></div>
+                <div class="db-wallet-br br" id="db-wallet-br-br"></div>
+                <svg width="90" height="90" viewBox="0 0 36 36" fill="#111">
                   <rect x="2" y="2" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/><rect x="5" y="5" width="8" height="8" rx="1"/>
                   <rect x="20" y="2" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/><rect x="23" y="5" width="8" height="8" rx="1"/>
                   <rect x="2" y="20" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/><rect x="5" y="23" width="8" height="8" rx="1"/>
@@ -441,21 +478,12 @@
                   <rect x="20" y="26" width="4" height="4"/><rect x="26" y="26" width="4" height="4"/>
                 </svg>
               </div>
-            </div>
-            <div class="db-wallet-body">
-              <div class="db-wallet-row">
-                <div><div class="db-wallet-field-label">Titulaire</div><div class="db-wallet-field-val">Pierre Dubois</div></div>
-                <div style="text-align:right">
-                  <div class="db-wallet-field-label" id="db-wallet-mode-label">Tampons</div>
-                  <div class="db-wallet-field-val"><span id="db-wallet-count">3</span> / <span id="db-wallet-total">5</span></div>
-                </div>
-              </div>
-              <div class="db-wallet-stamps" id="db-wallet-stamps"></div>
-              <div class="db-wallet-progress"><div class="db-wallet-progress-bar" id="db-wallet-bar"></div></div>
-              <div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,0.45);font-family:'Manrope',sans-serif">Récompense : <span id="db-wallet-reward">—</span></div>
+              <p class="db-wallet-scan-lbl" id="db-wallet-scan-lbl">Scanner pour valider</p>
             </div>
           </div>
+          </div><!-- /db-card-canvas -->
         </div>
+        </div><!-- /flex-center-wrapper -->
       </div>
     </div>
   </section>
@@ -488,13 +516,17 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script>
+function contrastColor(hex){var h=(hex||'').replace('#','');if(h.length<6)return '#ffffff';var r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255;var lin=function(c){return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);};var L=0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);return L>0.179?'#1a1a1a':'#ffffff';}
 let typ='visit',busy=false;
-let dbSt={mode:'tampons',cardType:'compact',bgType:'degrade',c1:'#FF2D78',c2:'#985986',angle:135,soloColor:'#FF2D78',acc1:'#FF2D78',acc2:'#9B59B6',accentMode:'mono',textColor:'#ffffff',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:true,opacity:5,pointsGoal:1000,_imgUrl:null};
+let dbSt={mode:'tampons',cardType:'compact',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:true,opacity:5,pointsGoal:1000,_imgUrl:null};
 
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
+  const pageEl=document.querySelector('.page');
+  if(pageEl){if(id==='s3'){pageEl.style.padding='24px 1.5rem 0';pageEl.style.overflow='hidden';pageEl.style.alignItems='stretch';}else{pageEl.style.padding='';pageEl.style.overflow='';pageEl.style.alignItems='';}}
+
   const idx={s1:-1,s2:0,s3:1,s4:2}[id]??-1;
   ['ns1','ns2','ns3'].forEach((nid,i)=>{
     const el=document.getElementById(nid);if(!el)return;
@@ -515,6 +547,7 @@ function pickType(t,el){
   el.classList.add('sl');
   const sub=document.getElementById('s3-subtitle');
   if(sub)sub.textContent=(t==='visit'?'Tampons par visite':'Points par euro dépensé')+' · Prévisualisation en direct';
+  dbSwitchMode(t==='visit'?'tampons':'points',null);
   setTimeout(()=>goTo('s3'),180);
 }
 
@@ -523,11 +556,12 @@ function dbGetBg(){
   if(dbSt.bgType==='image'&&dbSt._imgUrl)return 'url('+dbSt._imgUrl+') center/cover';
   return 'linear-gradient('+dbSt.angle+'deg,#1a0a2e 0%,'+dbSt.c1+' 50%,'+dbSt.c2+' 100%)';
 }
-function dbApplyCardBg(){const bg=dbGetBg();['db-card-bg','db-wallet-bg'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.background=bg;});}
+function dbGetBgNoImage(){if(dbSt.bgType==='couleur')return dbSt.soloColor;return 'linear-gradient('+dbSt.angle+'deg,#1a0a2e 0%,'+dbSt.c1+' 50%,'+dbSt.c2+' 100%)';}
+function dbApplyCardBg(){const bg=dbGetBg();const c=document.getElementById('db-card-bg');if(c)c.style.background=bg;const w=document.getElementById('db-wallet-bg');if(w)w.style.background=dbSt.bgType==='image'?dbGetBgNoImage():bg;}
 function dbGetAccentBg(){return dbSt.accentMode==='degrade'?'linear-gradient(135deg,'+dbSt.acc1+','+dbSt.acc2+')':dbSt.acc1;}
 
-function dbSwitchCard(type,btn){dbSt.cardType=type;btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-card-compact').style.display=type==='compact'?'block':'none';document.getElementById('db-card-wallet').style.display=type==='wallet'?'block':'none';}
-function dbSwitchMode(mode,btn){dbSt.mode=mode;btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const ip=mode==='points';document.getElementById('db-stamps-section').style.display=ip?'none':'block';document.getElementById('db-points-section').style.display=ip?'block':'none';document.getElementById('db-stamps-display').style.display=ip?'none':'block';document.getElementById('db-points-display').style.display=ip?'block':'none';document.getElementById('db-wallet-mode-label').textContent=ip?'Points':'Tampons';const lbl=document.getElementById('stamp-label-lbl');if(lbl)lbl.textContent=ip?'Label des points':'Label des tampons';}
+function dbSwitchCard(type,btn){dbSt.cardType=type;const grp=btn.closest('.db-tab-group');grp.querySelectorAll('.db-tab-btn').forEach(b=>{b.classList.remove('active');b.style.color='rgba(58,48,40,0.5)';});btn.classList.add('active');btn.style.color='#3a3028';document.getElementById('db-card-compact').style.display=type==='compact'?'block':'none';document.getElementById('db-card-wallet').style.display=type==='wallet'?'block':'none';}
+function dbSwitchMode(mode,btn){dbSt.mode=mode;if(btn){btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}const ip=mode==='points';document.getElementById('db-stamps-section').style.display=ip?'none':'block';document.getElementById('db-points-section').style.display=ip?'block':'none';document.getElementById('db-stamps-display').style.display=ip?'none':'block';document.getElementById('db-points-display').style.display=ip?'block':'none';const wsb=document.getElementById('db-wallet-stamps-block');if(wsb)wsb.style.display=ip?'none':'block';const wpb=document.getElementById('db-wallet-points-block');if(wpb)wpb.style.display=ip?'block':'none';const wfc=document.getElementById('db-wallet-foot-count');if(wfc)wfc.style.display=ip?'none':'block';const lbl=document.getElementById('stamp-label-lbl');if(lbl)lbl.textContent=ip?'Label des points':'Label des tampons';}
 function dbSwitchBg(type,btn){dbSt.bgType=type;btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-single-color-section').style.display=type==='couleur'?'block':'none';document.getElementById('db-gradient-section').style.display=type==='degrade'?'block':'none';document.getElementById('db-image-section').style.display=type==='image'?'block':'none';dbApplyCardBg();}
 function dbSwitchAccent(mode,btn){dbSt.accentMode=mode;btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-accent-mono').style.display=mode==='mono'?'block':'none';document.getElementById('db-accent-degrade').style.display=mode==='degrade'?'block':'none';dbRenderStamps();}
 
@@ -548,31 +582,87 @@ function dbLoadBgImage(input){
   };
   r.readAsDataURL(f);
 }
-function dbUpdateAccent1(val){dbSt.acc1=val;['db-swatch-acc1','db-swatch-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.background=val;});['db-hex-acc1','db-hex-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=val;});dbRenderStamps();}
+function dbUpdateAccent1(val){dbSt.acc1=val;['db-swatch-acc1','db-swatch-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.background=val;});['db-hex-acc1','db-hex-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=val;});dbRenderStamps();dbRefreshWallet();}
 function dbUpdateAccentHex1(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent1(val);}
-function dbUpdateAccent2(val){dbSt.acc2=val;const s=document.getElementById('db-swatch-acc2');if(s)s.style.background=val;const h=document.getElementById('db-hex-acc2');if(h)h.value=val;dbRenderStamps();}
+function dbUpdateAccent2(val){dbSt.acc2=val;const s=document.getElementById('db-swatch-acc2');if(s)s.style.background=val;const h=document.getElementById('db-hex-acc2');if(h)h.value=val;dbRenderStamps();dbRefreshWallet();}
 function dbUpdateAccentHex2(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent2(val);}
-function dbUpdateTextColor(val){dbSt.textColor=val;document.getElementById('db-swatch-text').style.background=val;document.getElementById('db-hex-text').value=val;document.getElementById('db-card-name').style.color=val;document.getElementById('db-wallet-name').style.color=val;}
+function dbUpdateTextColor(val){dbSt.textColor=val;document.getElementById('db-swatch-text').style.background=val;document.getElementById('db-hex-text').value=val;document.getElementById('db-card-name').style.color=val;dbRefreshWallet();}
 function dbUpdateTextColorHex(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateTextColor(val);}
-function dbSetFont(font,btn){dbSt.font=font;document.querySelectorAll('#db-font-grid .db-font-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-card-name').style.fontFamily="'"+font+"',sans-serif";document.getElementById('db-wallet-name').style.fontFamily="'"+font+"',sans-serif";}
+function dbSetFont(font,btn){dbSt.font=font;document.querySelectorAll('#db-font-grid .db-font-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-card-name').style.fontFamily="'"+font+"',sans-serif";const wn=document.getElementById('db-wallet-name');if(wn)wn.style.fontFamily="'"+font+"',sans-serif";}
 function dbUpdateName(val){dbSt.name=val;const u=val.toUpperCase();document.getElementById('db-card-name').textContent=u||'—';document.getElementById('db-wallet-name').textContent=u||'—';}
 function dbUpdateStampLabel(val){dbSt.stampLabel=val;document.getElementById('db-stamp-label-card').textContent=val.toUpperCase();}
 function dbUpdateReward(val){dbSt.reward=val;document.getElementById('db-reward-text').textContent=val||'récompense';document.getElementById('db-wallet-reward').textContent=val||'—';}
-function dbUpdateStamps(val){dbSt.total=parseInt(val);dbSt.filled=Math.min(dbSt.filled,dbSt.total);document.getElementById('stamp-count-badge').textContent=val;document.getElementById('db-count-total').textContent=val;document.getElementById('db-wallet-total').textContent=val;document.getElementById('db-remaining').textContent=dbSt.total-dbSt.filled;dbRenderStamps();dbUpdateWalletBar();}
+function dbUpdateStamps(val){dbSt.total=parseInt(val);dbSt.filled=Math.min(dbSt.filled,dbSt.total);document.getElementById('stamp-count-badge').textContent=val;document.getElementById('db-count-total').textContent=val;const wt=document.getElementById('db-wallet-total');if(wt)wt.textContent=val;document.getElementById('db-remaining').textContent=dbSt.total-dbSt.filled;const wr=document.getElementById('db-wallet-rem');if(wr)wr.textContent=dbSt.total-dbSt.filled;dbRenderStamps();dbUpdateWalletBar();}
 function dbUpdatePoints(val){dbSt.pointsGoal=parseInt(val);document.getElementById('points-goal-badge').textContent=val;const lbl=document.getElementById('db-points-goal-label');if(lbl)lbl.textContent='Palier : '+parseInt(val).toLocaleString();}
 function dbRenderStamps(){
   const row=document.getElementById('db-points-row');row.innerHTML='';
-  for(let i=0;i<dbSt.total;i++){const d=document.createElement('div');d.className='db-point'+(i<dbSt.filled?' filled':'');if(i<dbSt.filled)d.style.background=dbGetAccentBg();row.appendChild(d);}
-  const wRow=document.getElementById('db-wallet-stamps');wRow.innerHTML='';
-  for(let i=0;i<dbSt.total;i++){const d=document.createElement('div');d.className='db-wallet-stamp'+(i<dbSt.filled?' filled':'');if(i<dbSt.filled)d.style.background='rgba(255,255,255,0.85)';wRow.appendChild(d);}
+  const stampPx=dbSt.total<=5?40:dbSt.total<=8?32:dbSt.total<=12?26:20;
+  const chkColor=contrastColor(dbSt.acc1);
+  const chkSvg='<svg viewBox="0 0 24 24" fill="none" stroke="'+chkColor+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%"><path d="M5 13l4 4L19 7"/></svg>';
+  for(let i=0;i<dbSt.total;i++){
+    const d=document.createElement('div');
+    d.className='db-point'+(i<dbSt.filled?' filled':'');
+    d.style.cssText='width:'+stampPx+'px;height:'+stampPx+'px;display:flex;align-items:center;justify-content:center;';
+    if(i<dbSt.filled){d.style.background=dbGetAccentBg();d.innerHTML=chkSvg;}
+    row.appendChild(d);
+  }
+  dbRenderWalletStamps();
 }
-function dbUpdateWalletBar(){const pct=(dbSt.filled/dbSt.total)*100;document.getElementById('db-wallet-bar').style.width=pct+'%';}
+function dbRenderWalletStamps(){
+  const acc=dbSt.acc1;
+  const stampPxW=dbSt.total<=5?40:dbSt.total<=8?32:dbSt.total<=12?26:20;
+  const chkColor=contrastColor(acc);
+  const wRow=document.getElementById('db-wallet-stamps');if(!wRow)return;
+  wRow.innerHTML='';
+  for(let i=0;i<dbSt.total;i++){
+    const el=document.createElement('div');
+    el.className='db-wallet-stamp-item';
+    el.style.width=stampPxW+'px';el.style.height=stampPxW+'px';
+    if(i<dbSt.filled){
+      el.style.background=acc;
+      el.style.boxShadow='0 4px 14px '+acc+'55';
+      el.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="'+chkColor+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%"><path d="M5 13l4 4L19 7"/></svg>';
+    } else {
+      el.style.border='2px solid '+acc+'35';
+      el.style.background=acc+'08';
+    }
+    wRow.appendChild(el);
+  }
+}
+function dbUpdateWalletBar(){const pct=(dbSt.filled/dbSt.total)*100;const bar=document.getElementById('db-wallet-bar');if(bar)bar.style.width=pct+'%';}
+function dbRefreshWallet(){
+  const acc=dbSt.acc1;
+  const txt=dbSt.textColor;
+  const n=document.getElementById('db-wallet-name');if(n){n.style.color=acc;n.style.fontFamily="'"+dbSt.font+"',sans-serif";}
+  const cl=document.getElementById('db-wallet-client');if(cl)cl.style.color=acc;
+  const sub=document.getElementById('db-wallet-subtitle');if(sub)sub.style.color=txt+'55';
+  const scan=document.getElementById('db-wallet-scan-lbl');if(scan)scan.style.color=txt+'55';
+  const tlbl=document.getElementById('db-wallet-titulaire-lbl');if(tlbl)tlbl.style.color=txt+'55';
+  const slbl=document.getElementById('db-wallet-stamp-lbl');if(slbl)slbl.style.color=txt+'55';
+  const plbl=document.getElementById('db-wallet-pts-lbl-top');if(plbl)plbl.style.color=txt+'55';
+  const fc=document.getElementById('db-wallet-foot-count');if(fc)fc.style.color=acc;
+  const rem=document.getElementById('db-wallet-rem');if(rem)rem.style.color=acc;
+  const pts=document.getElementById('db-wallet-pts-num');if(pts)pts.style.color=acc;
+  const ptsU=document.getElementById('db-wallet-pts-unit');if(ptsU)ptsU.style.color=acc;
+  const bar=document.getElementById('db-wallet-bar');if(bar)bar.style.background=acc;
+  const d1=document.getElementById('db-wallet-deco1');if(d1)d1.style.border='72px solid '+txt+'07';
+  const d2=document.getElementById('db-wallet-deco2');if(d2)d2.style.border='52px solid '+txt+'04';
+  document.querySelectorAll('#db-card-wallet .db-wallet-sep').forEach(s=>s.style.background=txt+'18');
+  document.querySelectorAll('#db-card-wallet .db-wallet-lbl').forEach(l=>l.style.color=txt+'55');
+  const btl=document.getElementById('db-wallet-br-tl');if(btl){btl.style.borderTopColor=acc;btl.style.borderLeftColor=acc;}
+  const btr=document.getElementById('db-wallet-br-tr');if(btr){btr.style.borderTopColor=acc;btr.style.borderRightColor=acc;}
+  const bbl=document.getElementById('db-wallet-br-bl');if(bbl){bbl.style.borderBottomColor=acc;bbl.style.borderLeftColor=acc;}
+  const bbr=document.getElementById('db-wallet-br-br');if(bbr){bbr.style.borderBottomColor=acc;bbr.style.borderRightColor=acc;}
+  const ftxt=document.getElementById('db-wallet-foot-left');if(ftxt)ftxt.style.color=txt+'70';
+  dbRenderWalletStamps();
+  dbUpdateWalletBar();
+}
 function dbToggleWatermark(){dbSt.watermark=!dbSt.watermark;document.getElementById('db-watermark-toggle').classList.toggle('off',!dbSt.watermark);document.getElementById('db-card-watermark').style.display=dbSt.watermark?'block':'none';}
 function dbUpdateOpacity(val){dbSt.opacity=val;document.getElementById('db-opacity-label').textContent='Opacité : '+val+'%';document.getElementById('db-card-watermark').style.color='rgba(255,255,255,'+val/100+')';}
 
 function dbInit(){
-  dbSt={mode:'tampons',cardType:'compact',bgType:'degrade',c1:'#FF2D78',c2:'#985986',angle:135,soloColor:'#FF2D78',acc1:'#FF2D78',acc2:'#9B59B6',accentMode:'mono',textColor:'#ffffff',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:true,opacity:5,pointsGoal:1000,_imgUrl:null};
-  dbApplyCardBg();dbRenderStamps();dbUpdateWalletBar();
+  dbSt={mode:'tampons',cardType:'compact',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:true,opacity:5,pointsGoal:1000,_imgUrl:null};
+  dbApplyCardBg();dbRenderStamps();dbUpdateWalletBar();dbRefreshWallet();
 }
 
 async function submit(){
@@ -649,9 +739,11 @@ function renderS4Card(){
   const textC=dbSt.textColor;
   const font=dbSt.font;
   const stampPx=total<=5?40:total<=8?32:total<=12?26:20;
+  const chkColor=contrastColor(accFirst);
+  const chkSvg='<svg viewBox="0 0 24 24" fill="none" stroke="'+chkColor+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%"><path d="M5 13l4 4L19 7"/></svg>';
   const stamps=Array.from({length:total},(_,i)=>{
     const on=i<filled;
-    return '<div style="width:'+stampPx+'px;height:'+stampPx+'px;border-radius:50%;flex-shrink:0;'+(on?'background:'+acc+';box-shadow:0 2px 10px '+accFirst+'55':'border:1.5px solid '+accFirst+'44;background:transparent')+'"></div>';
+    return '<div style="width:'+stampPx+'px;height:'+stampPx+'px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;'+(on?'background:'+acc+';box-shadow:0 2px 10px '+accFirst+'55':'border:1.5px solid '+accFirst+'44;background:transparent')+'">'+(on?chkSvg:'')+'</div>';
   }).join('');
   const qr='<div style="position:absolute;top:5%;right:4%;width:13%;aspect-ratio:1/1;border-radius:12px;display:grid;grid-template-columns:1fr 1fr;padding:1.8%;gap:10%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1)"><div style="border-radius:2px;background:rgba(255,255,255,0.18)"></div><div style="border-radius:2px;background:rgba(255,255,255,0.18)"></div><div style="border-radius:2px;background:rgba(255,255,255,0.18)"></div><div style="border-radius:2px;background:rgba(255,255,255,0.18)"></div></div>';
   const wm=dbSt.watermark?'<div style="position:absolute;right:6%;top:50%;transform:translateY(-48%);font-size:140px;font-weight:900;color:rgba(255,255,255,'+dbSt.opacity/100+');line-height:1;pointer-events:none">Q</div>':'';
@@ -683,7 +775,7 @@ function renderS4Card(){
         '</div>'+
       '</div>'+
     '</div>';
-  el.style.cssText='background:'+bg+';border-radius:16px;overflow:hidden;width:100%;aspect-ratio:1.6/1;position:relative;box-shadow:0 24px 60px -16px '+accFirst+'33;container-type:inline-size';
+  el.style.cssText='background:'+bg+';border-radius:16px;overflow:hidden;width:100%;aspect-ratio:380/240;position:relative;box-shadow:0 24px 60px -16px '+accFirst+'33;container-type:inline-size';
   el.style.fontFamily="'"+font+"',sans-serif";
 }
 

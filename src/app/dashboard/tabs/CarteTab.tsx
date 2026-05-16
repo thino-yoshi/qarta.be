@@ -76,6 +76,24 @@ function GradientBuilder({
   );
 }
 
+/* ─── Presets couleurs ───────────────────────────────────────────── */
+const COLOR_PRESETS = [
+  // Rangée 1
+  { name:"Rose Nuit",   bg:["#FF2D78","#985986"], acc:["#FF2D78","#9B59B6"], txt:"#ffffff", angle:135, type:"gradient" as const },
+  { name:"Nuit Dorée",  bg:["#141626","#2c1f50"], acc:["#F5C842"],           txt:"#F5C842", angle:135, type:"gradient" as const },
+  { name:"Émeraude",   bg:["#1B4332","#2d6a4f"], acc:["#95D5B2"],           txt:"#d8f3dc", angle:135, type:"gradient" as const },
+  { name:"Cobalt",      bg:["#03045E","#0096C7"], acc:["#90E0EF"],           txt:"#CAF0F8", angle:135, type:"gradient" as const },
+  { name:"Craie",       bg:["#F5F0E8"],           acc:["#2c1f50"],           txt:"#2c1f50", angle:135, type:"color"    as const },
+  { name:"Braise",      bg:["#F94144","#F8961E"], acc:["#F8961E"],           txt:"#ffffff", angle:135, type:"gradient" as const },
+  // Rangée 2
+  { name:"Lavande",     bg:["#4A1D96","#7C3AED"], acc:["#DDD6FE"],           txt:"#EDE9FE", angle:135, type:"gradient" as const },
+  { name:"Bordeaux",    bg:["#4C0519","#881337"], acc:["#FCA5A5"],           txt:"#FEE2E2", angle:135, type:"gradient" as const },
+  { name:"Teal Glacé",  bg:["#134E4A","#0F766E"], acc:["#2DD4BF"],           txt:"#CCFBF1", angle:135, type:"gradient" as const },
+  { name:"Café",        bg:["#292524","#44403C"], acc:["#D6B896"],           txt:"#F5EFE8", angle:135, type:"gradient" as const },
+  { name:"Sakura",      bg:["#FFF0F5"],           acc:["#DB2777"],           txt:"#831843", angle:135, type:"color"    as const },
+  { name:"Soleil",      bg:["#92400E","#B45309"], acc:["#FDE68A"],           txt:"#FEF3C7", angle:135, type:"gradient" as const },
+] as const;
+
 /* ─── CarteTab ───────────────────────────────────────────────────── */
 
 export default function CarteTab({ merchant, loyaltyCard }: Props) {
@@ -119,6 +137,19 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
 
   const set = <K extends keyof CardDesign>(key: K, val: CardDesign[K]) =>
     setDesign((d) => ({ ...d, [key]: val }));
+
+  const applyPreset = (p: typeof COLOR_PRESETS[number]) => {
+    setDesign((d) => ({
+      ...d,
+      bgType:          p.type,
+      bgColors:        [...p.bg],
+      bgGradientAngle: p.angle,
+      accentColors:    [...p.acc],
+      accentAngle:     p.angle,
+      textColor:       p.txt,
+      bgImageUrl:      null,   // reset l'image si présente
+    }));
+  };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -178,23 +209,6 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
               }
             >
               {label}
-            </button>
-          ))}
-        </div>
-
-        {/* ── Onglets Compact / Wallet (niveau 2) ── */}
-        <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-          {(["compact", "wallet"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setEditorTab(tab)}
-              className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all"
-              style={editorTab === tab
-                ? { background: "rgba(74,158,255,0.15)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.25)" }
-                : { color: "rgba(255,255,255,0.35)", border: "1px solid transparent" }
-              }
-            >
-              {tab === "compact" ? "🃏  Carte compacte" : "📱  Carte Wallet"}
             </button>
           ))}
         </div>
@@ -538,16 +552,49 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
       {/* ── Panneau droit : aperçu ── */}
 
       {/* Spacer */}
-      <div className="hidden xl:block xl:w-[490px] xl:flex-shrink-0" />
+      <div className="hidden xl:block xl:w-[420px] xl:flex-shrink-0" />
 
-      {/* Panel fixe */}
+      {/* Panel fixe — canvas crème · 420px → canvas 400px → carte 380px */}
       <div
-        className="xl:fixed xl:top-0 xl:right-0 xl:w-[490px] xl:h-screen xl:overflow-y-auto xl:z-20
-                   sticky top-0 w-full"
-        style={{ background: "#0b1220", borderLeft: "1px solid rgba(255,255,255,0.07)" }}
+        className="xl:fixed xl:top-[32px] xl:right-4 xl:w-[420px] xl:z-20 xl:rounded-2xl
+                   sticky top-0 w-full flex flex-col items-center"
+        style={{
+          background: "#ede9e0",
+          borderLeft: "1.5px solid rgba(200,180,140,0.45)",
+          height: "calc(100vh - 64px)",
+        }}
       >
-        <div className="p-5">
+        {/* Onglets en haut */}
+        <div className="w-full px-2 pt-4 pb-0 flex-shrink-0">
+          <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(58,48,40,0.08)" }}>
+            {(["compact", "wallet"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setEditorTab(tab)}
+                className="flex-1 py-2 rounded-xl text-[12px] font-semibold transition-all"
+                style={editorTab === tab
+                  ? { background: "rgba(58,48,40,0.15)", color: "#3a3028" }
+                  : { color: "rgba(58,48,40,0.45)" }
+                }
+              >
+                {tab === "compact" ? "🃏  Carte compacte" : "📱  Carte Wallet"}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Canvas centré */}
+        <div className="flex-1 flex items-center justify-center w-full px-2">
+        {/* Canvas avec ombre derrière la carte */}
+        <div style={{
+          width: "100%",
+          maxWidth: 400,
+          borderRadius: 20,
+          padding: "22px 10px",
+          background: "radial-gradient(ellipse 92% 58% at 50% 50%, rgba(0,0,0,0.28) 0%, transparent 72%)",
+        }}>
           <WalletCard
+            key={editorTab}
             design={design}
             clientName="Pierre Dubois"
             currentStamps={previewStamps}
@@ -555,6 +602,57 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
             defaultExpanded={editorTab === "wallet"}
           />
         </div>
+        </div>{/* fin flex-1 centré */}
+
+        {/* ── Thèmes prêts à l'emploi ── */}
+        <div className="flex-shrink-0 w-full px-3 pb-4 pt-1">
+          <p className="text-center mb-2" style={{
+            fontSize: 9, fontWeight: 700, letterSpacing: "0.18em",
+            textTransform: "uppercase", color: "rgba(58,48,40,0.38)"
+          }}>
+            Thèmes rapides
+          </p>
+          <div className="flex gap-2 justify-center flex-wrap">
+            {COLOR_PRESETS.map((p, i) => {
+              const isActive =
+                design.bgColors[0] === p.bg[0] &&
+                design.accentColors[0] === p.acc[0];
+              return (
+                <button
+                  key={i}
+                  onClick={() => applyPreset(p)}
+                  title={p.name}
+                  style={{
+                    width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+                    background: p.type === "gradient"
+                      ? `linear-gradient(${p.angle}deg, ${[...p.bg].join(", ")})`
+                      : p.bg[0],
+                    border: isActive
+                      ? "2.5px solid rgba(58,48,40,0.7)"
+                      : "2px solid rgba(255,255,255,0.55)",
+                    cursor: "pointer",
+                    boxShadow: isActive
+                      ? "0 0 0 3px rgba(58,48,40,0.15)"
+                      : "0 2px 8px rgba(0,0,0,0.18)",
+                    transition: "transform 0.15s, box-shadow 0.15s",
+                    position: "relative", overflow: "hidden",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.12)")}
+                  onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  {/* Dot accent en bas à droite */}
+                  <span style={{
+                    position: "absolute", bottom: 4, right: 4,
+                    width: 9, height: 9, borderRadius: "50%",
+                    background: p.acc[0],
+                    border: "1.5px solid rgba(255,255,255,0.7)",
+                  }} />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
       </div>
 
     </div>

@@ -105,13 +105,13 @@ export default function CTASection({ content }: { content?: Record<string, unkno
 
       {/* ── Steps ─────────────────────────────────────────────────────── */}
       <div className="mx-auto max-w-7xl px-6 lg:px-10 pt-20 pb-12">
-        <div className="text-center max-w-2xl mx-auto">
+        <div className="text-center max-w-4xl mx-auto">
           <span className="inline-block px-3 py-1 rounded-full bg-[#eaf2fd] text-[#2c7be5] text-[11px] font-semibold tracking-[0.18em] uppercase">
             {stepsBadge}
           </span>
           <h2
             className="mt-6 font-display text-[#0f2044]"
-            style={{ fontSize: "clamp(2rem, 4.2vw, 3.4rem)", fontWeight: 400, letterSpacing: "0.06em", lineHeight: 1.15 }}
+            style={{ fontSize: "clamp(2rem, 4.2vw, 3.4rem)", fontWeight: 600, letterSpacing: "0.06em", lineHeight: 1.15, whiteSpace: "nowrap" }}
           >
             {stepsTitle}
           </h2>
@@ -149,7 +149,7 @@ export default function CTASection({ content }: { content?: Record<string, unkno
           </span>
           <h2
             className="mt-6 font-display text-[#0f2044] whitespace-nowrap"
-            style={{ fontSize: "clamp(1.4rem, 3vw, 2.6rem)", fontWeight: 600, letterSpacing: "0.06em" }}
+            style={{ fontSize: "clamp(2rem, 4.2vw, 3.4rem)", fontWeight: 600, letterSpacing: "0.06em" }}
           >
             {pricingTitle}
           </h2>
@@ -283,10 +283,10 @@ export default function CTASection({ content }: { content?: Record<string, unkno
                 className="font-black leading-none mb-1 tabular-nums"
                 style={{ fontSize: "clamp(26px,3.5vw,38px)", color: "#7ec4ff", letterSpacing: "-0.04em" }}
               >
-                {fmtF(heroGains.total)}
+                {fmtF(heroGains.total / 12)}
               </div>
               <p className="text-[10.5px] mb-4" style={{ color: "rgba(255,255,255,0.3)" }}>
-                de ventes supplémentaires / an
+                de ventes supplémentaires / mois
               </p>
 
               <div className="grid grid-cols-2 gap-1.5 mb-5 flex-1">

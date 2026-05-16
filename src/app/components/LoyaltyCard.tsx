@@ -53,14 +53,14 @@ export const DEFAULT_DESIGN: CardDesign = {
   stampLabel:         "POINTS COLLECTÉS",
   stampsRequired:     5,
   rewardDescription:  "récompense offerte",
-  bgType:             "color",
-  bgColors:           ["#141626"],
+  bgType:             "gradient",
+  bgColors:           ["#4A1D96", "#7C3AED"],
   bgGradientAngle:    135,
   bgImageUrl:         null,
   bgImageOpacity:     0.3,
-  accentColors:       ["#FF2D78", "#9B59B6"],
+  accentColors:       ["#DDD6FE"],
   accentAngle:        135,
-  textColor:          "#FF2D78",
+  textColor:          "#EDE9FE",
   fontFamily:         "Manrope",
   showQ:              true,
   qOpacity:           0.05,
@@ -79,6 +79,18 @@ export const DEFAULT_DESIGN: CardDesign = {
 };
 
 /* ─── Helpers ────────────────────────────────────────────────────── */
+
+/** Retourne #ffffff ou #1a1a1a selon la luminance du hex pour garantir le contraste */
+function contrastColor(hex: string): string {
+  const h = hex.replace("#", "");
+  if (h.length < 6) return "#ffffff";
+  const r = parseInt(h.slice(0, 2), 16) / 255;
+  const g = parseInt(h.slice(2, 4), 16) / 255;
+  const b = parseInt(h.slice(4, 6), 16) / 255;
+  const lin = (c: number) => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  const L = 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+  return L > 0.179 ? "#1a1a1a" : "#ffffff";
+}
 
 function buildGradient(colors: string[], angle: number) {
   if (!colors?.length) return "#141626";
@@ -146,7 +158,7 @@ export default function LoyaltyCard({
       className="relative rounded-2xl overflow-hidden w-full select-none"
       style={{
         ...bgStyle,
-        aspectRatio: "1.6 / 1",
+        aspectRatio: "380 / 240",
         fontFamily: `'${d.fontFamily}', sans-serif`,
         boxShadow: `0 24px 60px -16px ${accentFirst}33`,
       }}
@@ -286,11 +298,20 @@ export default function LoyaltyCard({
                   <div key={i} className="rounded-full flex-shrink-0"
                     style={{
                       width: stampPx, height: stampPx,
+                      display: "flex", alignItems: "center", justifyContent: "center",
                       ...(i < stamps
                         ? { background: accentGrad, boxShadow: `0 2px 10px ${accentFirst}55` }
                         : { border: `1.5px solid ${accentFirst}44`, background: "transparent" }
                       ),
-                    }} />
+                    }}>
+                    {i < stamps && (
+                      <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(accentFirst)}
+                        strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                        style={{ width: "52%", height: "52%" }}>
+                        <path d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
@@ -366,6 +387,7 @@ export function CardQRBack({ design: raw, clientName = "Titulaire", currentStamp
     ? Math.min(currentPoints / (d.pointsGoal || 1), 1)
     : d.stampsRequired > 0 ? stamps / d.stampsRequired : 0;
   const COLS         = Math.min(d.walletStampCols ?? 5, d.stampsRequired);
+  const stampPxW     = d.stampsRequired <= 5 ? 40 : d.stampsRequired <= 8 ? 32 : d.stampsRequired <= 12 ? 26 : 20;
   const titleSize    = d.walletTitleSize   ?? 34;
   const nameSize     = d.walletNameSize    ?? 26;
   const qrSize       = d.walletQRSize      ?? 130;
@@ -395,7 +417,7 @@ export function CardQRBack({ design: raw, clientName = "Titulaire", currentStamp
       </>}
 
       {/* Nom du commerce */}
-      <h2 style={{ margin: 0, fontSize: titleSize, fontWeight: 900, color: accentFirst,
+      <h2 style={{ margin: 0, fontSize: titleSize, fontWeight: 900, color: d.textColor,
         letterSpacing: "-0.01em", lineHeight: 1.1 }}>
         {d.cardName}
       </h2>
@@ -409,7 +431,7 @@ export function CardQRBack({ design: raw, clientName = "Titulaire", currentStamp
         color: `${d.textColor}55`, letterSpacing: "0.15em", textTransform: "uppercase" }}>
         Titulaire
       </p>
-      <h3 style={{ margin: "5px 0 0", fontSize: nameSize, fontWeight: 800, color: accentFirst, letterSpacing: "-0.01em" }}>
+      <h3 style={{ margin: "5px 0 0", fontSize: nameSize, fontWeight: 800, color: d.textColor, letterSpacing: "-0.01em" }}>
         {clientName}
       </h3>
 
@@ -424,10 +446,10 @@ export function CardQRBack({ design: raw, clientName = "Titulaire", currentStamp
             Points cumulés
           </p>
           <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 20 }}>
-            <span style={{ fontSize: pointsSize, fontWeight: 900, color: accentFirst, lineHeight: 1 }}>
+            <span style={{ fontSize: pointsSize, fontWeight: 900, color: d.textColor, lineHeight: 1 }}>
               {currentPoints.toLocaleString()}
             </span>
-            <span style={{ fontSize: Math.round(pointsSize * 0.38), fontWeight: 700, color: accentFirst, opacity: 0.75 }}>PTS</span>
+            <span style={{ fontSize: Math.round(pointsSize * 0.38), fontWeight: 700, color: d.textColor, opacity: 0.75 }}>PTS</span>
           </div>
         </>
       ) : (
@@ -437,11 +459,11 @@ export function CardQRBack({ design: raw, clientName = "Titulaire", currentStamp
             color: `${d.textColor}55`, letterSpacing: "0.15em", textTransform: "uppercase" }}>
             {d.stampLabel}
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: `repeat(${COLS}, 1fr)`,
-            gap: 10, marginBottom: 18 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
             {Array.from({ length: d.stampsRequired }).map((_, i) => (
               <div key={i} style={{
-                aspectRatio: "1/1", borderRadius: "50%",
+                width: stampPxW, height: stampPxW, flexShrink: 0,
+                borderRadius: "50%",
                 display: "flex", alignItems: "center", justifyContent: "center",
                 ...(i < stamps
                   ? { background: accentFirst, boxShadow: `0 4px 14px ${accentFirst}55` }
@@ -449,7 +471,7 @@ export function CardQRBack({ design: raw, clientName = "Titulaire", currentStamp
                 ),
               }}>
                 {i < stamps && (
-                  <svg viewBox="0 0 24 24" fill="none" stroke={bgBase}
+                  <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(accentFirst)}
                     strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
                     style={{ width: "52%", height: "52%" }}>
                     <path d="M5 13l4 4L19 7" />
@@ -473,13 +495,13 @@ export function CardQRBack({ design: raw, clientName = "Titulaire", currentStamp
         <p style={{ margin: 0, fontSize: 12, color: `${d.textColor}70` }}>
           {remaining > 0 ? (
             isPoints
-              ? <>Encore <strong style={{ color: accentFirst }}>{remaining.toLocaleString()} pts</strong> pour votre{" "}
-                  <span style={{ color: accentFirst }}>{d.rewardDescription}</span></>
-              : <>Encore <strong style={{ color: accentFirst }}>{remaining} tampons</strong> pour votre{" "}
-                  <span style={{ color: accentFirst }}>{d.rewardDescription}</span></>
-          ) : <strong style={{ color: accentFirst }}>Récompense disponible 🎉</strong>}
+              ? <>Encore <strong style={{ color: d.textColor }}>{remaining.toLocaleString()} pts</strong> pour votre{" "}
+                  <span style={{ color: d.textColor }}>{d.rewardDescription}</span></>
+              : <>Encore <strong style={{ color: d.textColor }}>{remaining} tampons</strong> pour votre{" "}
+                  <span style={{ color: d.textColor }}>{d.rewardDescription}</span></>
+          ) : <strong style={{ color: d.textColor }}>Récompense disponible 🎉</strong>}
         </p>
-        <span style={{ fontSize: 14, fontWeight: 700, color: accentFirst }}>
+        <span style={{ fontSize: 14, fontWeight: 700, color: d.textColor }}>
           {isPoints
             ? `${currentPoints.toLocaleString()} / ${d.pointsGoal.toLocaleString()}`
             : `${stamps} / ${d.stampsRequired}`}
@@ -547,7 +569,7 @@ export function WalletCard({ design, clientName = "Pierre", currentStamps = 0, c
         {expanded ? "↑  Réduire" : "↓  Voir la carte ouverte dans le Wallet"}
       </button>
 
-      {/* Conteneur qui s'allonge */}
+      {/* Conteneur carte — ratio fixe 380/240 compact · 380/580 wallet */}
       <div
         onClick={handleToggle}
         style={{
@@ -556,13 +578,13 @@ export function WalletCard({ design, clientName = "Pierre", currentStamps = 0, c
           overflow: "hidden",
           borderRadius: 20,
           cursor: "pointer",
-          /* L'allongement : 62.5% = ratio paysage (1/1.6), 185% = portrait tall */
-          paddingBottom: expanded ? "185%" : "62.5%",
+          /* Compact : 240/380×100 = 63.16% | Wallet : 580/380×100 = 152.63% */
+          paddingBottom: expanded ? "152.63%" : "63.16%",
           transition: "padding-bottom 0.65s cubic-bezier(0.4, 0, 0.2, 1)",
           boxShadow: `0 24px 60px -16px ${accentFirst}33`,
         }}
       >
-        {/* Contenu positionné en absolu pour remplir le conteneur */}
+        {/* Contenu absolu — remplir le container (overflow:hidden coupe l'excès) */}
         <div style={{
           position: "absolute",
           top: 0, left: 0, width: "100%",

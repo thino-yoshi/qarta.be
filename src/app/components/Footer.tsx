@@ -60,9 +60,9 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
         style={{ background: "radial-gradient(circle, rgba(74,158,255,0.4), transparent 60%)" }}
       />
 
-      <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-24 pb-12 grid lg:grid-cols-2 gap-16">
+      <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-16 pb-12 grid lg:grid-cols-2 gap-16">
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 mx-auto w-fit">
             <QartaLogo size={52} variant="badge" />
             <QartaWordmark color="#fff" />
           </div>

@@ -1,11 +1,11 @@
 "use client";
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
-import { Coffee, Scissors, ShoppingBag, Cpu, Car, Dumbbell, Utensils, Flower2, Star, Zap, Package, Droplets, type LucideIcon } from "lucide-react";
+import { Coffee, Scissors, ShoppingBag, Cpu, Car, Dumbbell, Utensils, Smile, Star, Zap, Package, Droplets, type LucideIcon } from "lucide-react";
 import { QartaLogo } from "./QartaLogo";
 
 // Pool d'icônes disponibles — on en prend autant que nécessaire (cycliquement)
-const ICON_POOL: LucideIcon[] = [Coffee, Scissors, Utensils, ShoppingBag, Cpu, Car, Dumbbell, Flower2, Star, Zap, Package, Droplets];
+const ICON_POOL: LucideIcon[] = [Coffee, Scissors, Utensils, ShoppingBag, Cpu, Car, Dumbbell, Smile, Star, Zap, Package, Droplets];
 
 const DURATION = 22;
 
@@ -38,7 +38,7 @@ export default function ScrollBusinesses({ content }: Props) {
   const title          = (c.title          as string)   ?? "QARTA s'adapte à";
   const accent         = (c.accent         as string)   ?? "tous";
   const suffix         = (c.suffix         as string)   ?? "les commerces.";
-  const subtitle       = (c.subtitle       as string)   ?? "Du coffee shop à l'atelier de lavage auto, du coiffeur au boucher — chaque commerce local trouve sa place dans l'univers QARTA.";
+  const subtitle       = (c.subtitle       as string)   ?? "Du coffee shop à l'atelier de lavage auto, du coiffeur au boucher, chaque commerce local trouve sa place dans l'univers QARTA.";
   const businessLabels = (c.businessLabels as string[]) ?? ["Coffee shops", "Coiffeurs", "Restaurants", "Boutiques", "High-tech", "Lavage auto", "Fitness", "Beauté"];
 
   const ref = useRef<HTMLElement>(null);
@@ -57,13 +57,6 @@ export default function ScrollBusinesses({ content }: Props) {
           <p className="mt-6 text-white/70 text-[17px] max-w-xl mx-auto leading-relaxed">{subtitle}</p>
 
           <div className="relative mx-auto mt-14 w-full" style={{ height: 480 }}>
-            {/* orbit rings */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="rounded-full border border-white/10" style={{ width: 380, height: 380 }} />
-              <div className="absolute rounded-full border border-white/8"  style={{ width: 520, height: 520 }} />
-              <div className="absolute rounded-full border border-white/5"  style={{ width: 660, height: 660 }} />
-            </div>
-
             {/* center logo */}
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div animate={{ y: [-6, 6, -6] }} transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }} className="relative">

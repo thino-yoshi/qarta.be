@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { QartaLogo, QartaWordmark } from "./QartaLogo";
 
 const NAV_DEFAULT = [
-  { label: "Accueil",    href: "#hero",       scrollId: "hero" },
   { label: "À propos",   href: "#immersion",  scrollId: "scroll-immersion" },
   { label: "Client",     href: "#client",     scrollId: "scroll-client" },
   { label: "Commerçant", href: "#merchant",   scrollId: "scroll-merchant" },
@@ -62,7 +61,17 @@ export default function Header({ content }: { content?: Record<string, unknown> 
             scrolled ? "glass-crystal px-4 py-2" : "px-2 py-1"
           }`}
         >
-          <Link href="/" className="flex items-center gap-3 group" data-testid="header-logo-link">
+          <Link
+            href="/"
+            className="flex items-center gap-3 group"
+            data-testid="header-logo-link"
+            onClick={(e) => {
+              if (onLanding) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
+          >
             <QartaLogo size={40} variant="badge" />
             <QartaWordmark color={scrolled ? "#0f2044" : "#ffffff"} />
           </Link>
