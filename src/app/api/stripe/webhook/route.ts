@@ -4,7 +4,18 @@ import { createAdminClient } from "@/lib/supabase/admin";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-// Next.js App Router : pas de bodyParser à désactiver, on lit req.text() directement
+// Extrait current_period_end de façon compatible avec toutes les versions API Stripe
+function getPeriodEnd(obj: unknown): string | null {
+  const raw = (obj as Record<string, unknown>);
+  // API récentes : billing_cycle_anchor_config ou items.data[0]
+  const ts =
+    (raw.current_period_end as number | undefined) ??
+    ((raw.items as { data?: { current_period_end?: number }[] } | undefined)
+      ?.data?.[0]?.current_period_end);
+  if (!ts || isNaN(ts)) return null;
+  return new Date(ts * 1000).toISOString();
+}
+
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig  = req.headers.get("stripe-signature");
@@ -32,14 +43,14 @@ export async function POST(req: NextRequest) {
       const subscriptionId = session.subscription as string;
       if (!merchantId || !subscriptionId) break;
 
-      // Récupérer la subscription pour avoir current_period_end
-      const sub = await stripe.subscriptions.retrieve(subscriptionId);
+      const sub        = await stripe.subscriptions.retrieve(subscriptionId);
+      const periodEnd  = getPeriodEnd(sub);
 
       await admin.from("merchants").update({
-        subscription_status:        "active",
-        stripe_customer_id:         session.customer as string,
-        stripe_subscription_id:     subscriptionId,
-        stripe_current_period_end:  new Date((sub as unknown as { current_period_end: number }).current_period_end * 1000).toISOString(),
+        subscription_status:       "active",
+        stripe_customer_id:        session.customer as string,
+        stripe_subscription_id:    subscriptionId,
+        ...(periodEnd ? { stripe_current_period_end: periodEnd } : {}),
       }).eq("id", merchantId);
 
       break;
@@ -51,10 +62,12 @@ export async function POST(req: NextRequest) {
       const merchantId = sub.metadata?.merchant_id;
       if (!merchantId) break;
 
+      const periodEnd = getPeriodEnd(sub);
       const newStatus = sub.status === "active" ? "active" : "pending";
+
       await admin.from("merchants").update({
-        subscription_status:       newStatus,
-        stripe_current_period_end: new Date((sub as unknown as { current_period_end: number }).current_period_end * 1000).toISOString(),
+        subscription_status: newStatus,
+        ...(periodEnd ? { stripe_current_period_end: periodEnd } : {}),
       }).eq("id", merchantId);
 
       break;
@@ -81,7 +94,6 @@ export async function POST(req: NextRequest) {
       const customerId = invoice.customer as string;
       if (!customerId) break;
 
-      // Retrouver le marchand via stripe_customer_id
       const { data: merchant } = await admin
         .from("merchants")
         .select("id")
