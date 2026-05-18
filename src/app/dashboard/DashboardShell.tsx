@@ -61,24 +61,24 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
       {/* ── Sidebar ── */}
       <aside
         className="w-60 flex-shrink-0 flex flex-col border-r overflow-y-auto"
-        style={{ background: "rgba(255,255,255,0.02)", borderColor: "rgba(255,255,255,0.07)" }}
+        style={{ background: "#faf8f4", borderColor: "rgba(15,32,68,0.1)" }}
       >
         {/* Logo */}
         <div
           className="flex items-center gap-3 px-5 py-5 border-b"
-          style={{ borderColor: "rgba(255,255,255,0.07)" }}
+          style={{ borderColor: "rgba(15,32,68,0.08)" }}
         >
           <QartaLogo size={56} variant="badge" />
-          <QartaWordmark color="#ffffff" />
+          <QartaWordmark color="#0f2044" />
         </div>
 
         {/* Merchant info card */}
-        <div className="px-3 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-          <div className="rounded-xl px-3 py-3" style={{ background: "rgba(255,255,255,0.04)" }}>
-            <p className="text-[13px] font-semibold text-white truncate">
+        <div className="px-3 py-4 border-b" style={{ borderColor: "rgba(15,32,68,0.08)" }}>
+          <div className="rounded-xl px-3 py-3" style={{ background: "#ffffff", border: "1.5px solid #0f2044" }}>
+            <p className="text-[13px] font-semibold text-[#0f2044] truncate">
               {(merchant?.business_name as string) || "Mon commerce"}
             </p>
-            <p className="text-[11px] text-white/40 truncate mt-0.5">{user.email}</p>
+            <p className="text-[11px] text-[#0f2044]/45 truncate mt-0.5">{user.email}</p>
             <div className="mt-2">
               {isActive ? (
                 <span
@@ -113,13 +113,13 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
                 style={
                   selected
                     ? {
-                        background: "rgba(74,158,255,0.12)",
-                        color: "#4a9eff",
-                        border: "1px solid rgba(74,158,255,0.2)",
+                        background: "#0f2044",
+                        color: "#ffffff",
+                        border: "1px solid #0f2044",
                       }
                     : {
                         background: "transparent",
-                        color: "rgba(255,255,255,0.45)",
+                        color: "#2c7be5",
                         border: "1px solid transparent",
                       }
                 }
@@ -138,9 +138,9 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
             href="/onboarding.html"
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all"
             style={{
-              background: "rgba(74,158,255,0.08)",
-              border: "1px solid rgba(74,158,255,0.15)",
-              color: "rgba(74,158,255,0.7)",
+              background: "#0f2044",
+              border: "1px solid #0f2044",
+              color: "#ffffff",
             }}
           >
             <Rocket size={14} strokeWidth={2} />
@@ -149,12 +149,12 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
         </div>
 
         {/* Logout */}
-        <div className="px-3 py-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <div className="px-3 py-4 border-t" style={{ borderColor: "rgba(15,32,68,0.08)" }}>
           <form action="/api/logout" method="POST">
             <button
               type="submit"
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-white/35 hover:text-white/60 transition-colors"
-              style={{ border: "1px solid rgba(255,255,255,0.06)" }}
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-colors"
+              style={{ color: "rgba(15,32,68,0.4)", border: "1px solid rgba(15,32,68,0.08)" }}
             >
               <LogOut size={14} strokeWidth={2} />
               Déconnexion

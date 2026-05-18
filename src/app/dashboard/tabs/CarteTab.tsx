@@ -198,7 +198,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
 
         {/* ── Onglets mode fidélité (niveau 1) ── */}
         <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
-          {([["stamps", "🎯  Tampons"], ["points", "⭐  Points"]] as const).map(([tab, label]) => (
+          {([["stamps", "Tampons"], ["points", "Points"]] as const).map(([tab, label]) => (
             <button
               key={tab}
               onClick={() => setLoyaltyTab(tab)}
