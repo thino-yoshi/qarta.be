@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle, Rocket, type LucideIcon } from "lucide-react";
+import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle, Rocket, Lock, type LucideIcon } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
 import CarteTab from "./tabs/CarteTab";
 import StatistiquesTab from "./tabs/StatistiquesTab";
@@ -105,13 +105,14 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
         <nav className="flex-1 px-3 py-4 space-y-1">
           {tabs.map(({ id, label, icon: Icon }) => {
             const selected = activeTab === id;
+            const locked = !isActive && (id === "statistiques" || id === "abonnement");
             return (
               <button
                 key={id}
-                onClick={() => setActiveTab(id)}
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left"
+                onClick={() => { if (!locked) setActiveTab(id); }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left ${locked ? "opacity-40 cursor-not-allowed" : ""}`}
                 style={
-                  selected
+                  selected && !locked
                     ? {
                         background: "#0f2044",
                         color: "#ffffff",
@@ -119,14 +120,17 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
                       }
                     : {
                         background: "transparent",
-                        color: "#2c7be5",
+                        color: locked ? "#0f2044" : "#2c7be5",
                         border: "1px solid transparent",
                       }
                 }
               >
                 <Icon size={15} strokeWidth={2} />
                 {label}
-                {selected && <ChevronRight size={13} className="ml-auto opacity-50" />}
+                {locked
+                  ? <Lock size={11} className="ml-auto" />
+                  : selected && <ChevronRight size={13} className="ml-auto opacity-50" />
+                }
               </button>
             );
           })}
