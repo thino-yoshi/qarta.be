@@ -154,7 +154,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
             <button
               type="submit"
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-colors"
-              style={{ color: "rgba(15,32,68,0.4)", border: "1px solid rgba(15,32,68,0.08)" }}
+              style={{ color: "#0f2044", border: "1px solid rgba(15,32,68,0.08)" }}
             >
               <LogOut size={14} strokeWidth={2} />
               Déconnexion
