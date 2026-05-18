@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle, Rocket, Lock, type LucideIcon } from "lucide-react";
+import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle, Rocket, Lock, CheckCircle, type LucideIcon } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
 import CarteTab from "./tabs/CarteTab";
 import StatistiquesTab from "./tabs/StatistiquesTab";
@@ -12,6 +12,7 @@ interface Props {
   user: { id: string; email: string };
   merchant: Record<string, unknown>;
   loyaltyCard: Record<string, unknown> | null;
+  stripeSuccess?: boolean;
   content?: {
     header?:       Record<string, unknown>;
     cards?:        Record<string, unknown>;
@@ -20,7 +21,7 @@ interface Props {
   };
 }
 
-export default function DashboardShell({ user, merchant, loyaltyCard, content }: Props) {
+export default function DashboardShell({ user, merchant, loyaltyCard, stripeSuccess, content }: Props) {
   const h = content?.header ?? {};
   const sidebarTitle  = (h.sidebarTitle  as string) ?? "Ma carte";
   const sidebarStats  = (h.sidebarStats  as string) ?? "Statistiques";
@@ -182,6 +183,23 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
             <p className="text-[12px] text-white/35 mt-0.5">{tabTitles[activeTab].sub}</p>
           </div>
         </header>
+
+        {/* Stripe success banner */}
+        {stripeSuccess && (
+          <div
+            className="mx-6 mt-3 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
+            style={{
+              background: "rgba(39,174,96,0.07)",
+              border: "1px solid rgba(39,174,96,0.25)",
+            }}
+          >
+            <CheckCircle size={15} color="#27ae60" strokeWidth={2} className="flex-shrink-0" />
+            <p className="text-[13px] flex-1">
+              <span className="font-semibold text-[#27ae60]">Paiement reçu ✓</span>
+              <span className="text-white/45"> — Votre abonnement est en cours d&apos;activation. Actualisez la page dans quelques secondes.</span>
+            </p>
+          </div>
+        )}
 
         {/* Pending banner */}
         {!isActive && (

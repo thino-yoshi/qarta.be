@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Mockup — Dimensions cartes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Manrope',sans-serif;background:#1a1626;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:60px;padding:60px 40px}
+    .section{display:flex;flex-direction:column;align-items:center;gap:16px}
+    .label{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.35)}
+    .dim{font-size:13px;font-weight:600;color:rgba(255,255,255,.5);margin-top:4px}
+
+    /* ── CARTE COMPACTE 380 × 240 ── */
+    .card-compact{
+      width:380px;
+      height:240px; /* ratio 1.586/1 */
+      border-radius:18px;
+      background:linear-gradient(135deg,#FF2D78,#985986);
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 24px 60px -16px #FF2D7855;
+      padding:22px 24px 18px;
+      display:flex;
+      flex-direction:column;
+    }
+    /* watermark Q */
+    .card-compact::before{
+      content:'Q';
+      position:absolute;
+      right:6%;top:50%;transform:translateY(-48%);
+      font-size:140px;font-weight:900;
+      color:rgba(255,255,255,.05);
+      line-height:1;pointer-events:none;
+    }
+    /* QR placeholder */
+    .card-compact .qr{
+      position:absolute;top:5%;right:4%;
+      width:13%;aspect-ratio:1;
+      border-radius:8px;
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.1);
+      display:grid;grid-template-columns:1fr 1fr;gap:10%;padding:8%;
+    }
+    .card-compact .qr span{border-radius:2px;background:rgba(255,255,255,.18)}
+    .card-compact .top{display:flex;justify-content:space-between;align-items:flex-start}
+    .card-compact .name{font-size:18px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:.01em}
+    .card-compact .sub{font-size:8px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.22em;text-transform:uppercase;margin-top:4px}
+    .card-compact .titulaire-lbl{font-size:7px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.18em;text-transform:uppercase}
+    .card-compact .titulaire-val{font-size:11px;font-weight:700;color:#fff;margin-top:2px}
+    .card-compact .bottom{margin-top:auto}
+    .card-compact .stamp-lbl{font-size:7px;font-weight:700;color:rgba(255,255,255,.3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px}
+    .card-compact .stamps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+    .card-compact .stamp{width:36px;height:36px;border-radius:50%}
+    .card-compact .stamp.on{background:linear-gradient(135deg,#FF2D78,#9B59B6);box-shadow:0 2px 10px #FF2D7855}
+    .card-compact .stamp.off{border:1.5px solid rgba(255,255,255,.25)}
+    .card-compact .bar-wrap{height:2px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;margin-bottom:7px}
+    .card-compact .bar{height:100%;width:60%;background:linear-gradient(90deg,#FF2D78,#9B59B6);border-radius:99px}
+    .card-compact .footer{display:flex;justify-content:space-between;align-items:center}
+    .card-compact .footer-txt{font-size:8px;color:rgba(255,255,255,.4)}
+    .card-compact .footer-count{font-size:10px;font-weight:700;color:#fff}
+
+    /* ── CARTE WALLET 380 × 580 ── */
+    .card-wallet{
+      width:380px;
+      height:580px; /* ratio 1/1.526 */
+      border-radius:20px;
+      background:linear-gradient(135deg,#FF2D78,#985986);
+      position:relative;
+      overflow:hidden;
+      padding:28px;
+      display:flex;
+      flex-direction:column;
+    }
+    .card-wallet .deco1{position:absolute;bottom:-90px;right:-90px;width:260px;height:260px;border-radius:50%;border:72px solid rgba(255,255,255,.04);pointer-events:none}
+    .card-wallet .deco2{position:absolute;bottom:20px;right:-30px;width:190px;height:190px;border-radius:50%;border:52px solid rgba(255,255,255,.025);pointer-events:none}
+    .card-wallet .wname{font-size:32px;font-weight:900;color:#fff;letter-spacing:-.01em;line-height:1.1;margin:0}
+    .card-wallet .wsub{font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.33);margin:6px 0 24px}
+    .card-wallet .wlbl{font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.33);margin-bottom:5px}
+    .card-wallet .wclient{font-size:24px;font-weight:800;color:#fff;letter-spacing:-.01em;margin:5px 0 0}
+    .card-wallet .wsep{height:1px;background:rgba(255,255,255,.12);margin:22px 0}
+    .card-wallet .wstamp-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
+    .card-wallet .wstamp{aspect-ratio:1/1;border-radius:50%;display:flex;align-items:center;justify-content:center}
+    .card-wallet .wstamp.on{background:#FF2D78;box-shadow:0 4px 14px #FF2D7855}
+    .card-wallet .wstamp.on svg{width:52%;height:52%}
+    .card-wallet .wstamp.off{border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.04)}
+    .card-wallet .wbar-wrap{height:3px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden;margin-bottom:10px}
+    .card-wallet .wbar{height:100%;width:60%;background:#FF2D78;border-radius:99px}
+    .card-wallet .wfoot{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+    .card-wallet .wfoot-txt{font-size:12px;color:rgba(255,255,255,.5)}
+    .card-wallet .wfoot-txt strong{color:#fff}
+    .card-wallet .wfoot-count{font-size:14px;font-weight:700;color:#fff}
+    .card-wallet .wqr-section{display:flex;flex-direction:column;align-items:center;gap:12px}
+    .card-wallet .wqr-frame{position:relative;padding:14px;background:#fff;border-radius:16px;box-shadow:0 16px 48px -8px rgba(0,0,0,.45)}
+    .card-wallet .wqr-frame svg{display:block}
+    .card-wallet .wbracket{position:absolute;width:22px;height:22px}
+    .card-wallet .wbracket.tl{top:-3px;left:-3px;border-top:3px solid #FF2D78;border-left:3px solid #FF2D78;border-radius:6px 0 0 0}
+    .card-wallet .wbracket.tr{top:-3px;right:-3px;border-top:3px solid #FF2D78;border-right:3px solid #FF2D78;border-radius:0 6px 0 0}
+    .card-wallet .wbracket.bl{bottom:-3px;left:-3px;border-bottom:3px solid #FF2D78;border-left:3px solid #FF2D78;border-radius:0 0 0 6px}
+    .card-wallet .wbracket.br{bottom:-3px;right:-3px;border-bottom:3px solid #FF2D78;border-right:3px solid #FF2D78;border-radius:0 0 6px 0}
+    .card-wallet .wscan{font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.33)}
+
+    /* ruler */
+    .ruler{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.2);font-size:11px;font-weight:600}
+    .ruler-line{background:rgba(255,255,255,.15);border-radius:1px}
+    .ruler-h{height:2px;width:380px}
+    .ruler-v{width:2px}
+
+    .cards-row{display:flex;gap:60px;align-items:flex-start}
+    .card-col{display:flex;flex-direction:column;align-items:center;gap:12px}
+  </style>
+</head>
+<body>
+
+  <div class="label" style="font-size:14px;color:rgba(255,255,255,.6);letter-spacing:.1em">Mockup — Dimensions des cartes Qarta</div>
+
+  <div class="cards-row">
+
+    <!-- COMPACT -->
+    <div class="card-col">
+      <div class="label">Carte compacte</div>
+
+      <div class="ruler"><div class="ruler-line ruler-h"></div></div>
+      <div class="dim" style="margin-top:-8px">← 380 px →</div>
+
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:0">
+          <div class="ruler-line ruler-v" style="height:240px"></div>
+          <div class="dim" style="writing-mode:vertical-rl;transform:rotate(180deg);margin-top:6px">240 px</div>
+        </div>
+
+        <div class="card-compact">
+          <div class="qr"><span></span><span></span><span></span><span></span></div>
+          <div class="top">
+            <div>
+              <div class="name">Café Lumi</div>
+              <div class="sub">Carte Fidélité</div>
+            </div>
+            <div style="text-align:right;margin-right:18%">
+              <div class="titulaire-lbl">Titulaire</div>
+              <div class="titulaire-val">Pierre Dubois</div>
+            </div>
+          </div>
+          <div class="bottom">
+            <div class="stamp-lbl">Tampons collectés</div>
+            <div class="stamps">
+              <div class="stamp on"></div>
+              <div class="stamp on"></div>
+              <div class="stamp on"></div>
+              <div class="stamp off"></div>
+              <div class="stamp off"></div>
+            </div>
+            <div class="bar-wrap"><div class="bar"></div></div>
+            <div class="footer">
+              <div class="footer-txt">Encore <strong style="color:#fff">2</strong> pour votre café offert</div>
+              <div class="footer-count">3 / 5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dim">Ratio 1.586 / 1 · Carte bancaire ISO 7810</div>
+    </div>
+
+    <!-- WALLET -->
+    <div class="card-col">
+      <div class="label">Carte Wallet (ouverte)</div>
+
+      <div class="ruler"><div class="ruler-line ruler-h"></div></div>
+      <div class="dim" style="margin-top:-8px">← 380 px →</div>
+
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:0">
+          <div class="ruler-line ruler-v" style="height:580px"></div>
+          <div class="dim" style="writing-mode:vertical-rl;transform:rotate(180deg);margin-top:6px">580 px</div>
+        </div>
+
+        <div class="card-wallet">
+          <div class="deco1"></div>
+          <div class="deco2"></div>
+          <h2 class="wname">Café Lumi</h2>
+          <p class="wsub">Carte Fidélité</p>
+          <p class="wlbl">Titulaire</p>
+          <h3 class="wclient">Pierre Dubois</h3>
+          <div class="wsep"></div>
+          <p class="wlbl">Tampons collectés</p>
+          <div class="wstamp-grid">
+            <div class="wstamp on"><svg viewBox="0 0 24 24" fill="none" stroke="#985986" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+            <div class="wstamp on"><svg viewBox="0 0 24 24" fill="none" stroke="#985986" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+            <div class="wstamp on"><svg viewBox="0 0 24 24" fill="none" stroke="#985986" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></div>
+            <div class="wstamp off"></div>
+            <div class="wstamp off"></div>
+          </div>
+          <div class="wbar-wrap"><div class="wbar"></div></div>
+          <div class="wfoot">
+            <span class="wfoot-txt">Encore <strong>2 tampons</strong> pour votre café offert</span>
+            <span class="wfoot-count">3 / 5</span>
+          </div>
+          <div class="wsep"></div>
+          <div class="wqr-section">
+            <div class="wqr-frame">
+              <div class="wbracket tl"></div>
+              <div class="wbracket tr"></div>
+              <div class="wbracket bl"></div>
+              <div class="wbracket br"></div>
+              <svg width="120" height="120" viewBox="0 0 36 36" fill="#111">
+                <rect x="2" y="2" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/>
+                <rect x="5" y="5" width="8" height="8" rx="1"/>
+                <rect x="20" y="2" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/>
+                <rect x="23" y="5" width="8" height="8" rx="1"/>
+                <rect x="2" y="20" width="14" height="14" rx="2" fill="none" stroke="#111" stroke-width="2"/>
+                <rect x="5" y="23" width="8" height="8" rx="1"/>
+                <rect x="20" y="20" width="4" height="4"/><rect x="26" y="20" width="4" height="4"/>
+                <rect x="20" y="26" width="4" height="4"/><rect x="26" y="26" width="4" height="4"/>
+              </svg>
+            </div>
+            <p class="wscan">Scanner pour valider</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="dim">Ratio 1 / 1.526 · Portrait</div>
+    </div>
+
+  </div>
+
+  <div style="display:flex;gap:40px;margin-top:10px">
+    <div style="text-align:center">
+      <div class="label">Compact</div>
+      <div class="dim" style="margin-top:6px">380 × 240 px · ratio 1.586/1</div>
+    </div>
+    <div style="color:rgba(255,255,255,.15);font-size:20px;align-self:center">vs</div>
+    <div style="text-align:center">
+      <div class="label">Wallet ouvert</div>
+      <div class="dim" style="margin-top:6px">380 × 580 px · ratio 1/1.526</div>
+    </div>
+  </div>
+
+</body>
+</html>

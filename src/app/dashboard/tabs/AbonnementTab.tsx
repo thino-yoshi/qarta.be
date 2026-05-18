@@ -1,5 +1,6 @@
 "use client";
-import { Check, Zap, Calendar, CreditCard, Clock, ArrowRight, Receipt } from "lucide-react";
+import { useState } from "react";
+import { Check, Zap, Calendar, CreditCard, Clock, ArrowRight, Receipt, Settings, AlertTriangle } from "lucide-react";
 
 interface Props {
   merchant: Record<string, unknown>;
@@ -26,63 +27,144 @@ export default function AbonnementTab({ merchant, isActive, content }: Props) {
 
   /* ── Compte ACTIF ─────────────────────────────────────────────── */
   if (isActive) {
-    const souscritLe = merchant?.created_at
-      ? new Date(merchant.created_at as string).toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric" })
-      : "—";
+    return <ActiveView merchant={merchant} planName={planName} planPrice={planPrice} planPeriod={planPeriod} planFeatures={planFeatures} billingTitle={billingTitle} />;
+  }
 
-    return (
-      <div className="max-w-2xl space-y-5">
-        {/* Plan actuel */}
-        <div className="rounded-2xl p-6" style={{ background: "rgba(39,174,96,0.06)", border: "1px solid rgba(39,174,96,0.2)" }}>
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(39,174,96,0.15)" }}>
-                <Zap size={18} color="#27ae60" strokeWidth={2} />
-              </div>
-              <div>
-                <h3 className="text-[16px] font-bold text-white">Plan {planName}</h3>
-                <p className="text-[12px]" style={{ color: "#27ae60" }}>● Abonnement actif</p>
-              </div>
+  /* ── Compte EN ATTENTE ────────────────────────────────────────── */
+  return <InactiveView planName={planName} planPrice={planPrice} planPeriod={planPeriod} planFeatures={planFeatures} ctaLabel={ctaLabel} planBadgeLabel={planBadgeLabel} secureLabel={secureLabel} faq1Q={faq1Q} faq1A={faq1A} faq2Q={faq2Q} faq2A={faq2A} faq3Q={faq3Q} faq3A={faq3A} />;
+}
+
+/* ─── Vue compte actif ─────────────────────────────────────────────── */
+function ActiveView({ merchant, planName, planPrice, planPeriod, planFeatures, billingTitle }: {
+  merchant: Record<string, unknown>;
+  planName: string; planPrice: string; planPeriod: string;
+  planFeatures: string[]; billingTitle: string;
+}) {
+  const [portalLoading, setPortalLoading] = useState(false);
+  const [portalError,   setPortalError]   = useState<string | null>(null);
+
+  const souscritLe = merchant?.created_at
+    ? new Date(merchant.created_at as string).toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric" })
+    : "—";
+
+  const prochainRenouvellement = merchant?.stripe_current_period_end
+    ? new Date(merchant.stripe_current_period_end as string).toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric" })
+    : "—";
+
+  const handlePortal = async () => {
+    setPortalLoading(true);
+    setPortalError(null);
+    try {
+      const res  = await fetch("/api/stripe/portal", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Erreur");
+      window.location.href = data.url;
+    } catch (e) {
+      setPortalError(e instanceof Error ? e.message : "Erreur");
+      setPortalLoading(false);
+    }
+  };
+
+  return (
+    <div className="max-w-2xl space-y-5">
+      {/* Plan actuel */}
+      <div className="rounded-2xl p-6" style={{ background: "rgba(39,174,96,0.06)", border: "1px solid rgba(39,174,96,0.2)" }}>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: "rgba(39,174,96,0.15)" }}>
+              <Zap size={18} color="#27ae60" strokeWidth={2} />
             </div>
-            <p className="text-[22px] font-bold text-white">
-              {planPrice}<span className="text-[16px]">€</span>
-              <span className="text-[14px] text-white/40">/{planPeriod}</span>
-            </p>
+            <div>
+              <h3 className="text-[16px] font-bold text-white">Plan {planName}</h3>
+              <p className="text-[12px]" style={{ color: "#27ae60" }}>● Abonnement actif</p>
+            </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
-            {planFeatures.map((f) => (
-              <div key={f} className="flex items-center gap-2 text-[13px] text-white/60">
-                <Check size={13} color="#27ae60" strokeWidth={2.5} />
-                {f}
-              </div>
-            ))}
-          </div>
+          <p className="text-[22px] font-bold text-white">
+            {planPrice}<span className="text-[16px]">€</span>
+            <span className="text-[14px] text-white/40">/{planPeriod}</span>
+          </p>
         </div>
 
-        {/* Infos facturation */}
-        <div className="rounded-2xl p-6 space-y-1" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <h3 className="text-[15px] font-semibold mb-4">{billingTitle}</h3>
-          {[
-            { icon: Calendar,   label: "Date de souscription",    value: souscritLe },
-            { icon: Clock,      label: "Prochain renouvellement", value: "—" },
-            { icon: CreditCard, label: "Montant prélevé",         value: `${planPrice}€ / ${planPeriod}` },
-            { icon: Receipt,    label: "Dernière facture",        value: "—" },
-          ].map(({ icon: Icon, label, value }) => (
-            <div key={label} className="flex items-center justify-between py-3 border-b last:border-0" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-              <div className="flex items-center gap-3 text-[13px] text-white/45">
-                <Icon size={14} strokeWidth={2} />
-                {label}
-              </div>
-              <span className="text-[13px] text-white/75 font-medium">{value}</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
+          {planFeatures.map((f) => (
+            <div key={f} className="flex items-center gap-2 text-[13px] text-white/60">
+              <Check size={13} color="#27ae60" strokeWidth={2.5} />
+              {f}
             </div>
           ))}
         </div>
       </div>
-    );
-  }
 
-  /* ── Compte EN ATTENTE ────────────────────────────────────────── */
+      {/* Infos facturation */}
+      <div className="rounded-2xl p-6 space-y-1" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        <h3 className="text-[15px] font-semibold mb-4">{billingTitle}</h3>
+        {[
+          { icon: Calendar,   label: "Date de souscription",    value: souscritLe },
+          { icon: Clock,      label: "Prochain renouvellement", value: prochainRenouvellement },
+          { icon: CreditCard, label: "Montant prélevé",         value: `${planPrice}€ / ${planPeriod}` },
+          { icon: Receipt,    label: "Factures & paiements",    value: "Voir dans le portail →" },
+        ].map(({ icon: Icon, label, value }) => (
+          <div key={label} className="flex items-center justify-between py-3 border-b last:border-0" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+            <div className="flex items-center gap-3 text-[13px] text-white/45">
+              <Icon size={14} strokeWidth={2} />
+              {label}
+            </div>
+            <span className="text-[13px] text-white/75 font-medium">{value}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Gérer l'abonnement */}
+      {portalError && (
+        <div className="flex items-center gap-2 px-4 py-3 rounded-xl text-[13px]"
+          style={{ background: "rgba(231,76,60,0.08)", border: "1px solid rgba(231,76,60,0.2)", color: "#e74c3c" }}>
+          <AlertTriangle size={14} strokeWidth={2} />
+          {portalError}
+        </div>
+      )}
+      <button
+        onClick={handlePortal}
+        disabled={portalLoading}
+        className="flex items-center gap-2.5 px-5 py-3 rounded-xl text-[13px] font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
+        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.7)" }}
+      >
+        {portalLoading ? (
+          <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"/>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+          </svg>
+        ) : (
+          <Settings size={14} strokeWidth={2} />
+        )}
+        {portalLoading ? "Redirection…" : "Gérer mon abonnement (facturation, résiliation)"}
+      </button>
+    </div>
+  );
+}
+
+/* ─── Vue compte inactif ───────────────────────────────────────────── */
+function InactiveView({ planName, planPrice, planPeriod, planFeatures, ctaLabel, planBadgeLabel, secureLabel, faq1Q, faq1A, faq2Q, faq2A, faq3Q, faq3A }: {
+  planName: string; planPrice: string; planPeriod: string;
+  planFeatures: string[]; ctaLabel: string; planBadgeLabel: string; secureLabel: string;
+  faq1Q: string; faq1A: string; faq2Q: string; faq2A: string; faq3Q: string; faq3A: string;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState<string | null>(null);
+
+  const handleSubscribe = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res  = await fetch("/api/stripe/create-checkout", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Erreur");
+      window.location.href = data.url;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erreur inattendue");
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-xl space-y-6">
       <div>
@@ -116,15 +198,46 @@ export default function AbonnementTab({ merchant, isActive, content }: Props) {
           ))}
         </div>
 
+        {/* Erreur */}
+        {error && (
+          <div className="flex items-center gap-2 mb-4 px-4 py-3 rounded-xl text-[13px]"
+            style={{ background: "rgba(231,76,60,0.08)", border: "1px solid rgba(231,76,60,0.2)", color: "#e74c3c" }}>
+            <AlertTriangle size={14} strokeWidth={2} />
+            {error}
+          </div>
+        )}
+
         <button
-          className="w-full py-3.5 rounded-xl text-[14px] font-bold text-white flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
+          onClick={handleSubscribe}
+          disabled={loading}
+          className="w-full py-3.5 rounded-xl text-[14px] font-bold text-white flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-70"
           style={{ background: "linear-gradient(135deg, #2c7be5, #4a9eff)", boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6)" }}
-          onClick={() => alert("Système de paiement Stripe — à venir !")}
         >
-          {ctaLabel} <ArrowRight size={16} strokeWidth={2.2} />
+          {loading ? (
+            <>
+              <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"/>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+              </svg>
+              Redirection vers Stripe…
+            </>
+          ) : (
+            <>{ctaLabel} <ArrowRight size={16} strokeWidth={2.2} /></>
+          )}
         </button>
 
         <p className="text-[11px] text-white/20 text-center mt-3">{secureLabel}</p>
+      </div>
+
+      {/* Méthodes de paiement acceptées */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="text-[11px] text-white/25 mr-1">Accepté :</span>
+        {["Visa", "Mastercard", "Bancontact", "SEPA"].map((m) => (
+          <span key={m} className="px-2 py-0.5 rounded-md text-[11px] font-medium"
+            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.35)" }}>
+            {m}
+          </span>
+        ))}
       </div>
 
       {/* FAQ */}
