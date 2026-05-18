@@ -30,7 +30,8 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
   const statsTabTitle = (h.statsTabTitle as string) ?? "Statistiques";
   const statsTabSub   = (h.statsTabSub   as string) ?? "Vue d'ensemble de votre activité";
   const subTabTitle   = (h.subTabTitle   as string) ?? "Abonnement";
-  const pendingNotice = (h.pendingNotice as string) ?? "Votre compte est en cours de validation. Vous recevrez un email dès que votre accès est activé.";
+  const pendingTitle  = (h.pendingTitle  as string) ?? "Accès restreint";
+  const pendingNotice = (h.pendingNotice as string) ?? "Votre abonnement n'est pas encore actif — vous n'avez pas accès à toutes les fonctionnalités. Activez votre compte pour débloquer les statistiques et la gestion d'abonnement.";
 
   const [activeTab, setActiveTab] = useState<Tab>("carte");
   const isActive = merchant?.subscription_status === "active";
@@ -193,7 +194,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
           >
             <AlertTriangle size={15} color="#f39c12" strokeWidth={2} className="flex-shrink-0" />
             <p className="text-[13px] flex-1">
-              <span className="font-semibold text-[#f39c12]">Compte non activé</span>
+              <span className="font-semibold text-[#f39c12]">{pendingTitle}</span>
               <span className="text-white/45"> — {pendingNotice}</span>
             </p>
             <button
