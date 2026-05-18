@@ -16,7 +16,7 @@ export default function ScrollClient({ content }: Props) {
   const titleLine2    = (c.titleLine2   as string)   ?? "Écologique.";
   const titleLine3    = (c.titleLine3   as string)   ?? "Efficace.";
   const subtitle      = (c.subtitle     as string)   ?? "Papiers froissés au fond du portefeuille… Toutes vos cartes de fidélité, instantanément réunies, organisées, et prêtes à l'emploi.";
-  const featureLabels = (c.featureLabels as string[]) ?? ["QR code unique", "Google Wallet", "Récompenses auto", "Vos commerces préférés"];
+  const featureLabels = (c.featureLabels as string[]) ?? ["QR code unique", "Google & Apple Wallet", "Récompenses auto", "Vos commerces préférés"];
 
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({

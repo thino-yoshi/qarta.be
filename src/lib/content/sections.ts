@@ -183,7 +183,7 @@ export const SECTION_DEFS: SectionDef[] = [
       { key: "titleLine2",  label: "Titre ligne 2 (accent)", type: "text",      defaultValue: "Écologique." },
       { key: "titleLine3",  label: "Titre ligne 3",          type: "text",      defaultValue: "Efficace." },
       { key: "subtitle",    label: "Paragraphe",             type: "textarea",  defaultValue: "Papiers froissés au fond du portefeuille… Toutes vos cartes de fidélité, instantanément réunies, organisées, et prêtes à l'emploi." },
-      { key: "featureLabels", label: "Fonctionnalités (4 pilules)", type: "list-text", defaultValue: ["QR code unique", "Google Wallet", "Récompenses auto", "Vos commerces préférés"] },
+      { key: "featureLabels", label: "Fonctionnalités (4 pilules)", type: "list-text", defaultValue: ["QR code unique", "Google & Apple Wallet", "Récompenses auto", "Vos commerces préférés"] },
     ],
   },
 

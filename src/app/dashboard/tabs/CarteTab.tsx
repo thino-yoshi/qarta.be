@@ -577,7 +577,15 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
                   : { color: "rgba(58,48,40,0.45)" }
                 }
               >
-                {tab === "compact" ? "🃏  Carte compacte" : "📱  Carte Wallet"}
+                {tab === "compact" ? (
+                  "Carte compacte"
+                ) : (
+                  <span className="flex items-center justify-center gap-1.5">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/google-wallet.png" alt="" style={{ width: 18, height: 14, objectFit: "contain", mixBlendMode: "multiply" }} />
+                    Carte Wallet
+                  </span>
+                )}
               </button>
             ))}
           </div>
