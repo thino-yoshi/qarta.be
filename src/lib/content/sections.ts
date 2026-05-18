@@ -444,7 +444,7 @@ export const SECTION_DEFS: SectionDef[] = [
     ],
     fields: [
       { key: "planName",     label: "Nom du plan",                    type: "text",      defaultValue: "Pro" },
-      { key: "planPrice",    label: "Prix (chiffre uniquement)",      type: "text",      defaultValue: "29" },
+      { key: "planPrice",    label: "Prix (chiffre uniquement)",      type: "text",      defaultValue: "25" },
       { key: "planPeriod",   label: "Unité (mois, an…)",              type: "text",      defaultValue: "mois" },
       { key: "planFeatures", label: "Fonctionnalités incluses",       type: "list-text", defaultValue: [
         "Carte de fidélité digitale",

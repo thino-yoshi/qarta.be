@@ -11,7 +11,7 @@ interface Props {
 export default function AbonnementTab({ merchant, isActive, content }: Props) {
   const c = content ?? {};
   const planName       = (c.planName       as string)   ?? "Pro";
-  const planPrice      = (c.planPrice      as string)   ?? "29";
+  const planPrice      = (c.planPrice      as string)   ?? "25";
   const planPeriod     = (c.planPeriod     as string)   ?? "mois";
   const planFeatures   = (c.planFeatures   as string[]) ?? ["Carte de fidélité digitale", "Scan QR code illimité", "Dashboard statistiques complet", "Notifications push clients", "Support prioritaire", "Application mobile QARTA"];
   const ctaLabel       = (c.ctaLabel       as string)   ?? "S'abonner maintenant";
