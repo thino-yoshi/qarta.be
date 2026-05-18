@@ -106,7 +106,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard, content }:
         <nav className="flex-1 px-3 py-4 space-y-1">
           {tabs.map(({ id, label, icon: Icon }) => {
             const selected = activeTab === id;
-            const locked = !isActive && (id === "statistiques" || id === "abonnement");
+            const locked = !isActive && id === "statistiques";
             return (
               <button
                 key={id}
