@@ -557,11 +557,11 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
       {/* Panel fixe — canvas crème · 420px → canvas 400px → carte 380px */}
       <div
         className="xl:fixed xl:top-[32px] xl:right-4 xl:w-[420px] xl:z-20 xl:rounded-2xl
-                   sticky top-0 w-full flex flex-col items-center"
+                   w-full flex flex-col items-center overflow-hidden
+                   xl:h-[calc(100vh-64px)]"
         style={{
           background: "#ede9e0",
           borderLeft: "1.5px solid rgba(200,180,140,0.45)",
-          height: "calc(100vh - 64px)",
         }}
       >
         {/* Onglets en haut */}
@@ -592,7 +592,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
         </div>
 
         {/* Canvas centré */}
-        <div className="flex-1 flex items-center justify-center w-full px-2">
+        <div className="flex-1 flex items-center justify-center w-full px-2 min-h-[320px]">
         {/* Canvas avec ombre derrière la carte */}
         <div style={{
           width: "100%",
