@@ -412,7 +412,8 @@ export const SECTION_DEFS: SectionDef[] = [
       { key: "statsTabTitle",   label: "Titre onglet statistiques",      type: "text",     defaultValue: "Statistiques" },
       { key: "statsTabSub",     label: "Sous-titre onglet statistiques", type: "text",     defaultValue: "Vue d'ensemble de votre activité" },
       { key: "subTabTitle",     label: "Titre onglet abonnement",        type: "text",     defaultValue: "Abonnement" },
-      { key: "pendingNotice",   label: "Message compte en attente",      type: "textarea", defaultValue: "Votre compte est en cours de validation. Vous recevrez un email dès que votre accès est activé." },
+      { key: "pendingTitle",    label: "Titre bannière compte inactif",  type: "text",     defaultValue: "Accès restreint" },
+      { key: "pendingNotice",   label: "Message compte en attente",      type: "textarea", defaultValue: "Votre abonnement n'est pas encore actif — vous n'avez pas accès à toutes les fonctionnalités. Activez votre compte pour débloquer les statistiques et la gestion d'abonnement." },
     ],
   },
 
