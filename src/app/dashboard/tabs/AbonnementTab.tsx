@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Check, Zap, Calendar, CreditCard, Clock, ArrowRight, Receipt, Settings, AlertTriangle } from "lucide-react";
+import { Check, Zap, Calendar, CreditCard, Clock, ArrowRight, Settings, AlertTriangle } from "lucide-react";
 
 interface Props {
   merchant: Record<string, unknown>;
@@ -43,9 +43,14 @@ function ActiveView({ merchant, planName, planPrice, planPeriod, planFeatures, b
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError,   setPortalError]   = useState<string | null>(null);
 
-  const souscritLe = merchant?.created_at
-    ? new Date(merchant.created_at as string).toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric" })
-    : "—";
+  // Date d'activation = début de la période = stripe_current_period_end - 1 mois
+  const activeLe = (() => {
+    if (!merchant?.stripe_current_period_end) return "—";
+    const end = new Date(merchant.stripe_current_period_end as string);
+    const start = new Date(end);
+    start.setMonth(start.getMonth() - 1);
+    return start.toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric" });
+  })();
 
   const prochainRenouvellement = merchant?.stripe_current_period_end
     ? new Date(merchant.stripe_current_period_end as string).toLocaleDateString("fr-BE", { day: "numeric", month: "long", year: "numeric" })
@@ -99,10 +104,9 @@ function ActiveView({ merchant, planName, planPrice, planPeriod, planFeatures, b
       <div className="rounded-2xl p-6 space-y-1" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
         <h3 className="text-[15px] font-semibold mb-4">{billingTitle}</h3>
         {[
-          { icon: Calendar,   label: "Date de souscription",    value: souscritLe },
+          { icon: Calendar,   label: "Date d'activation",       value: activeLe },
           { icon: Clock,      label: "Prochain renouvellement", value: prochainRenouvellement },
           { icon: CreditCard, label: "Montant prélevé",         value: `${planPrice}€ / ${planPeriod}` },
-          { icon: Receipt,    label: "Factures & paiements",    value: "Voir dans le portail →" },
         ].map(({ icon: Icon, label, value }) => (
           <div key={label} className="flex items-center justify-between py-3 border-b last:border-0" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
             <div className="flex items-center gap-3 text-[13px] text-white/45">
