@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Save, Plus, Minus, ImageIcon } from "lucide-react";
-import { WalletCard, CardDesign, DEFAULT_DESIGN, FONT_OPTIONS } from "@/app/components/LoyaltyCard";
+import LoyaltyCard, { CardDesign, DEFAULT_DESIGN, FONT_OPTIONS } from "@/app/components/LoyaltyCard";
 
 interface Props {
   merchant:    Record<string, unknown>;
@@ -13,7 +13,7 @@ interface Props {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3">{children}</p>
+    <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: "#4a9eff" }}>{children}</p>
   );
 }
 
@@ -111,7 +111,6 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
   const [previewStamps] = useState(3);
   const [previewPoints] = useState(720);
   const [loyaltyTab,    setLoyaltyTab]    = useState<"stamps" | "points">("stamps");
-  const [editorTab,     setEditorTab]     = useState<"compact" | "wallet">("compact");
   const [imgUploading,  setImgUploading]  = useState(false);
   const [imgError,      setImgError]      = useState<string | null>(null);
 
@@ -196,7 +195,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
       {/* ── Panneau gauche : customisation ── */}
       <div className="flex-1 min-w-0 space-y-4">
 
-        {/* ── Onglets mode fidélité (niveau 1) ── */}
+        {/* ── Onglets mode fidélité ── */}
         <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
           {([["stamps", "Tampons"], ["points", "Points"]] as const).map(([tab, label]) => (
             <button
@@ -212,9 +211,6 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
             </button>
           ))}
         </div>
-
-        {/* ─── Onglet COMPACT ─── */}
-        {editorTab === "compact" && <>
 
         {/* Identité */}
         <Section title="Identité de la carte">
@@ -294,100 +290,20 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
 
           {design.bgType === "image" && (
             <div className="space-y-3">
-              {/* Zone upload / aperçu */}
-              {design.bgImageUrl ? (
-                <div className="relative rounded-xl overflow-hidden"
-                  style={{ border: "1px solid rgba(255,255,255,0.1)" }}>
-                  {/* Aperçu */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={design.bgImageUrl} alt="Fond de carte"
-                    className="w-full object-cover"
-                    style={{ height: 100 }}
-                  />
-                  {/* Overlay actions */}
-                  <div className="absolute inset-0 flex items-center justify-center gap-2"
-                    style={{ background: "rgba(0,0,0,0.45)" }}>
-                    <label className="px-3 py-1.5 rounded-lg text-[12px] font-semibold cursor-pointer transition-all hover:scale-105"
-                      style={{ background: "rgba(74,158,255,0.25)", border: "1px solid rgba(74,158,255,0.4)", color: "#4a9eff" }}>
-                      <input type="file" accept="image/*" className="sr-only" onChange={handleImageUpload} />
-                      {imgUploading ? "Upload…" : "Changer"}
-                    </label>
-                    <button
-                      onClick={() => { set("bgImageUrl", null); setImgError(null); }}
-                      className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all hover:scale-105"
-                      style={{ background: "rgba(231,76,60,0.2)", border: "1px solid rgba(231,76,60,0.35)", color: "#e74c3c" }}>
-                      Supprimer
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <label className="flex flex-col items-center gap-2 px-4 py-6 rounded-xl cursor-pointer transition-all hover:border-white/25"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px dashed rgba(255,255,255,0.15)" }}>
-                  <input type="file" accept="image/*" className="sr-only" onChange={handleImageUpload} disabled={imgUploading} />
-                  {imgUploading
-                    ? <svg className="animate-spin" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="3"/>
-                        <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
-                      </svg>
-                    : <ImageIcon size={20} className="text-white/25" />
-                  }
-                  <p className="text-[12px] text-white/50 font-medium">
-                    {imgUploading ? "Upload en cours…" : "Cliquer pour choisir une image"}
-                  </p>
-                  <p className="text-[11px] text-white/25">JPG, PNG, WebP · max 5 MB</p>
-                </label>
-              )}
-
-              {/* Erreur */}
-              {imgError && <p className="text-[12px] text-red-400">{imgError}</p>}
-
-              {/* Opacité — visible seulement si image chargée */}
-              {design.bgImageUrl && (
-                <Field label={`Opacité de l'image : ${Math.round(design.bgImageOpacity * 100)}%`}>
-                  <input type="range" min={5} max={100} value={Math.round(design.bgImageOpacity * 100)}
-                    onChange={(e) => set("bgImageOpacity", Number(e.target.value) / 100)}
-                    className="q-range w-full"
-                    style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
-                </Field>
-              )}
+              {/* Bientôt disponible */}
+              <div className="flex flex-col items-center gap-2 px-4 py-6 rounded-xl"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px dashed rgba(255,255,255,0.1)" }}>
+                <span style={{ fontSize: 22 }}>🚧</span>
+                <p className="text-[13px] font-semibold text-white/60">Bientôt disponible</p>
+                <p className="text-[11px] text-white/25 text-center">La personnalisation par image arrive prochainement.</p>
+              </div>
             </div>
           )}
         </Section>
 
         {/* Couleur d'accent */}
         <Section title="Tampons & barre de progression">
-          {/* Toggle mono / dégradé */}
-          <div className="flex gap-1 mb-4 p-1 rounded-xl w-fit" style={{ background: "rgba(255,255,255,0.05)" }}>
-            {["Couleur", "Dégradé"].map((t, i) => {
-              const isSingle = design.accentColors.length === 1;
-              const active = i === 0 ? isSingle : !isSingle;
-              return (
-                <button key={t} onClick={() => {
-                  if (i === 0) set("accentColors", [design.accentColors[0]]);
-                  else if (design.accentColors.length < 2) set("accentColors", [design.accentColors[0], "#9B59B6"]);
-                }}
-                  className="px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all"
-                  style={active
-                    ? { background: "rgba(74,158,255,0.2)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.3)" }
-                    : { color: "rgba(255,255,255,0.4)", border: "1px solid transparent" }
-                  }>
-                  {t}
-                </button>
-              );
-            })}
-          </div>
-
-          {design.accentColors.length === 1 ? (
-            <ColorInput value={design.accentColors[0]} onChange={(v) => set("accentColors", [v])} />
-          ) : (
-            <GradientBuilder
-              colors={design.accentColors}
-              angle={design.accentAngle}
-              onColors={(c) => set("accentColors", c)}
-              onAngle={(a) => set("accentAngle", a)}
-            />
-          )}
+          <ColorInput value={design.accentColors[0]} onChange={(v) => set("accentColors", [v])} />
         </Section>
 
         {/* Texte & Police */}
@@ -415,137 +331,9 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
           </Field>
         </Section>
 
-        {/* Watermark Q */}
-        <Section title="Filigrane Q">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-[13px] text-white/60">Afficher le «&nbsp;Q&nbsp;» en fond</span>
-            <button onClick={() => set("showQ", !design.showQ)}
-              className="w-11 h-6 rounded-full transition-all relative"
-              style={{ background: design.showQ ? "rgba(74,158,255,0.5)" : "rgba(255,255,255,0.1)" }}>
-              <span className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all"
-                style={{ left: design.showQ ? "calc(100% - 20px)" : 4 }} />
-            </button>
-          </div>
-          {design.showQ && (
-            <Field label={`Opacité : ${Math.round(design.qOpacity * 100)}%`}>
-              <input type="range" min={1} max={30} value={Math.round(design.qOpacity * 100)}
-                onChange={(e) => set("qOpacity", Number(e.target.value) / 100)}
-                className="q-range w-full"
-                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
-            </Field>
-          )}
-        </Section>
-
         {/* Sauvegarder */}
         {saveErr && <p className="text-[12px] text-red-400 px-1">{saveErr}</p>}
         <SaveButton saving={saving} saveOk={saveOk} onClick={handleSave} />
-
-        </> /* fin onglet compact */}
-
-        {/* ─── Onglet WALLET ─── */}
-        {editorTab === "wallet" && <>
-
-          {/* Typographie */}
-          <Section title="Typographie">
-            <Field label="Police">
-              <div className="grid grid-cols-2 gap-2 mt-1">
-                {FONT_OPTIONS.map((f) => (
-                  <button key={f.value} onClick={() => set("fontFamily", f.value)}
-                    className="px-3 py-2.5 rounded-xl text-[13px] text-left transition-all"
-                    style={{
-                      fontFamily: `'${f.value}', sans-serif`,
-                      ...(design.fontFamily === f.value
-                        ? { background: "rgba(74,158,255,0.12)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.3)" }
-                        : { background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.08)" }
-                      ),
-                    }}>
-                    {f.label}
-                  </button>
-                ))}
-              </div>
-            </Field>
-
-            <Field label={`Taille — nom du commerce : ${design.walletTitleSize}px`}>
-              <input type="range" min={20} max={54} value={design.walletTitleSize}
-                onChange={(e) => set("walletTitleSize", Number(e.target.value))}
-                className="q-range w-full"
-                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
-            </Field>
-
-            <Field label={`Taille — nom du client : ${design.walletNameSize}px`}>
-              <input type="range" min={14} max={44} value={design.walletNameSize}
-                onChange={(e) => set("walletNameSize", Number(e.target.value))}
-                className="q-range w-full"
-                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
-            </Field>
-          </Section>
-
-          {/* Grille de tampons — masquée en mode points */}
-          {loyaltyTab === "stamps" && (
-          <Section title="Grille de tampons">
-            <Field label={`Colonnes : ${Math.min(design.walletStampCols, design.stampsRequired)}`}>
-              <div className="flex gap-1">
-                {[3, 4, 5].map((n) => (
-                  <button key={n} onClick={() => set("walletStampCols", n)}
-                    className="flex-1 py-2 rounded-xl text-[13px] font-semibold transition-all"
-                    style={design.walletStampCols === n
-                      ? { background: "rgba(74,158,255,0.15)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.3)" }
-                      : { background: "rgba(255,255,255,0.04)", color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.08)" }
-                    }>
-                    {n} col.
-                  </button>
-                ))}
-              </div>
-            </Field>
-          </Section>
-          )}
-
-          {/* Taille du chiffre — visible uniquement en mode points */}
-          {loyaltyTab === "points" && (
-          <Section title="Affichage des points">
-            <Field label={`Taille du chiffre principal : ${design.walletPointsSize}px`}>
-              <input type="range" min={28} max={96} value={design.walletPointsSize}
-                onChange={(e) => set("walletPointsSize", Number(e.target.value))}
-                className="q-range w-full"
-                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
-            </Field>
-          </Section>
-          )}
-
-          {/* QR Code */}
-          <Section title="QR Code">
-            <Field label={`Taille : ${design.walletQRSize}px`}>
-              <input type="range" min={80} max={200} value={design.walletQRSize}
-                onChange={(e) => set("walletQRSize", Number(e.target.value))}
-                className="q-range w-full"
-                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
-            </Field>
-          </Section>
-
-          {/* Mise en page */}
-          <Section title="Mise en page">
-            <Field label={`Padding interne : ${design.walletPadding}px`}>
-              <input type="range" min={12} max={48} value={design.walletPadding}
-                onChange={(e) => set("walletPadding", Number(e.target.value))}
-                className="q-range w-full"
-                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
-            </Field>
-
-            <div className="flex items-center justify-between">
-              <span className="text-[13px] text-white/60">Cercles décoratifs en fond</span>
-              <button onClick={() => set("walletShowCircles", !design.walletShowCircles)}
-                className="w-11 h-6 rounded-full transition-all relative"
-                style={{ background: design.walletShowCircles ? "rgba(74,158,255,0.5)" : "rgba(255,255,255,0.1)" }}>
-                <span className="absolute top-1 w-4 h-4 rounded-full bg-white transition-all"
-                  style={{ left: design.walletShowCircles ? "calc(100% - 20px)" : 4 }} />
-              </button>
-            </div>
-          </Section>
-
-          {saveErr && <p className="text-[12px] text-red-400 px-1">{saveErr}</p>}
-          <SaveButton saving={saving} saveOk={saveOk} onClick={handleSave} />
-
-        </> /* fin onglet wallet */}
 
       </div>
 
@@ -564,33 +352,6 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
           borderLeft: "1.5px solid rgba(200,180,140,0.45)",
         }}
       >
-        {/* Onglets en haut */}
-        <div className="w-full px-2 pt-4 pb-0 flex-shrink-0">
-          <div className="flex gap-1 p-1 rounded-2xl" style={{ background: "rgba(58,48,40,0.08)" }}>
-            {(["compact", "wallet"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setEditorTab(tab)}
-                className="flex-1 py-2 rounded-xl text-[12px] font-semibold transition-all"
-                style={editorTab === tab
-                  ? { background: "rgba(58,48,40,0.15)", color: "#3a3028" }
-                  : { color: "rgba(58,48,40,0.45)" }
-                }
-              >
-                {tab === "compact" ? (
-                  "Carte compacte"
-                ) : (
-                  <span className="flex items-center justify-center gap-1.5">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/google-wallet.png" alt="" style={{ width: 18, height: 14, objectFit: "contain", mixBlendMode: "multiply" }} />
-                    Carte Wallet
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
         {/* Canvas centré */}
         <div className="flex-1 flex items-center justify-center w-full px-2 min-h-[320px]">
         {/* Canvas avec ombre derrière la carte */}
@@ -601,13 +362,11 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
           padding: "22px 10px",
           background: "radial-gradient(ellipse 92% 58% at 50% 50%, rgba(0,0,0,0.28) 0%, transparent 72%)",
         }}>
-          <WalletCard
-            key={editorTab}
+          <LoyaltyCard
             design={design}
             clientName="Pierre Dubois"
             currentStamps={previewStamps}
             currentPoints={previewPoints}
-            defaultExpanded={editorTab === "wallet"}
           />
         </div>
         </div>{/* fin flex-1 centré */}
@@ -717,4 +476,3 @@ function TextInput({ value, onChange, placeholder }: { value: string; onChange: 
     />
   );
 }
-

@@ -6,7 +6,7 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
   const c = content ?? {};
   const description     = (c.description     as string) ?? "QARTA réunit vos cartes de fidélité et aide les commerces locaux à tisser un lien durable avec leurs clients.";
   const contactTitle    = (c.contactTitle    as string) ?? "Gardons le contact";
-  const contactSubtitle = (c.contactSubtitle as string) ?? "Questions, partenariats, démo — écrivez-nous.";
+  const contactSubtitle = (c.contactSubtitle as string) ?? "Questions, partenariats, écrivez-nous.";
   const productLinks    = (c.productLinks    as { label: string; href: string }[]) ?? [
     { label: "Client",     href: "#client" },
     { label: "Commerçant", href: "#merchant" },
@@ -61,21 +61,21 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
       />
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-16 pb-12 grid lg:grid-cols-2 gap-16">
-        <div>
-          <div className="flex items-center gap-3 mx-auto w-fit">
+        <div className="flex flex-col items-center text-center">
+          <div className="flex items-center gap-3">
             <QartaLogo size={52} variant="badge" />
             <QartaWordmark color="#fff" />
           </div>
           <p className="mt-6 text-white/70 text-[15px] leading-relaxed max-w-md">
             {description}
           </p>
-          <div className="mt-8 flex flex-wrap gap-2 text-[12px] text-white/50">
+          <div className="mt-8 flex flex-wrap justify-center gap-2 text-[12px] text-white/50">
             <span>© {new Date().getFullYear()} QARTA</span>
             <span>·</span>
             <span>{copyrightText}</span>
           </div>
           {socials.length > 0 && (
-            <div className="mt-5 flex items-center gap-3">
+            <div className="mt-5 flex items-center justify-center gap-3">
               {socials.map(s => (
                 <a
                   key={s.label}
@@ -92,8 +92,8 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
             </div>
           )}
 
-          <div className="mt-10 grid grid-cols-2 gap-6 max-w-md">
-            <div>
+          <div className="mt-10 grid grid-cols-2 gap-6">
+            <div className="text-center">
               <div className="text-[11px] font-semibold uppercase tracking-widest text-white/40">Produit</div>
               <ul className="mt-3 space-y-2 text-[14px] text-white/75">
                 {productLinks.map(l => (
@@ -101,7 +101,7 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
                 ))}
               </ul>
             </div>
-            <div>
+            <div className="text-center">
               <div className="text-[11px] font-semibold uppercase tracking-widest text-white/40">Société</div>
               <ul className="mt-3 space-y-2 text-[14px] text-white/75">
                 {companyLinks.map(l => (
@@ -114,7 +114,7 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
 
         <div id="contact">
           <h3
-            className="font-display text-white text-[26px] font-bold"
+            className="font-display text-[#4a9eff] text-[26px] font-bold"
             style={{ letterSpacing: "-0.02em" }}
           >
             {contactTitle}

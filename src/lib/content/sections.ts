@@ -297,7 +297,7 @@ export const SECTION_DEFS: SectionDef[] = [
       { key: "description",     label: "Description QARTA",              type: "textarea", defaultValue: "QARTA réunit vos cartes de fidélité et aide les commerces locaux à tisser un lien durable avec leurs clients." },
       { key: "copyrightText",   label: "Texte copyright",                type: "text",     defaultValue: "Fait avec ♥ pour le commerce local" },
       { key: "contactTitle",    label: "Titre formulaire contact",       type: "text",     defaultValue: "Gardons le contact" },
-      { key: "contactSubtitle", label: "Sous-titre formulaire contact",  type: "text",     defaultValue: "Questions, partenariats, démo — écrivez-nous." },
+      { key: "contactSubtitle", label: "Sous-titre formulaire contact",  type: "text",     defaultValue: "Questions, partenariats, écrivez-nous." },
       {
         key: "productLinks",
         label: "Liens colonne « Produit »",

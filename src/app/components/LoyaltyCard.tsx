@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 
 /* ─── Types & constantes ─────────────────────────────────────────── */
 
@@ -34,14 +34,6 @@ export interface CardDesign {
   // Q watermark
   showQ:              boolean;
   qOpacity:           number;        // 0-1
-  // ── Carte Wallet (vue dépliée) ──────────────────────────────────
-  walletTitleSize:    number;        // taille nom commerce (px)
-  walletNameSize:     number;        // taille nom client (px)
-  walletStampCols:    number;        // colonnes grille tampons (3-5)
-  walletQRSize:       number;        // taille QR code (px)
-  walletShowCircles:  boolean;       // cercles décoratifs en fond
-  walletPadding:      number;        // padding interne (px)
-  walletPointsSize:   number;        // taille du grand chiffre en mode points (px)
   compactPointsSize:  number;        // taille du grand chiffre en mode points — carte compacte (px)
   // ── Mode de fidélité ────────────────────────────────────────────
   loyaltyMode:        "stamps" | "points";
@@ -64,14 +56,6 @@ export const DEFAULT_DESIGN: CardDesign = {
   fontFamily:         "Manrope",
   showQ:              true,
   qOpacity:           0.05,
-  // Wallet defaults
-  walletTitleSize:    34,
-  walletNameSize:     26,
-  walletStampCols:    5,
-  walletQRSize:       130,
-  walletShowCircles:  true,
-  walletPadding:      26,
-  walletPointsSize:   52,
   compactPointsSize:  68,
   // Mode de fidélité
   loyaltyMode:        "stamps",
@@ -137,7 +121,6 @@ export default function LoyaltyCard({
     return { background: d.bgColors?.[0] ?? "#141626" };
   }, [d.bgType, d.bgColors, d.bgGradientAngle]);
 
-  const accentGrad  = buildGradient(d.accentColors, d.accentAngle);
   const accentFirst = d.accentColors?.[0] ?? "#FF2D78";
   const accentLast  = d.accentColors?.[d.accentColors.length - 1] ?? accentFirst;
 
@@ -242,7 +225,7 @@ export default function LoyaltyCard({
             }}>
               Titulaire
             </p>
-            <p className="font-bold text-white mt-0.5" style={{ fontSize: "clamp(10px, 2.4cqw, 15px)" }}>
+            <p className="font-bold mt-0.5" style={{ fontSize: "clamp(10px, 2.4cqw, 15px)", color: d.textColor }}>
               {clientName}
             </p>
           </div>
@@ -272,13 +255,13 @@ export default function LoyaltyCard({
                   style={{ width: `${progress * 100}%`, background: `linear-gradient(90deg, ${accentFirst}, ${accentLast})` }} />
               </div>
               <div className="flex items-center justify-between">
-                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "clamp(7px,1.5cqw,9px)" }}>
+                <p style={{ color: d.textColor, fontSize: "clamp(7px,1.5cqw,9px)" }}>
                   {remaining > 0 ? (
-                    <>Encore <span style={{ color: d.textColor, fontWeight: 700 }}>{remaining.toLocaleString()} pts</span>{" "}pour votre{" "}
-                      <span style={{ color: d.textColor }}>{d.rewardDescription}</span></>
-                  ) : <span style={{ color: d.textColor, fontWeight: 700 }}>Récompense disponible 🎉</span>}
+                    <>Encore <span style={{ color: accentFirst, fontWeight: 700 }}>{remaining.toLocaleString()} pts</span>{" "}pour votre{" "}
+                      <span style={{ color: accentFirst }}>{d.rewardDescription}</span></>
+                  ) : <span style={{ color: accentFirst, fontWeight: 700 }}>Récompense disponible 🎉</span>}
                 </p>
-                <p style={{ color: d.textColor, fontWeight: 700, fontSize: "clamp(9px,1.8cqw,12px)" }}>
+                <p style={{ color: accentFirst, fontWeight: 700, fontSize: "clamp(9px,1.8cqw,12px)" }}>
                   {currentPoints.toLocaleString()} / {d.pointsGoal.toLocaleString()}
                 </p>
               </div>
@@ -289,7 +272,7 @@ export default function LoyaltyCard({
           /* ── Mode TAMPONS ── */
           <>
             <div className="mt-auto">
-              <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "clamp(6px, 1.4cqw, 9px)",
+              <p style={{ color: accentFirst, fontSize: "clamp(6px, 1.4cqw, 9px)",
                 fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
                 {d.stampLabel}
               </p>
@@ -300,7 +283,7 @@ export default function LoyaltyCard({
                       width: stampPx, height: stampPx,
                       display: "flex", alignItems: "center", justifyContent: "center",
                       ...(i < stamps
-                        ? { background: accentGrad, boxShadow: `0 2px 10px ${accentFirst}55` }
+                        ? { background: accentFirst, boxShadow: `0 2px 10px ${accentFirst}55` }
                         : { border: `1.5px solid ${accentFirst}44`, background: "transparent" }
                       ),
                     }}>
@@ -322,13 +305,13 @@ export default function LoyaltyCard({
                   style={{ width: `${progress * 100}%`, background: `linear-gradient(90deg, ${accentFirst}, ${accentLast})` }} />
               </div>
               <div className="flex items-center justify-between">
-                <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "clamp(7px, 1.5cqw, 9px)" }}>
+                <p style={{ color: d.textColor, fontSize: "clamp(7px, 1.5cqw, 9px)" }}>
                   {remaining > 0 ? (
-                    <>Encore{" "}<span style={{ color: d.textColor, fontWeight: 700 }}>{remaining}</span>
-                      {" "}pour votre{" "}<span style={{ color: d.textColor }}>{d.rewardDescription}</span></>
-                  ) : <span style={{ color: d.textColor, fontWeight: 700 }}>Récompense disponible 🎉</span>}
+                    <>Encore{" "}<span style={{ color: accentFirst, fontWeight: 700 }}>{remaining}</span>
+                      {" "}pour votre{" "}<span style={{ color: accentFirst }}>{d.rewardDescription}</span></>
+                  ) : <span style={{ color: accentFirst, fontWeight: 700 }}>Récompense disponible 🎉</span>}
                 </p>
-                <p style={{ color: d.textColor, fontWeight: 700, fontSize: "clamp(9px, 1.8cqw, 12px)" }}>
+                <p style={{ color: accentFirst, fontWeight: 700, fontSize: "clamp(9px, 1.8cqw, 12px)" }}>
                   {stamps} / {d.stampsRequired}
                 </p>
               </div>
@@ -341,262 +324,3 @@ export default function LoyaltyCard({
   );
 }
 
-/* ─── QR placeholder SVG ──────────────────────────────────────────── */
-
-export function QRPlaceholder({ size = 130 }: { size?: number }) {
-  const N = 21;
-  const cell = size / N;
-  const filled = (r: number, c: number): boolean => {
-    if (r < 7 && c < 7) return r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4);
-    if (r < 7 && c >= 14) { const lc = c - 14; return r === 0 || r === 6 || lc === 0 || lc === 6 || (r >= 2 && r <= 4 && lc >= 2 && lc <= 4); }
-    if (r >= 14 && c < 7) { const lr = r - 14; return lr === 0 || lr === 6 || c === 0 || c === 6 || (lr >= 2 && lr <= 4 && c >= 2 && c <= 4); }
-    if (r === 7 || c === 7) return false;
-    if (r === 6 && c >= 8 && c <= 12) return c % 2 === 0;
-    if (c === 6 && r >= 8 && r <= 12) return r % 2 === 0;
-    if (r >= 14 && r <= 18 && c >= 14 && c <= 18) { const lr = r - 14; const lc = c - 14; return lr === 0 || lr === 4 || lc === 0 || lc === 4 || (lr === 2 && lc === 2); }
-    return ((r * 31 + c * 17 + r * c * 7 + r + c) % 100) > 48;
-  };
-  const rects: React.ReactElement[] = [];
-  for (let r = 0; r < N; r++) {
-    for (let c = 0; c < N; c++) {
-      if (filled(r, c)) rects.push(<rect key={`${r}-${c}`} x={c * cell + 0.15} y={r * cell + 0.15} width={cell - 0.3} height={cell - 0.3} fill="#000" rx={0.6} />);
-    }
-  }
-  return <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: "block" }}>{rects}</svg>;
-}
-
-/* ─── Verso de la carte : tampons + QR ───────────────────────────── */
-
-export function CardQRBack({ design: raw, clientName = "Titulaire", currentStamps = 0, currentPoints = 0 }: Props) {
-  const d: CardDesign = { ...DEFAULT_DESIGN, ...raw };
-
-  useEffect(() => { loadFont(d.fontFamily); }, [d.fontFamily]);
-
-  const bgStyle = useMemo(() => {
-    if (d.bgType === "gradient" && d.bgColors?.length > 1)
-      return { background: buildGradient(d.bgColors, d.bgGradientAngle) };
-    return { background: d.bgColors?.[0] ?? "#141626" };
-  }, [d.bgType, d.bgColors, d.bgGradientAngle]);
-
-  const accentFirst  = d.accentColors?.[0] ?? "#FF2D78";
-  const bgBase       = d.bgColors?.[0] ?? "#141626";
-  const isPoints     = d.loyaltyMode === "points";
-  const stamps       = Math.max(0, Math.min(currentStamps, d.stampsRequired));
-  const remaining    = isPoints ? Math.max(0, d.pointsGoal - currentPoints) : d.stampsRequired - stamps;
-  const progress     = isPoints
-    ? Math.min(currentPoints / (d.pointsGoal || 1), 1)
-    : d.stampsRequired > 0 ? stamps / d.stampsRequired : 0;
-  const COLS         = Math.min(d.walletStampCols ?? 5, d.stampsRequired);
-  const stampPxW     = d.stampsRequired <= 5 ? 40 : d.stampsRequired <= 8 ? 32 : d.stampsRequired <= 12 ? 26 : 20;
-  const titleSize    = d.walletTitleSize   ?? 34;
-  const nameSize     = d.walletNameSize    ?? 26;
-  const qrSize       = d.walletQRSize      ?? 130;
-  const pad          = d.walletPadding     ?? 26;
-  const showCircles  = d.walletShowCircles ?? true;
-  const pointsSize   = d.walletPointsSize  ?? 52;
-
-  const bracketStyle = (pos: React.CSSProperties): React.CSSProperties => ({
-    position: "absolute", width: 22, height: 22, ...pos,
-  });
-
-  return (
-    <div style={{
-      ...bgStyle,
-      borderRadius: 20,
-      overflow: "hidden",
-      position: "relative",
-      padding: `${pad + 2}px ${pad}px ${pad}px`,
-      fontFamily: `'${d.fontFamily}', sans-serif`,
-    }}>
-      {/* Cercles décoratifs en fond */}
-      {showCircles && <>
-        <div style={{ position: "absolute", bottom: -90, right: -90, width: 260, height: 260,
-          borderRadius: "50%", border: `72px solid ${d.textColor}07`, pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: 20, right: -30, width: 190, height: 190,
-          borderRadius: "50%", border: `52px solid ${d.textColor}04`, pointerEvents: "none" }} />
-      </>}
-
-      {/* Nom du commerce */}
-      <h2 style={{ margin: 0, fontSize: titleSize, fontWeight: 900, color: d.textColor,
-        letterSpacing: "-0.01em", lineHeight: 1.1 }}>
-        {d.cardName}
-      </h2>
-      <p style={{ margin: "5px 0 22px", fontSize: 10, fontWeight: 700,
-        color: `${d.textColor}55`, letterSpacing: "0.22em", textTransform: "uppercase" }}>
-        Carte Fidélité
-      </p>
-
-      {/* Titulaire */}
-      <p style={{ margin: 0, fontSize: 9, fontWeight: 700,
-        color: `${d.textColor}55`, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-        Titulaire
-      </p>
-      <h3 style={{ margin: "5px 0 0", fontSize: nameSize, fontWeight: 800, color: d.textColor, letterSpacing: "-0.01em" }}>
-        {clientName}
-      </h3>
-
-      {/* Séparateur */}
-      <div style={{ height: 1, background: `${d.textColor}18`, margin: "20px 0" }} />
-
-      {/* ── Mode POINTS ── */}
-      {isPoints ? (
-        <>
-          <p style={{ margin: "0 0 10px", fontSize: 9, fontWeight: 700,
-            color: `${d.textColor}55`, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-            Points cumulés
-          </p>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 20 }}>
-            <span style={{ fontSize: pointsSize, fontWeight: 900, color: d.textColor, lineHeight: 1 }}>
-              {currentPoints.toLocaleString()}
-            </span>
-            <span style={{ fontSize: Math.round(pointsSize * 0.38), fontWeight: 700, color: d.textColor, opacity: 0.75 }}>PTS</span>
-          </div>
-        </>
-      ) : (
-        /* ── Mode TAMPONS ── */
-        <>
-          <p style={{ margin: "0 0 14px", fontSize: 9, fontWeight: 700,
-            color: `${d.textColor}55`, letterSpacing: "0.15em", textTransform: "uppercase" }}>
-            {d.stampLabel}
-          </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
-            {Array.from({ length: d.stampsRequired }).map((_, i) => (
-              <div key={i} style={{
-                width: stampPxW, height: stampPxW, flexShrink: 0,
-                borderRadius: "50%",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                ...(i < stamps
-                  ? { background: accentFirst, boxShadow: `0 4px 14px ${accentFirst}55` }
-                  : { border: `2px solid ${accentFirst}35`, background: `${accentFirst}08` }
-                ),
-              }}>
-                {i < stamps && (
-                  <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(accentFirst)}
-                    strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-                    style={{ width: "52%", height: "52%" }}>
-                    <path d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* Barre de progression (commune) */}
-      <div style={{ height: 3, background: `${d.textColor}18`, borderRadius: 99, overflow: "hidden" }}>
-        <div style={{ height: "100%", width: `${progress * 100}%`, background: accentFirst,
-          borderRadius: 99, transition: "width 0.5s ease" }} />
-      </div>
-
-      {/* Texte progression (commun) */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
-        marginTop: 10, marginBottom: 22 }}>
-        <p style={{ margin: 0, fontSize: 12, color: `${d.textColor}70` }}>
-          {remaining > 0 ? (
-            isPoints
-              ? <>Encore <strong style={{ color: d.textColor }}>{remaining.toLocaleString()} pts</strong> pour votre{" "}
-                  <span style={{ color: d.textColor }}>{d.rewardDescription}</span></>
-              : <>Encore <strong style={{ color: d.textColor }}>{remaining} tampons</strong> pour votre{" "}
-                  <span style={{ color: d.textColor }}>{d.rewardDescription}</span></>
-          ) : <strong style={{ color: d.textColor }}>Récompense disponible 🎉</strong>}
-        </p>
-        <span style={{ fontSize: 14, fontWeight: 700, color: d.textColor }}>
-          {isPoints
-            ? `${currentPoints.toLocaleString()} / ${d.pointsGoal.toLocaleString()}`
-            : `${stamps} / ${d.stampsRequired}`}
-        </span>
-      </div>
-
-      {/* Séparateur */}
-      <div style={{ height: 1, background: `${d.textColor}18`, marginBottom: 22 }} />
-
-      {/* QR Code */}
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-        <div style={{ position: "relative", padding: 14, background: "#ffffff",
-          borderRadius: 16, boxShadow: `0 16px 48px -8px rgba(0,0,0,0.45)` }}>
-          {/* Coins de scan */}
-          <div style={bracketStyle({ top: -3, left: -3, borderTop: `3px solid ${accentFirst}`, borderLeft: `3px solid ${accentFirst}`, borderRadius: "6px 0 0 0" })} />
-          <div style={bracketStyle({ top: -3, right: -3, borderTop: `3px solid ${accentFirst}`, borderRight: `3px solid ${accentFirst}`, borderRadius: "0 6px 0 0" })} />
-          <div style={bracketStyle({ bottom: -3, left: -3, borderBottom: `3px solid ${accentFirst}`, borderLeft: `3px solid ${accentFirst}`, borderRadius: "0 0 0 6px" })} />
-          <div style={bracketStyle({ bottom: -3, right: -3, borderBottom: `3px solid ${accentFirst}`, borderRight: `3px solid ${accentFirst}`, borderRadius: "0 0 6px 0" })} />
-          <QRPlaceholder size={qrSize} />
-        </div>
-        <p style={{ margin: 0, fontSize: 9, fontWeight: 700,
-          color: `${d.textColor}55`, letterSpacing: "0.2em", textTransform: "uppercase" }}>
-          Scanner pour valider
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* ─── Aperçu carte Wallet (s'allonge au clic, comme Apple/Google Wallet) */
-
-export function WalletCard({ design, clientName = "Pierre", currentStamps = 0, currentPoints = 0, defaultExpanded = false }: Props) {
-  const [expanded,     setExpanded]     = useState(defaultExpanded);
-  const [contentReady, setContentReady] = useState(true);
-
-  const d            = { ...DEFAULT_DESIGN, ...design };
-  const accentFirst  = d.accentColors?.[0] ?? "#FF2D78";
-
-  const bgStyle = useMemo(() => {
-    if (d.bgType === "gradient" && d.bgColors?.length > 1)
-      return { background: buildGradient(d.bgColors, d.bgGradientAngle) };
-    return { background: d.bgColors?.[0] ?? "#141626" };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [d.bgType, JSON.stringify(d.bgColors), d.bgGradientAngle]);
-
-  const handleToggle = () => {
-    setContentReady(false);
-    setTimeout(() => { setExpanded(e => !e); setContentReady(true); }, 200);
-  };
-
-  return (
-    <div>
-      {/* Label */}
-      <button
-        onClick={handleToggle}
-        style={{
-          display: "block", width: "100%", textAlign: "center",
-          fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase",
-          color: `${accentFirst}99`, background: "none", border: "none",
-          cursor: "pointer", marginBottom: 10, padding: "4px 0",
-          fontFamily: `'${d.fontFamily}', sans-serif`,
-          transition: "color 0.3s",
-        }}
-      >
-        {expanded ? "↑  Réduire" : "↓  Voir la carte ouverte dans le Wallet"}
-      </button>
-
-      {/* Conteneur carte — ratio fixe 380/240 compact · 380/580 wallet */}
-      <div
-        onClick={handleToggle}
-        style={{
-          ...bgStyle,
-          position: "relative",
-          overflow: "hidden",
-          borderRadius: 20,
-          cursor: "pointer",
-          /* Compact : 240/380×100 = 63.16% | Wallet : 580/380×100 = 152.63% */
-          paddingBottom: expanded ? "152.63%" : "63.16%",
-          transition: "padding-bottom 0.65s cubic-bezier(0.4, 0, 0.2, 1)",
-          boxShadow: `0 24px 60px -16px ${accentFirst}33`,
-        }}
-      >
-        {/* Contenu absolu — remplir le container (overflow:hidden coupe l'excès) */}
-        <div style={{
-          position: "absolute",
-          top: 0, left: 0, width: "100%",
-          opacity: contentReady ? 1 : 0,
-          transition: "opacity 0.2s ease",
-        }}>
-          {expanded
-            ? <CardQRBack design={design} clientName={clientName} currentStamps={currentStamps} currentPoints={currentPoints} />
-            : <LoyaltyCard design={design} clientName={clientName} currentStamps={currentStamps} currentPoints={currentPoints} />
-          }
-        </div>
-      </div>
-    </div>
-  );
-}

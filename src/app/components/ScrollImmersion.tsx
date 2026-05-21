@@ -26,8 +26,6 @@ export default function ScrollImmersion({ content }: Props) {
   const rotate = useTransform(scrollYProgress, [0, 1], [-6, 6]);
   const y = useTransform(scrollYProgress, [0, 0.45, 1], [280, 0, 50]);
   const x = useTransform(scrollYProgress, [0, 0.45], [-700, 0]);
-  const textOpacity = useTransform(scrollYProgress, [0.15, 0.4, 0.7], [0, 1, 0.35]);
-  const textY = useTransform(scrollYProgress, [0.1, 0.5], [40, -20]);
 
   return (
     <section
@@ -38,7 +36,7 @@ export default function ScrollImmersion({ content }: Props) {
     >
 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-[8rem] pb-20 grid lg:grid-cols-2 gap-16 items-center">
-        <motion.div style={{ y: textY, opacity: textOpacity }} className="order-2 lg:order-1">
+        <div className="order-2 lg:order-1">
           <span className="inline-block px-3 py-1 rounded-full bg-[#eaf2fd] text-[#2c7be5] text-[11px] font-semibold tracking-[0.18em] uppercase">
             {badge}
           </span>
@@ -71,7 +69,7 @@ export default function ScrollImmersion({ content }: Props) {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         <motion.div
           style={{ scale, rotate, y, x }}
