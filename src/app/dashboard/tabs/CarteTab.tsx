@@ -110,7 +110,9 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
   const [saveErr,       setSaveErr]       = useState<string | null>(null);
   const [previewStamps] = useState(3);
   const [previewPoints] = useState(720);
-  const [loyaltyTab,    setLoyaltyTab]    = useState<"stamps" | "points">("stamps");
+  const [loyaltyTab,    setLoyaltyTab]    = useState<"stamps" | "points">(
+    (saved?.loyaltyMode as "stamps" | "points") ?? "stamps"
+  );
   const [imgUploading,  setImgUploading]  = useState(false);
   const [imgError,      setImgError]      = useState<string | null>(null);
 

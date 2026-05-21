@@ -170,28 +170,12 @@ export default function LoyaltyCard({
         </div>
       )}
 
-      {/* QR placeholder */}
-      <div
-        className="absolute rounded-xl grid grid-cols-2"
-        style={{
-          top: "5%", right: "4%",
-          width: "13%", aspectRatio: "1",
-          padding: "1.8%", gap: "10%",
-          background: "rgba(255,255,255,0.07)",
-          border: "1px solid rgba(255,255,255,0.1)",
-        }}
-      >
-        {[0,1,2,3].map((i) => (
-          <div key={i} className="rounded-[2px]" style={{ background: "rgba(255,255,255,0.18)" }} />
-        ))}
-      </div>
-
       {/* Contenu */}
       <div className="relative z-10 h-full flex flex-col" style={{ padding: "5% 6% 4%" }}>
 
         {/* Haut : nom + titulaire */}
-        <div className="flex items-start justify-between">
-          <div>
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
             <h2
               className="font-black leading-none"
               style={{
@@ -215,7 +199,7 @@ export default function LoyaltyCard({
             </p>
           </div>
 
-          <div className="text-right" style={{ marginRight: "19%" }}>
+          <div className="text-right flex-shrink-0">
             <p style={{
               color: `${d.textColor}99`,
               fontSize: "clamp(6px, 1.4cqw, 9px)",
@@ -225,7 +209,11 @@ export default function LoyaltyCard({
             }}>
               Titulaire
             </p>
-            <p className="font-bold mt-0.5" style={{ fontSize: "clamp(10px, 2.4cqw, 15px)", color: d.textColor }}>
+            <p className="font-bold mt-0.5" style={{
+              fontSize: "clamp(10px, 2.4cqw, 15px)",
+              color: d.textColor,
+              whiteSpace: "nowrap",
+            }}>
               {clientName}
             </p>
           </div>
@@ -234,9 +222,9 @@ export default function LoyaltyCard({
         {/* ── Mode POINTS ── */}
         {isPoints ? (
           <div className="mt-auto">
-            <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "clamp(6px,1.4cqw,9px)",
+            <p style={{ color: accentFirst, fontSize: "clamp(6px,1.4cqw,9px)",
               fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "6px" }}>
-              Points cumulés
+              {d.stampLabel}
             </p>
             <div style={{ display: "flex", alignItems: "baseline", gap: "4px", marginBottom: "6%" }}>
               <span style={{ color: accentFirst, fontWeight: 900, lineHeight: 1,

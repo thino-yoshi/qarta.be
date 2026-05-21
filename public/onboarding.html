@@ -142,9 +142,6 @@
     .db-card-holder-block{text-align:right}
     .db-card-holder-label{font-size:8px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;font-family:'Manrope',sans-serif}
     .db-card-holder-name{font-size:12px;font-weight:700;color:#fff;margin-top:2px;font-family:'Manrope',sans-serif}
-    .db-card-grid-btn{width:32px;height:32px;background:rgba(255,255,255,0.1);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-top:6px;margin-left:auto}
-    .db-card-grid-icon{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-    .db-card-grid-icon span{width:7px;height:7px;border-radius:2px;background:rgba(255,255,255,0.6)}
     .db-points-label-card{font-size:8px;font-weight:700;letter-spacing:0.14em;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:8px;font-family:'Manrope',sans-serif}
     .db-points-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
     .db-point{border-radius:50%;border:2px solid rgba(255,255,255,0.2);transition:background .3s,border-color .3s,width .15s,height .15s;flex-shrink:0}
@@ -161,6 +158,10 @@
     .db-points-bar{height:5px;border-radius:999px;background:rgba(255,255,255,0.12);overflow:hidden;margin-top:14px}
     .db-points-bar-fill{height:100%;border-radius:999px;background:rgba(255,255,255,0.8);width:60%}
     #db-err{font-size:12px;color:var(--err);margin-top:.6rem;display:none;font-family:'Manrope',sans-serif}
+    .db-preset-btn{width:40px;height:40px;border-radius:12px;border:2px solid rgba(255,255,255,0.55);cursor:pointer;flex-shrink:0;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s;box-shadow:0 2px 8px rgba(0,0,0,0.18)}
+    .db-preset-btn:hover{transform:scale(1.12)}
+    .db-preset-btn.active{border:2.5px solid rgba(58,48,40,0.7);box-shadow:0 0 0 3px rgba(58,48,40,0.15)}
+    .db-preset-btn .db-preset-dot{position:absolute;bottom:4px;right:4px;width:9px;height:9px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.7)}
     @media(max-width:900px){#s3{max-width:100%}.db-layout{flex-direction:column}.db-preview-panel{width:100%;min-width:0;position:static;max-height:none;border-radius:16px;border-left:none;border-top:1.5px solid rgba(200,180,140,0.45)}.db-main{max-height:none;padding-right:0;border-right:none}}
     @media(max-width:700px){.nav-steps,.tbar-r{display:none}.tgrid{grid-template-columns:1fr}h1.ttl{font-size:1.7rem}}
   </style>
@@ -264,7 +265,7 @@
         </div>
         <div class="db-section">
           <div class="db-label">Fond de la carte</div>
-          <div class="db-tab-group">
+          <div class="db-tab-group" id="db-bg-tabs">
             <button class="db-tab-btn" onclick="dbSwitchBg('couleur',this)">Couleur</button>
             <button class="db-tab-btn active" onclick="dbSwitchBg('degrade',this)">Dégradé</button>
             <button class="db-tab-btn" onclick="dbSwitchBg('image',this)">Image</button>
@@ -301,7 +302,7 @@
         </div>
         <div class="db-section">
           <div class="db-label">Tampons &amp; barre de progression</div>
-          <div class="db-tab-group">
+          <div class="db-tab-group" id="db-accent-tabs">
             <button class="db-tab-btn active" onclick="dbSwitchAccent('mono',this)">Couleur</button>
             <button class="db-tab-btn" onclick="dbSwitchAccent('degrade',this)">Dégradé</button>
           </div>
@@ -344,15 +345,6 @@
             </div>
           </div>
         </div>
-        <div class="db-section">
-          <div class="db-label">Filigrane Q</div>
-          <div class="db-toggle-row">
-            <span class="db-toggle-label">Afficher le « Q » en fond</span>
-            <div class="db-toggle" id="db-watermark-toggle" onclick="dbToggleWatermark()"></div>
-          </div>
-          <div class="db-opacity-label" id="db-opacity-label">Opacité : 5%</div>
-          <input type="range" id="db-opacity-slider" min="0" max="30" value="5" oninput="dbUpdateOpacity(this.value)"/>
-        </div>
         <p id="db-err"></p>
         <div style="display:flex;gap:10px;margin-top:4px">
           <button class="btn-g" onclick="goTo('s2')" style="white-space:nowrap">← Retour</button>
@@ -379,7 +371,6 @@
                   <div class="db-card-holder-label">Titulaire</div>
                   <div class="db-card-holder-name">Pierre Dubois</div>
                 </div>
-                <div class="db-card-grid-btn"><div class="db-card-grid-icon"><span></span><span></span><span></span><span></span></div></div>
               </div>
             </div>
             <div id="db-stamps-display">
@@ -405,6 +396,26 @@
           </div><!-- /db-card-canvas -->
         </div>
         </div><!-- /flex-center-wrapper -->
+
+        <!-- ── Thèmes rapides ── -->
+        <div style="padding:10px 4px 4px">
+          <p style="font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(58,48,40,0.38);text-align:center;margin-bottom:10px;font-family:'Manrope',sans-serif">Thèmes rapides</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center" id="db-preset-grid">
+            <button class="db-preset-btn" onclick="dbApplyPreset(0)"  title="Rose Nuit"   style="background:linear-gradient(135deg,#FF2D78,#985986)"><span class="db-preset-dot" style="background:#FF2D78"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(1)"  title="Nuit Dorée"  style="background:linear-gradient(135deg,#141626,#2c1f50)"><span class="db-preset-dot" style="background:#F5C842"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(2)"  title="Émeraude"    style="background:linear-gradient(135deg,#1B4332,#2d6a4f)"><span class="db-preset-dot" style="background:#95D5B2"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(3)"  title="Cobalt"      style="background:linear-gradient(135deg,#03045E,#0096C7)"><span class="db-preset-dot" style="background:#90E0EF"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(4)"  title="Craie"       style="background:#F5F0E8"                                  ><span class="db-preset-dot" style="background:#2c1f50"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(5)"  title="Braise"      style="background:linear-gradient(135deg,#F94144,#F8961E)"><span class="db-preset-dot" style="background:#F8961E"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(6)"  title="Lavande"     style="background:linear-gradient(135deg,#4A1D96,#7C3AED)"><span class="db-preset-dot" style="background:#DDD6FE"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(7)"  title="Bordeaux"    style="background:linear-gradient(135deg,#4C0519,#881337)"><span class="db-preset-dot" style="background:#FCA5A5"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(8)"  title="Teal Glacé"  style="background:linear-gradient(135deg,#134E4A,#0F766E)"><span class="db-preset-dot" style="background:#2DD4BF"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(9)"  title="Café"        style="background:linear-gradient(135deg,#292524,#44403C)"><span class="db-preset-dot" style="background:#D6B896"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(10)" title="Sakura"      style="background:#FFF0F5"                                  ><span class="db-preset-dot" style="background:#DB2777"></span></button>
+            <button class="db-preset-btn" onclick="dbApplyPreset(11)" title="Soleil"      style="background:linear-gradient(135deg,#92400E,#B45309)"><span class="db-preset-dot" style="background:#FDE68A"></span></button>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -437,6 +448,63 @@
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
 <script>
+const DB_PRESETS=[
+  {name:"Rose Nuit",  bg:["#FF2D78","#985986"],acc:"#FF2D78",txt:"#ffffff",angle:135,type:"gradient"},
+  {name:"Nuit Dorée", bg:["#141626","#2c1f50"],acc:"#F5C842",txt:"#F5C842",angle:135,type:"gradient"},
+  {name:"Émeraude",   bg:["#1B4332","#2d6a4f"],acc:"#95D5B2",txt:"#d8f3dc",angle:135,type:"gradient"},
+  {name:"Cobalt",     bg:["#03045E","#0096C7"],acc:"#90E0EF",txt:"#CAF0F8",angle:135,type:"gradient"},
+  {name:"Craie",      bg:["#F5F0E8"],          acc:"#2c1f50",txt:"#2c1f50",angle:135,type:"color"},
+  {name:"Braise",     bg:["#F94144","#F8961E"],acc:"#F8961E",txt:"#ffffff",angle:135,type:"gradient"},
+  {name:"Lavande",    bg:["#4A1D96","#7C3AED"],acc:"#DDD6FE",txt:"#EDE9FE",angle:135,type:"gradient"},
+  {name:"Bordeaux",   bg:["#4C0519","#881337"],acc:"#FCA5A5",txt:"#FEE2E2",angle:135,type:"gradient"},
+  {name:"Teal Glacé", bg:["#134E4A","#0F766E"],acc:"#2DD4BF",txt:"#CCFBF1",angle:135,type:"gradient"},
+  {name:"Café",       bg:["#292524","#44403C"],acc:"#D6B896",txt:"#F5EFE8",angle:135,type:"gradient"},
+  {name:"Sakura",     bg:["#FFF0F5"],          acc:"#DB2777",txt:"#831843",angle:135,type:"color"},
+  {name:"Soleil",     bg:["#92400E","#B45309"],acc:"#FDE68A",txt:"#FEF3C7",angle:135,type:"gradient"},
+];
+
+function dbApplyPreset(idx){
+  const p=DB_PRESETS[idx];if(!p)return;
+  // Fond
+  if(p.type==='gradient'){
+    dbSt.bgType='degrade';dbSt.c1=p.bg[0];dbSt.c2=p.bg[1]||p.bg[0];dbSt.angle=p.angle;
+    const s1=document.getElementById('db-swatch-1');if(s1)s1.style.background=p.bg[0];
+    const h1=document.getElementById('db-hex-1');if(h1)h1.value=p.bg[0];
+    const s2=document.getElementById('db-swatch-2');if(s2)s2.style.background=p.bg[1];
+    const h2=document.getElementById('db-hex-2');if(h2)h2.value=p.bg[1];
+    const as=document.getElementById('db-angle-slider');if(as)as.value=p.angle;
+    const av=document.getElementById('db-angle-val');if(av)av.textContent=p.angle+'°';
+    document.getElementById('db-single-color-section').style.display='none';
+    document.getElementById('db-gradient-section').style.display='block';
+    document.getElementById('db-image-section').style.display='none';
+    document.querySelectorAll('#db-bg-tabs .db-tab-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()==='Dégradé'));
+  } else {
+    dbSt.bgType='couleur';dbSt.soloColor=p.bg[0];
+    const ss=document.getElementById('db-swatch-solo');if(ss)ss.style.background=p.bg[0];
+    const hs=document.getElementById('db-hex-solo');if(hs)hs.value=p.bg[0];
+    document.getElementById('db-single-color-section').style.display='block';
+    document.getElementById('db-gradient-section').style.display='none';
+    document.getElementById('db-image-section').style.display='none';
+    document.querySelectorAll('#db-bg-tabs .db-tab-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()==='Couleur'));
+  }
+  // Accent
+  dbSt.acc1=p.acc;dbSt.accentMode='mono';
+  ['db-swatch-acc1','db-swatch-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.background=p.acc;});
+  ['db-hex-acc1','db-hex-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=p.acc;});
+  document.getElementById('db-accent-mono').style.display='block';
+  document.getElementById('db-accent-degrade').style.display='none';
+  document.querySelectorAll('#db-accent-tabs .db-tab-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()==='Couleur'));
+  // Texte
+  dbSt.textColor=p.txt;
+  const st=document.getElementById('db-swatch-text');if(st)st.style.background=p.txt;
+  const ht=document.getElementById('db-hex-text');if(ht)ht.value=p.txt;
+  const cn=document.getElementById('db-card-name');if(cn)cn.style.color=p.txt;
+  // Appliquer
+  dbApplyCardBg();dbRenderStamps();
+  // Marquer le preset actif
+  document.querySelectorAll('#db-preset-grid .db-preset-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+}
+
 function contrastColor(hex){var h=(hex||'').replace('#','');if(h.length<6)return '#ffffff';var r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255;var lin=function(c){return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);};var L=0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);return L>0.179?'#1a1a1a':'#ffffff';}
 let typ='visit',busy=false;
 let dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:true,opacity:5,pointsGoal:1000,_imgUrl:null};
