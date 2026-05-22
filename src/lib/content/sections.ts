@@ -232,7 +232,7 @@ export const SECTION_DEFS: SectionDef[] = [
       { key: "pricingTitle", label: "Titre section tarifs",        type: "text",      defaultValue: "Des tarifs clairs, sans surprise." },
       { key: "planName",     label: "Nom du plan",                 type: "text",      defaultValue: "Pro" },
       { key: "planBadge",    label: "Badge plan (ex: Populaire)",  type: "text",      defaultValue: "Populaire" },
-      { key: "price",        label: "Prix (€/mois)",               type: "text",      defaultValue: "20" },
+      { key: "price",        label: "Prix (€/mois)",               type: "text",      defaultValue: "25" },
       { key: "priceUnit",    label: "Unité de prix",               type: "text",      defaultValue: "/ mois" },
       {
         key: "features",

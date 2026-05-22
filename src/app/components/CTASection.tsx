@@ -53,7 +53,7 @@ export default function CTASection({ content }: { content?: Record<string, unkno
   const pricingTitle = (c.pricingTitle as string) ?? "Des tarifs clairs, sans surprise.";
   const planName     = (c.planName     as string) ?? "Pro";
   const planBadge    = (c.planBadge    as string) ?? "Populaire";
-  const price        = (c.price        as string) ?? "20";
+  const price        = (c.price        as string) ?? "25";
   const priceUnit    = (c.priceUnit    as string) ?? "/ mois";
   const features     = (c.features     as string[]) ?? ["Programmes illimités", "Clients illimités", "Notifications automatiques", "Avis Google intégrés", "Support prioritaire"];
   const ctaLabel     = (c.ctaLabel     as string) ?? "Lancer mon programme";
