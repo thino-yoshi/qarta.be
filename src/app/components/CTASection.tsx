@@ -39,7 +39,7 @@ function sliderBg(val: number, min: number, max: number): React.CSSProperties {
 
 // ─── Steps data ─────────────────────────────────────────────────────────────
 const steps = [
-  { n: "01", t: "Choisir le type de fidélité",  d: "Tampons, visites, points ou récompenses — sélectionnez ce qui correspond à votre activité." },
+  { n: "01", t: "Choisir le type de fidélité",  d: "Tampons, visites, points ou récompenses, sélectionnez ce qui correspond à votre activité." },
   { n: "02", t: "Personnaliser",                d: "Couleurs, logo, seuils, récompenses : votre programme à votre image." },
   { n: "03", t: "Activer & partager",           d: "Obtenez une clé d'accès et commencez à fidéliser vos clients immédiatement." },
 ];
