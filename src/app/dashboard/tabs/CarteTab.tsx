@@ -268,11 +268,18 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
             {(["color", "gradient", "image"] as const).map((t) => (
               <button key={t} onClick={() => set("bgType", t)}
                 className="px-3 py-1.5 rounded-lg text-[12px] font-semibold capitalize transition-all"
-                style={design.bgType === t
-                  ? { background: "rgba(74,158,255,0.2)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.3)" }
-                  : { color: "rgba(255,255,255,0.4)", border: "1px solid transparent" }
-                }>
-                {t === "color" ? "Couleur" : t === "gradient" ? "Dégradé" : "Image"}
+                style={{
+                  position: "relative", overflow: "visible",
+                  ...(design.bgType === t
+                    ? { background: "rgba(74,158,255,0.2)", color: "#4a9eff", border: "1px solid rgba(74,158,255,0.3)" }
+                    : { color: "rgba(255,255,255,0.4)", border: "1px solid transparent" }),
+                }}>
+                {t === "color" ? "Couleur" : t === "gradient" ? "Dégradé" : (
+                  <>
+                    Image
+                    <span style={{ position: "absolute", top: -7, right: -4, background: "#4a9eff", color: "#fff", fontSize: 8, fontWeight: 700, borderRadius: 999, padding: "2px 5px", letterSpacing: "0.04em", lineHeight: 1, pointerEvents: "none", whiteSpace: "nowrap" }}>bientôt</span>
+                  </>
+                )}
               </button>
             ))}
           </div>
