@@ -1,7 +1,8 @@
 "use client";
 import { useState } from "react";
 import { Store, BarChart2, CreditCard, LogOut, ChevronRight, AlertTriangle, Rocket, Lock, CheckCircle, type LucideIcon } from "lucide-react";
-import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
+import Image from "next/image";
+import { QartaWordmark } from "../components/QartaLogo";
 import CarteTab from "./tabs/CarteTab";
 import StatistiquesTab from "./tabs/StatistiquesTab";
 import AbonnementTab from "./tabs/AbonnementTab";
@@ -71,7 +72,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard, stripeSucc
           className="flex items-center gap-3 px-5 py-5 border-b"
           style={{ borderColor: "rgba(15,32,68,0.08)" }}
         >
-          <QartaLogo size={56} variant="badge" />
+          <Image src="/logo-qarta.png" width={40} height={40} alt="Qarta" style={{ borderRadius: 10 }} />
           <QartaWordmark color="#0f2044" />
         </div>
 
