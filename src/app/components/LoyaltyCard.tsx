@@ -264,11 +264,11 @@ export default function LoyaltyCard({
                 fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
                 {d.stampLabel}
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.ceil(d.stampsRequired / 2)}, 1fr)`, justifyItems: "center", width: "100%", gap: "4px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.ceil(d.stampsRequired / 2)}, 1fr)`, width: "100%", gap: "5px" }}>
                 {Array.from({ length: d.stampsRequired }).map((_, i) => (
-                  <div key={i} className="rounded-full flex-shrink-0"
+                  <div key={i} className="rounded-full"
                     style={{
-                      width: stampPx, height: stampPx,
+                      width: "100%", aspectRatio: "1 / 1",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       ...(i < stamps
                         ? { background: accentFirst, boxShadow: `0 2px 10px ${accentFirst}55` }

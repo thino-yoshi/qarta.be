@@ -570,19 +570,17 @@ function dbUpdateStamps(val){dbSt.total=parseInt(val);dbSt.filled=Math.min(dbSt.
 function dbUpdatePoints(val){dbSt.pointsGoal=parseInt(val);document.getElementById('points-goal-badge').textContent=val;const lbl=document.getElementById('db-points-goal-label');if(lbl)lbl.textContent='Palier : '+parseInt(val).toLocaleString();}
 function dbRenderStamps(){
   const row=document.getElementById('db-points-row');row.innerHTML='';
-  const stampPx=dbSt.total<=5?40:dbSt.total<=8?32:dbSt.total<=12?26:20;
   const perRow=Math.ceil(dbSt.total/2);
   row.style.display='grid';
   row.style.gridTemplateColumns='repeat('+perRow+',1fr)';
-  row.style.justifyItems='center';
   row.style.width='100%';
-  row.style.gap='4px';
+  row.style.gap='5px';
   const chkColor=contrastColor(dbSt.acc1);
   const chkSvg='<svg viewBox="0 0 24 24" fill="none" stroke="'+chkColor+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%"><path d="M5 13l4 4L19 7"/></svg>';
   for(let i=0;i<dbSt.total;i++){
     const d=document.createElement('div');
     d.className='db-point'+(i<dbSt.filled?' filled':'');
-    d.style.cssText='width:'+stampPx+'px;height:'+stampPx+'px;display:flex;align-items:center;justify-content:center;';
+    d.style.cssText='width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border-radius:50%;';
     if(i<dbSt.filled){d.style.background=dbSt.acc1;d.style.boxShadow='0 2px 10px '+dbSt.acc1+'55';d.innerHTML=chkSvg;}
     else{d.style.border='1.5px solid '+dbSt.acc1+'44';}
     row.appendChild(d);
