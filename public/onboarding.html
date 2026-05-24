@@ -252,7 +252,7 @@
         <div class="db-section" id="db-stamps-section">
           <div class="db-label">Nombre de tampons</div>
           <div class="db-slider-row">
-            <div class="db-slider-wrap"><input type="range" id="slider-stamps" min="3" max="20" value="5" oninput="dbUpdateStamps(this.value)"/></div>
+            <div class="db-slider-wrap"><input type="range" id="slider-stamps" min="2" max="20" step="2" value="6" oninput="dbUpdateStamps(this.value)"/></div>
             <div class="db-slider-val" id="stamp-count-badge">5</div>
           </div>
         </div>
@@ -570,7 +570,7 @@ function dbUpdateStamps(val){dbSt.total=parseInt(val);dbSt.filled=Math.min(dbSt.
 function dbUpdatePoints(val){dbSt.pointsGoal=parseInt(val);document.getElementById('points-goal-badge').textContent=val;const lbl=document.getElementById('db-points-goal-label');if(lbl)lbl.textContent='Palier : '+parseInt(val).toLocaleString();}
 function dbRenderStamps(){
   const row=document.getElementById('db-points-row');row.innerHTML='';
-  const perRow=dbSt.total<=15?dbSt.total:Math.ceil(dbSt.total/2);
+  const perRow=dbSt.total<=10?dbSt.total:dbSt.total/2;
   row.style.display='grid';
   row.style.gridTemplateColumns='repeat('+perRow+',1fr)';
   row.style.width='100%';
@@ -598,7 +598,7 @@ function dbToggleWatermark(){dbSt.watermark=!dbSt.watermark;document.getElementB
 function dbUpdateOpacity(val){dbSt.opacity=val;document.getElementById('db-opacity-label').textContent='Opacité : '+val+'%';document.getElementById('db-card-watermark').style.color='rgba(255,255,255,'+val/100+')';}
 
 function dbInit(){
-  dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:false,opacity:5,pointsGoal:1000,_imgUrl:null};
+  dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:6,filled:3,watermark:false,opacity:5,pointsGoal:1000,_imgUrl:null};
   dbApplyCardBg();dbRenderStamps();dbUpdateTextColor(dbSt.textColor);
 }
 

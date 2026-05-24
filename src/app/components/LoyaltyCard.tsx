@@ -43,7 +43,7 @@ export interface CardDesign {
 export const DEFAULT_DESIGN: CardDesign = {
   cardName:           "Mon Commerce",
   stampLabel:         "POINTS COLLECTÉS",
-  stampsRequired:     5,
+  stampsRequired:     6,
   rewardDescription:  "récompense offerte",
   bgType:             "gradient",
   bgColors:           ["#4A1D96", "#7C3AED"],
@@ -133,8 +133,8 @@ export default function LoyaltyCard({
     : d.stampsRequired > 0 ? stamps / d.stampsRequired : 0;
   const remaining = isPoints ? Math.max(0, d.pointsGoal - currentPoints) : d.stampsRequired - stamps;
 
-  // 1 ligne pour N≤15, 2 lignes pour N≥16 — les tampons remplissent toute la largeur (width:100%)
-  const perRow = d.stampsRequired <= 15 ? d.stampsRequired : Math.ceil(d.stampsRequired / 2);
+  // 1 ligne pour N≤10, 2 lignes pour N≥12 — tampons par pas de 2, max 20
+  const perRow = d.stampsRequired <= 10 ? d.stampsRequired : d.stampsRequired / 2;
 
   return (
     <div

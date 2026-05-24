@@ -233,7 +233,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
         <Section title="Nombre de tampons">
           <div className="flex items-center gap-4">
             <input
-              type="range" min={3} max={15} value={design.stampsRequired}
+              type="range" min={2} max={20} step={2} value={design.stampsRequired}
               onChange={(e) => set("stampsRequired", Number(e.target.value))}
               className="q-range flex-1"
               style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties}
