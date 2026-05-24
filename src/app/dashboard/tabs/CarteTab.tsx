@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Save, Plus, Minus, ImageIcon } from "lucide-react";
-import LoyaltyCard, { CardDesign, DEFAULT_DESIGN, FONT_OPTIONS } from "@/app/components/LoyaltyCard";
+import LoyaltyCard, { CardDesign, DEFAULT_DESIGN, FONT_OPTIONS, contrastColor } from "@/app/components/LoyaltyCard";
 
 interface Props {
   merchant:    Record<string, unknown>;
@@ -318,7 +318,17 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
         {/* Texte & Police */}
         <Section title="Texte & police">
           <Field label="Couleur du texte principal">
-            <ColorInput value={design.textColor} onChange={(v) => set("textColor", v)} />
+            <div className="flex items-center gap-2">
+              <ColorInput value={design.textColor} onChange={(v) => set("textColor", v)} />
+              <button
+                onClick={() => set("textColor", contrastColor(design.bgColors[0]))}
+                className="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all flex-shrink-0"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.5)" }}
+                title="Calculer automatiquement la couleur la plus lisible"
+              >
+                Auto
+              </button>
+            </div>
           </Field>
 
           <Field label="Police">

@@ -65,7 +65,7 @@ export const DEFAULT_DESIGN: CardDesign = {
 /* ─── Helpers ────────────────────────────────────────────────────── */
 
 /** Retourne #ffffff ou #1a1a1a selon la luminance du hex pour garantir le contraste */
-function contrastColor(hex: string): string {
+export function contrastColor(hex: string): string {
   const h = hex.replace("#", "");
   if (h.length < 6) return "#ffffff";
   const r = parseInt(h.slice(0, 2), 16) / 255;
@@ -171,7 +171,7 @@ export default function LoyaltyCard({
       )}
 
       {/* Contenu */}
-      <div className="relative z-10 h-full flex flex-col" style={{ padding: "5% 6% 4%" }}>
+      <div className="relative z-10 h-full flex flex-col" style={{ padding: "5% 6% 4%", textShadow: "0 1px 4px rgba(0,0,0,0.25)" }}>
 
         {/* Haut : nom + titulaire */}
         <div className="flex items-start justify-between gap-2">
