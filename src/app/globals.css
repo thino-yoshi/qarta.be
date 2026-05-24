@@ -302,7 +302,7 @@ h1, h2, h3, h4, h5, h6, .font-display {
   height: 20px;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 3px #4a9eff;
   cursor: pointer;
   transition: transform 150ms ease, box-shadow 150ms ease;
 }
@@ -314,7 +314,7 @@ h1, h2, h3, h4, h5, h6, .font-display {
   height: 20px;
   border-radius: 50%;
   background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 3px #4a9eff;
   cursor: pointer;
   border: none;
 }
