@@ -527,9 +527,9 @@ function pickType(t,el){
 function dbGetBg(){
   if(dbSt.bgType==='couleur')return dbSt.soloColor;
   if(dbSt.bgType==='image'&&dbSt._imgUrl)return 'url('+dbSt._imgUrl+') center/cover';
-  return 'linear-gradient('+dbSt.angle+'deg,#1a0a2e 0%,'+dbSt.c1+' 50%,'+dbSt.c2+' 100%)';
+  return 'linear-gradient('+dbSt.angle+'deg,'+dbSt.c1+','+dbSt.c2+')';
 }
-function dbGetBgNoImage(){if(dbSt.bgType==='couleur')return dbSt.soloColor;return 'linear-gradient('+dbSt.angle+'deg,#1a0a2e 0%,'+dbSt.c1+' 50%,'+dbSt.c2+' 100%)';}
+function dbGetBgNoImage(){if(dbSt.bgType==='couleur')return dbSt.soloColor;return 'linear-gradient('+dbSt.angle+'deg,'+dbSt.c1+','+dbSt.c2+')';}
 function dbApplyCardBg(){const bg=dbGetBg();const c=document.getElementById('db-card-bg');if(c)c.style.background=bg;}
 function dbGetAccentBg(){return dbSt.accentMode==='degrade'?'linear-gradient(135deg,'+dbSt.acc1+','+dbSt.acc2+')':dbSt.acc1;}
 
