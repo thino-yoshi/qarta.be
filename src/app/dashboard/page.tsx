@@ -26,6 +26,9 @@ export default async function DashboardPage(props: {
 
   if (!merchantResult.data) redirect("/register");
 
+  // Rediriger vers l'onboarding si le commerçant n'a pas encore créé sa carte
+  if (!loyaltyCardResult.data) redirect("/onboarding.html");
+
   return (
     <DashboardShell
       user={{ id: user.id, email: user.email! }}

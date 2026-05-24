@@ -181,7 +181,7 @@
     <div class="nav-div" id="nd2"></div>
     <div class="nav-step" id="ns3"><div class="nav-num" id="nn3">3</div><span class="nav-label">Récapitulatif</span></div>
   </nav>
-  <div class="tbar-r"><a href="/dashboard" style="color:#1a1626;text-underline-offset:2px">← Retour au dashboard</a></div>
+  <div class="tbar-r"></div>
 </header>
 
 <main class="page">
@@ -513,6 +513,7 @@ function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
+  try{if(id!=='s4')localStorage.setItem('qarta_onboarding_step',id);}catch(e){}
   const pageEl=document.querySelector('.page');
   if(pageEl){if(id==='s3'){pageEl.style.padding='24px 1.5rem 0';pageEl.style.overflow='hidden';pageEl.style.alignItems='stretch';}else{pageEl.style.padding='';pageEl.style.overflow='';pageEl.style.alignItems='';}}
 
@@ -532,6 +533,7 @@ function goTo(id){
 
 function pickType(t,el){
   typ=t;
+  try{localStorage.setItem('qarta_onboarding_typ',t);}catch(e){}
   document.querySelectorAll('.tcard').forEach(c=>c.classList.remove('sl'));
   el.classList.add('sl');
   const sub=document.getElementById('s3-subtitle');
@@ -723,6 +725,7 @@ function showSuccess(card){
   document.getElementById('mg').textContent=card.goal+(dbSt.mode==='points'?' points':' visites');
   document.getElementById('mr').textContent=card.reward;
   document.getElementById('mid').textContent=card.id;
+  try{localStorage.removeItem('qarta_onboarding_step');localStorage.removeItem('qarta_onboarding_typ');}catch(e){}
   goTo('s4');toast('Carte créée avec succès !');
 }
 
@@ -738,6 +741,18 @@ function reset(){
 }
 
 dbInit();
+// Reprendre l'étape si le navigateur a planté avant la fin
+try{
+  const savedStep=localStorage.getItem('qarta_onboarding_step');
+  if(savedStep&&['s2','s3'].includes(savedStep)){
+    if(savedStep==='s3'){
+      // Restaurer aussi le type de fidélité sélectionné
+      const savedTyp=localStorage.getItem('qarta_onboarding_typ');
+      if(savedTyp){typ=savedTyp;dbSwitchMode(savedTyp==='visit'?'tampons':'points',null);}
+    }
+    goTo(savedStep);
+  }
+}catch(e){}
 </script>
 </body>
 </html>
