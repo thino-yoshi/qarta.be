@@ -3,7 +3,8 @@ import React, { useState, Component, ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, AlertCircle } from "lucide-react";
-import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
+import Image from "next/image";
+import { QartaWordmark } from "../components/QartaLogo";
 import { createClient } from "@/lib/supabase/client";
 import dynamic from "next/dynamic";
 const HeroGradient = dynamic(() => import("../components/HeroGradient"), { ssr: false });
@@ -71,7 +72,7 @@ export default function LoginForm({ content }: { content?: Record<string, unknow
       {/* Top bar */}
       <div className="relative z-10 flex items-center justify-between px-8 pt-7">
         <Link href="/" className="flex items-center gap-3 group">
-          <QartaLogo size={38} variant="badge" />
+          <Image src="/logo-qarta.png" width={38} height={38} alt="Qarta" style={{ borderRadius: 9 }} />
           <QartaWordmark color="#ffffff" />
         </Link>
         <Link
@@ -103,7 +104,7 @@ export default function LoginForm({ content }: { content?: Record<string, unknow
               <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl mb-7"
                 style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)", boxShadow: "0 10px 30px -10px rgba(0,0,0,0.4)" }}
               >
-                <QartaLogo size={64} variant="badge" showTiles={false} />
+                <Image src="/logo-qarta.png" width={64} height={64} alt="Qarta" style={{ borderRadius: 16 }} />
               </div>
               <h1
                 className="text-[38px] font-bold leading-tight"

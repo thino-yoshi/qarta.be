@@ -3,7 +3,8 @@ import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ArrowLeft, Building2, User, Mail, Lock, Phone, MapPin, Globe, Hash, CheckCircle, AlertCircle, Eye, EyeOff, type LucideIcon } from "lucide-react";
-import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
+import Image from "next/image";
+import { QartaWordmark } from "../components/QartaLogo";
 import { createClient } from "@/lib/supabase/client";
 import HeroGradient from "../components/HeroGradient";
 
@@ -305,7 +306,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
       {/* Header */}
       <div className="relative z-10 flex items-center justify-between px-8 pt-7">
         <Link href="/" className="flex items-center gap-3">
-          <QartaLogo size={38} variant="badge" />
+          <Image src="/logo-qarta.png" width={38} height={38} alt="Qarta" style={{ borderRadius: 9 }} />
           <QartaWordmark color="#ffffff" />
         </Link>
         <Link href="/login" className="text-[13px] text-white/50 hover:text-white transition-colors font-medium">

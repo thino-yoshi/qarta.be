@@ -216,7 +216,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
 
         {/* Identité */}
         <Section title="Identité de la carte">
-          <Field label="Nom affiché sur la carte">
+          <Field label="Nom du commerce">
             <TextInput value={design.cardName} onChange={(v) => set("cardName", v)} placeholder="Ex : BARBER" />
           </Field>
           <Field label={loyaltyTab === "points" ? "Label des points" : "Label des tampons"}>

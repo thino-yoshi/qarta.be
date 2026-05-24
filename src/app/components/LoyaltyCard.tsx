@@ -176,6 +176,16 @@ export default function LoyaltyCard({
         {/* Haut : nom + titulaire */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
+            <p style={{
+              color: `${d.textColor}99`,
+              fontSize: "clamp(9px, 2cqw, 12px)",
+              fontWeight: 600,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              marginBottom: "4px",
+            }}>
+              Carte de fidélité
+            </p>
             <h2
               className="font-black leading-none"
               style={{
@@ -187,16 +197,6 @@ export default function LoyaltyCard({
             >
               {d.cardName}
             </h2>
-            <p style={{
-              color: `${d.textColor}99`,
-              fontSize: "clamp(9px, 2cqw, 12px)",
-              fontWeight: 600,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              marginTop: "4px",
-            }}>
-              Carte Fidélité
-            </p>
           </div>
 
           <div className="text-right flex-shrink-0">
@@ -264,7 +264,7 @@ export default function LoyaltyCard({
                 fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
                 {d.stampLabel}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.ceil(d.stampsRequired / 2)}, ${stampPx}px)`, gap: "5px" }}>
                 {Array.from({ length: d.stampsRequired }).map((_, i) => (
                   <div key={i} className="rounded-full flex-shrink-0"
                     style={{

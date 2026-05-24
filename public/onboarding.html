@@ -138,7 +138,7 @@
     .db-card-watermark{position:absolute;font-size:140px;font-weight:900;color:rgba(255,255,255,0.05);right:-15px;bottom:-25px;line-height:1;pointer-events:none;font-family:'Manrope',sans-serif}
     .db-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
     .db-card-name{font-size:18px;font-weight:800;letter-spacing:0.04em;line-height:1.1;transition:color .3s,font-family .3s}
-    .db-card-subtitle{font-size:9px;color:rgba(255,255,255,0.5);letter-spacing:0.12em;text-transform:uppercase;margin-top:3px;font-family:'Manrope',sans-serif}
+    .db-card-subtitle{font-size:9px;color:rgba(255,255,255,0.5);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;font-family:'Manrope',sans-serif}
     .db-card-holder-block{text-align:right}
     .db-card-holder-label{font-size:8px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;font-family:'Manrope',sans-serif}
     .db-card-holder-name{font-size:12px;font-weight:700;color:#fff;margin-top:2px;font-family:'Manrope',sans-serif}
@@ -237,7 +237,7 @@
         <div class="db-section">
           <div class="db-label">Identité de la carte</div>
           <div class="db-form-group">
-            <label class="db-form-label">Nom affiché sur la carte *</label>
+            <label class="db-form-label">Nom du commerce *</label>
             <input class="db-input" id="input-name" type="text" placeholder="ex : Café Lumi" oninput="dbUpdateName(this.value)"/>
           </div>
           <div class="db-form-group">
@@ -348,8 +348,8 @@
             <div class="db-card-watermark" id="db-card-watermark" style="display:none">Q</div>
             <div class="db-card-top">
               <div>
+                <div class="db-card-subtitle">Carte de fidélité</div>
                 <div class="db-card-name" id="db-card-name" style="color:#ffffff">—</div>
-                <div class="db-card-subtitle">Carte fidélité</div>
               </div>
               <div>
                 <div class="db-card-holder-block">
@@ -571,6 +571,10 @@ function dbUpdatePoints(val){dbSt.pointsGoal=parseInt(val);document.getElementBy
 function dbRenderStamps(){
   const row=document.getElementById('db-points-row');row.innerHTML='';
   const stampPx=dbSt.total<=5?40:dbSt.total<=8?32:dbSt.total<=12?26:20;
+  const perRow=Math.ceil(dbSt.total/2);
+  row.style.display='grid';
+  row.style.gridTemplateColumns='repeat('+perRow+','+stampPx+'px)';
+  row.style.gap='5px';
   const chkColor=contrastColor(dbSt.acc1);
   const chkSvg='<svg viewBox="0 0 24 24" fill="none" stroke="'+chkColor+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%"><path d="M5 13l4 4L19 7"/></svg>';
   for(let i=0;i<dbSt.total;i++){
