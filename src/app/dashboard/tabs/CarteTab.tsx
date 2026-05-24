@@ -66,7 +66,7 @@ function GradientBuilder({
         </button>
       )}
       <div className="flex items-center gap-3">
-        <span className="text-[11px] text-white/35">Angle</span>
+        <span className="text-[11px] text-white/70">Angle</span>
         <input type="range" min={0} max={360} value={angle} onChange={(e) => onAngle(Number(e.target.value))}
           className="q-range flex-1"
           style={{ "--q-thumb-color": colors[0] } as React.CSSProperties} />
@@ -462,7 +462,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-[11px] text-white/40 mb-1.5">{label}</label>
+      <label className="block text-[11px] text-white mb-1.5">{label}</label>
       {children}
     </div>
   );
