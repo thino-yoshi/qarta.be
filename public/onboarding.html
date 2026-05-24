@@ -473,9 +473,8 @@ function dbApplyPreset(idx){
   dbSt.acc1=p.acc;dbSt.accentMode='mono';
   ['db-swatch-acc1','db-swatch-acc1b'].forEach(id=>dbSyncSwatch(id,p.acc));
   ['db-hex-acc1','db-hex-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=p.acc;});
-  document.getElementById('db-accent-mono').style.display='block';
-  document.getElementById('db-accent-degrade').style.display='none';
-  document.querySelectorAll('#db-accent-tabs .db-tab-btn').forEach(b=>b.classList.toggle('active',b.textContent.trim()==='Couleur'));
+  const dam=document.getElementById('db-accent-mono');if(dam)dam.style.display='block';
+  const dad=document.getElementById('db-accent-degrade');if(dad)dad.style.display='none';
   // Texte
   dbSt.textColor=p.txt;
   const st=document.getElementById('db-swatch-text');if(st)st.style.background=p.txt;
