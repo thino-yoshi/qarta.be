@@ -558,7 +558,7 @@ function dbUpdateAccent1(val){dbSt.acc1=val;['db-swatch-acc1','db-swatch-acc1b']
 function dbUpdateAccentHex1(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent1(val);}
 function dbUpdateAccent2(val){dbSt.acc2=val;dbSyncSwatch('db-swatch-acc2',val);const h=document.getElementById('db-hex-acc2');if(h)h.value=val;dbRenderStamps();}
 function dbUpdateAccentHex2(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent2(val);}
-function dbUpdateTextColor(val){dbSt.textColor=val;dbSyncSwatch('db-swatch-text',val);document.getElementById('db-hex-text').value=val;document.getElementById('db-card-name').style.color=val;}
+function dbUpdateTextColor(val){dbSt.textColor=val;dbSyncSwatch('db-swatch-text',val);document.getElementById('db-hex-text').value=val;document.getElementById('db-card-name').style.color=val;const sub=document.querySelector('.db-card-subtitle');if(sub)sub.style.color=val+'99';const pt=document.querySelector('.db-card-progress-text');if(pt)pt.style.color=val;}
 function dbUpdateTextColorHex(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateTextColor(val);}
 function dbSetFont(font,btn){dbSt.font=font;document.querySelectorAll('#db-font-grid .db-font-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-card-name').style.fontFamily="'"+font+"',sans-serif";}
 function dbUpdateName(val){dbSt.name=val;const u=val.toUpperCase();document.getElementById('db-card-name').textContent=u||'—';}
@@ -575,16 +575,25 @@ function dbRenderStamps(){
     const d=document.createElement('div');
     d.className='db-point'+(i<dbSt.filled?' filled':'');
     d.style.cssText='width:'+stampPx+'px;height:'+stampPx+'px;display:flex;align-items:center;justify-content:center;';
-    if(i<dbSt.filled){d.style.background=dbSt.acc1;d.innerHTML=chkSvg;}
+    if(i<dbSt.filled){d.style.background=dbSt.acc1;d.style.boxShadow='0 2px 10px '+dbSt.acc1+'55';d.innerHTML=chkSvg;}
+    else{d.style.border='1.5px solid '+dbSt.acc1+'44';}
     row.appendChild(d);
   }
+  // Sync accent color on card elements (comme dashboard)
+  const sl=document.getElementById('db-stamp-label-card');if(sl)sl.style.color=dbSt.acc1;
+  const rem=document.getElementById('db-remaining');if(rem)rem.style.color=dbSt.acc1;
+  const rew=document.getElementById('db-reward-text');if(rew)rew.style.color=dbSt.acc1;
+  const cnt=document.getElementById('db-count-current');if(cnt)cnt.style.color=dbSt.acc1;
+  const ctt=document.getElementById('db-count-total');if(ctt)ctt.parentElement.style.color=dbSt.acc1;
+  const card=document.getElementById('db-card-bg');if(card)card.style.boxShadow='0 20px 50px -15px '+dbSt.acc1+'55';
+  const pbf=document.querySelector('.db-points-bar-fill');if(pbf)pbf.style.background=dbSt.acc1;
 }
 function dbToggleWatermark(){dbSt.watermark=!dbSt.watermark;document.getElementById('db-watermark-toggle').classList.toggle('off',!dbSt.watermark);document.getElementById('db-card-watermark').style.display=dbSt.watermark?'block':'none';}
 function dbUpdateOpacity(val){dbSt.opacity=val;document.getElementById('db-opacity-label').textContent='Opacité : '+val+'%';document.getElementById('db-card-watermark').style.color='rgba(255,255,255,'+val/100+')';}
 
 function dbInit(){
   dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:true,opacity:5,pointsGoal:1000,_imgUrl:null};
-  dbApplyCardBg();dbRenderStamps();
+  dbApplyCardBg();dbRenderStamps();dbUpdateTextColor(dbSt.textColor);
 }
 
 async function submit(){
