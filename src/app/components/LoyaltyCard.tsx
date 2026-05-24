@@ -189,9 +189,9 @@ export default function LoyaltyCard({
             </h2>
             <p style={{
               color: `${d.textColor}99`,
-              fontSize: "clamp(7px, 1.6cqw, 10px)",
+              fontSize: "clamp(9px, 2cqw, 12px)",
               fontWeight: 600,
-              letterSpacing: "0.22em",
+              letterSpacing: "0.18em",
               textTransform: "uppercase",
               marginTop: "4px",
             }}>
