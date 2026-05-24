@@ -264,7 +264,7 @@ export default function LoyaltyCard({
                 fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
                 {d.stampLabel}
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.ceil(d.stampsRequired / 2)}, ${stampPx}px)`, gap: "5px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.ceil(d.stampsRequired / 2)}, 1fr)`, justifyItems: "center", width: "100%", gap: "4px" }}>
                 {Array.from({ length: d.stampsRequired }).map((_, i) => (
                   <div key={i} className="rounded-full flex-shrink-0"
                     style={{

@@ -573,8 +573,10 @@ function dbRenderStamps(){
   const stampPx=dbSt.total<=5?40:dbSt.total<=8?32:dbSt.total<=12?26:20;
   const perRow=Math.ceil(dbSt.total/2);
   row.style.display='grid';
-  row.style.gridTemplateColumns='repeat('+perRow+','+stampPx+'px)';
-  row.style.gap='5px';
+  row.style.gridTemplateColumns='repeat('+perRow+',1fr)';
+  row.style.justifyItems='center';
+  row.style.width='100%';
+  row.style.gap='4px';
   const chkColor=contrastColor(dbSt.acc1);
   const chkSvg='<svg viewBox="0 0 24 24" fill="none" stroke="'+chkColor+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%"><path d="M5 13l4 4L19 7"/></svg>';
   for(let i=0;i<dbSt.total;i++){
