@@ -133,8 +133,9 @@ export default function LoyaltyCard({
     : d.stampsRequired > 0 ? stamps / d.stampsRequired : 0;
   const remaining = isPoints ? Math.max(0, d.pointsGoal - currentPoints) : d.stampsRequired - stamps;
 
-  // Taille des tampons selon le nombre
-  const stampPx = d.stampsRequired <= 5 ? 40 : d.stampsRequired <= 8 ? 32 : d.stampsRequired <= 12 ? 26 : 20;
+  // Taille max des tampons selon le nombre (min(100%, maxSz) pour remplir les cellules sans déborder)
+  const stampMax = d.stampsRequired <= 4 ? 36 : d.stampsRequired <= 6 ? 32 : d.stampsRequired <= 8 ? 28
+    : d.stampsRequired <= 10 ? 24 : d.stampsRequired <= 12 ? 21 : d.stampsRequired <= 16 ? 18 : 15;
 
   return (
     <div
@@ -264,11 +265,11 @@ export default function LoyaltyCard({
                 fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
                 {d.stampLabel}
               </p>
-              <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.ceil(d.stampsRequired / 2)}, 1fr)`, width: "100%", gap: "5px" }}>
+              <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.ceil(d.stampsRequired / 2)}, 1fr)`, justifyItems: "center", width: "100%", gap: "4px" }}>
                 {Array.from({ length: d.stampsRequired }).map((_, i) => (
                   <div key={i} className="rounded-full"
                     style={{
-                      width: "100%", aspectRatio: "1 / 1",
+                      width: `min(100%, ${stampMax}px)`, aspectRatio: "1 / 1",
                       display: "flex", alignItems: "center", justifyContent: "center",
                       ...(i < stamps
                         ? { background: accentFirst, boxShadow: `0 2px 10px ${accentFirst}55` }
