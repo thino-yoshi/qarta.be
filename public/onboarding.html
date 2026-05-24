@@ -409,7 +409,7 @@
     <div style="text-align:center;width:100%;max-width:760px">
       <div class="sbadge">✓</div>
       <h1 class="ttl" style="font-size:2rem;margin-bottom:.5rem">Votre carte est prête !</h1>
-      <p class="sub" style="margin-bottom:1.5rem">Votre programme est maintenant actif sur Qarta.</p>
+      <div style="margin-bottom:1.5rem"></div>
       <div style="display:flex;gap:24px;align-items:flex-start;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem">
         <div style="width:100%;max-width:340px;flex-shrink:0" id="fcard-wrap">
           <div id="fcard"></div>
@@ -419,12 +419,11 @@
           <div class="mrow"><span>Type</span><span id="mt">—</span></div>
           <div class="mrow"><span>Objectif</span><span id="mg">—</span></div>
           <div class="mrow"><span>Récompense</span><span id="mr">—</span></div>
-          <div class="mrow"><span>ID carte</span><span id="mid" style="font-family:monospace;font-size:11px;color:var(--mut)">—</span></div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px;width:100%;max-width:320px;margin:0 auto">
         <a href="/dashboard" class="btn-b" style="text-decoration:none">Accéder au dashboard <span class="arr">→</span></a>
-        <button class="btn-g" style="width:100%;justify-content:center" onclick="reset()">Créer une autre carte</button>
+        <button class="btn-g" style="width:100%;justify-content:center" onclick="goTo('s3')">Modifier ma carte</button>
       </div>
     </div>
   </section>
@@ -489,7 +488,7 @@ function dbApplyPreset(idx){
 
 function contrastColor(hex){var h=(hex||'').replace('#','');if(h.length<6)return '#ffffff';var r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255;var lin=function(c){return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);};var L=0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);return L>0.179?'#1a1a1a':'#ffffff';}
 let typ='visit',busy=false;
-let dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:true,opacity:5,pointsGoal:1000,_imgUrl:null};
+let dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:false,opacity:5,pointsGoal:1000,_imgUrl:null};
 
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -511,6 +510,8 @@ function goTo(id){
   ['nd1','nd2'].forEach((did,i)=>{const d=document.getElementById(did);if(d)d.classList.toggle('done',idx>i);});
   const line=document.getElementById('s3-cream-line');
   if(line)line.style.display=id==='s3'?'block':'none';
+  // Rafraîchir le preview carte quand on entre en s3
+  if(id==='s3'){dbApplyCardBg();dbRenderStamps();dbUpdateTextColor(dbSt.textColor);}
 }
 
 function pickType(t,el){
@@ -593,7 +594,7 @@ function dbToggleWatermark(){dbSt.watermark=!dbSt.watermark;document.getElementB
 function dbUpdateOpacity(val){dbSt.opacity=val;document.getElementById('db-opacity-label').textContent='Opacité : '+val+'%';document.getElementById('db-card-watermark').style.color='rgba(255,255,255,'+val/100+')';}
 
 function dbInit(){
-  dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:true,opacity:5,pointsGoal:1000,_imgUrl:null};
+  dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:false,opacity:5,pointsGoal:1000,_imgUrl:null};
   dbApplyCardBg();dbRenderStamps();dbUpdateTextColor(dbSt.textColor);
 }
 
@@ -703,12 +704,23 @@ function renderS4Card(){
 }
 
 function showSuccess(card){
-  renderS4Card();
+  // Option A : clone DOM de la vraie carte preview
+  const liveCard=document.getElementById('db-card-bg');
+  const fcard=document.getElementById('fcard');
+  if(liveCard&&fcard){
+    const clone=liveCard.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.querySelectorAll('[id]').forEach(function(el){el.removeAttribute('id');});
+    clone.style.pointerEvents='none';
+    clone.style.width='100%';
+    clone.style.transition='none';
+    fcard.innerHTML='';
+    fcard.appendChild(clone);
+  }
   document.getElementById('mn').textContent=card.name;
   document.getElementById('mt').textContent=typ==='visit'?'Tampons par visite':'Points par euro';
   document.getElementById('mg').textContent=card.goal+(dbSt.mode==='points'?' points':' visites');
   document.getElementById('mr').textContent=card.reward;
-  document.getElementById('mid').textContent=card.id;
   try{localStorage.removeItem('qarta_onboarding_step');localStorage.removeItem('qarta_onboarding_typ');}catch(e){}
   goTo('s4');toast('Carte créée avec succès !');
 }

@@ -401,57 +401,57 @@ export default function ScrollClient({ content }: Props) {
             {/* Old caption */}
             <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", whiteSpace:"nowrap", pointerEvents:"none", zIndex:20, display:"flex", gap:6, top:"calc(50% - 170px)" }}>
               {(["Fini","les","cartes","en","papier."] as const).map((word, i) => (
-                <span key={i} id={`anim-co${i}`} style={{ opacity:0, transform:"translateY(12px)", display:"inline-block", fontSize:22, fontWeight:700, letterSpacing:"-.3px", color:"rgba(200,178,135,.82)", fontFamily:"Plus Jakarta Sans,sans-serif" }}>
+                <span key={i} id={`anim-co${i}`} style={{ opacity:0, transform:"translateY(12px)", display:"inline-block", fontSize:22, fontWeight:700, letterSpacing:"-.3px", color:"#0f2044", fontFamily:"Plus Jakarta Sans,sans-serif" }}>
                   {word}
                 </span>
               ))}
             </div>
 
             {/* New caption */}
-            <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", whiteSpace:"nowrap", pointerEvents:"none", zIndex:20, display:"flex", gap:6, top:"calc(50% - 258px)" }}>
+            <div style={{ position:"absolute", left:"50%", transform:"translateX(-50%)", whiteSpace:"nowrap", pointerEvents:"none", zIndex:20, display:"flex", gap:6, top:"14px" }}>
               {(["Place","au","digital."] as const).map((word, i) => (
-                <span key={i} id={`anim-cn${i}`} style={{ opacity:0, transform:"translateY(12px)", display:"inline-block", fontSize:22, fontWeight:700, letterSpacing:"-.3px", color:"#387df8", textShadow:"0 0 28px rgba(56,125,248,.45)", fontFamily:"Plus Jakarta Sans,sans-serif" }}>
+                <span key={i} id={`anim-cn${i}`} style={{ opacity:0, transform:"translateY(12px)", display:"inline-block", fontSize:22, fontWeight:700, letterSpacing:"-.3px", color:"#0f2044", fontFamily:"Plus Jakarta Sans,sans-serif" }}>
                   {word}
                 </span>
               ))}
             </div>
 
             {/* Phone */}
-            <div id="anim-pw" style={{ position:"absolute", width:210, height:424, zIndex:5, opacity:0, transform:"scale(0.04)" }}>
-              <div style={{ width:"100%", height:"100%", borderRadius:42, background:"linear-gradient(170deg,#202020,#121212 60%,#0e0e0e)", border:"1px solid #282828", position:"relative", overflow:"hidden", boxShadow:"inset 0 .5px 0 rgba(255,255,255,.11),inset 0 -.5px 0 rgba(255,255,255,.04)" }}>
+            <div id="anim-pw" style={{ position:"absolute", width:252, height:509, zIndex:5, opacity:0, transform:"scale(0.04)" }}>
+              <div style={{ width:"100%", height:"100%", borderRadius:50, background:"linear-gradient(170deg,#202020,#121212 60%,#0e0e0e)", border:"1px solid #282828", position:"relative", overflow:"hidden", boxShadow:"inset 0 .5px 0 rgba(255,255,255,.11),inset 0 -.5px 0 rgba(255,255,255,.04)" }}>
                 {/* side buttons */}
-                <div style={{ position:"absolute", right:-2.5, top:76, width:2.5, height:30, background:"#1c1c1c", borderRadius:"0 2px 2px 0", boxShadow:"0 46px 0 #1c1c1c" }} />
-                <div style={{ position:"absolute", left:-2.5, top:108, width:2.5, height:54, background:"#1c1c1c", borderRadius:"2px 0 0 2px" }} />
+                <div style={{ position:"absolute", right:-3, top:91, width:3, height:36, background:"#1c1c1c", borderRadius:"0 2px 2px 0", boxShadow:"0 55px 0 #1c1c1c" }} />
+                <div style={{ position:"absolute", left:-3, top:130, width:3, height:65, background:"#1c1c1c", borderRadius:"2px 0 0 2px" }} />
                 {/* notch */}
-                <div style={{ position:"absolute", top:11, left:"50%", transform:"translateX(-50%)", width:86, height:26, background:"#000", borderRadius:18, zIndex:20, boxShadow:"0 2px 6px rgba(0,0,0,.7),inset 0 .5px 0 rgba(255,255,255,.06)" }} />
+                <div style={{ position:"absolute", top:13, left:"50%", transform:"translateX(-50%)", width:103, height:31, background:"#000", borderRadius:22, zIndex:20, boxShadow:"0 2px 6px rgba(0,0,0,.7),inset 0 .5px 0 rgba(255,255,255,.06)" }} />
                 {/* screen */}
-                <div style={{ position:"absolute", inset:1, borderRadius:41, background:"#07101f", overflow:"hidden", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"56px 18px 38px" }}>
-                  <div style={{ position:"absolute", top:0, left:0, right:0, height:"52%", background:"linear-gradient(180deg,rgba(255,255,255,.05),transparent)", borderRadius:"41px 41px 0 0", pointerEvents:"none" }} />
+                <div style={{ position:"absolute", inset:1, borderRadius:49, background:"#07101f", overflow:"hidden", display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"67px 22px 46px" }}>
+                  <div style={{ position:"absolute", top:0, left:0, right:0, height:"52%", background:"linear-gradient(180deg,rgba(255,255,255,.05),transparent)", borderRadius:"49px 49px 0 0", pointerEvents:"none" }} />
                   {/* glow */}
-                  <div style={{ position:"absolute", width:180, height:180, borderRadius:"50%", background:"radial-gradient(circle,rgba(56,125,248,.2),rgba(56,125,248,.05) 45%,transparent 70%)", top:"50%", left:"50%", transform:"translate(-50%,-56%)", animation:"qhero-glow 3.2s ease-in-out infinite", pointerEvents:"none" }} />
+                  <div style={{ position:"absolute", width:216, height:216, borderRadius:"50%", background:"radial-gradient(circle,rgba(56,125,248,.2),rgba(56,125,248,.05) 45%,transparent 70%)", top:"50%", left:"50%", transform:"translate(-50%,-56%)", animation:"qhero-glow 3.2s ease-in-out infinite", pointerEvents:"none" }} />
                   {/* scan line */}
-                  <div id="anim-scan" style={{ position:"absolute", left:0, right:0, height:80, background:"linear-gradient(180deg,transparent,rgba(56,125,248,.07),transparent)", top:0, opacity:0, pointerEvents:"none" }} />
+                  <div id="anim-scan" style={{ position:"absolute", left:0, right:0, height:96, background:"linear-gradient(180deg,transparent,rgba(56,125,248,.07),transparent)", top:0, opacity:0, pointerEvents:"none" }} />
                   {/* logo */}
-                  <div id="anim-qLogo" style={{ opacity:0, marginBottom:18, position:"relative", zIndex:2 }}>
+                  <div id="anim-qLogo" style={{ opacity:0, marginBottom:22, position:"relative", zIndex:2 }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/logo-qarta.png" alt="Qarta" width={76} height={76} style={{ borderRadius:17, display:"block", objectFit:"cover", filter:"drop-shadow(0 0 12px rgba(56,125,248,.4))" }} />
+                    <img src="/logo-qarta.png" alt="Qarta" width={91} height={91} style={{ borderRadius:20, display:"block", objectFit:"cover", filter:"drop-shadow(0 0 12px rgba(56,125,248,.4))" }} />
                   </div>
                   {/* dots */}
-                  <div id="anim-dots" style={{ display:"flex", gap:5, marginBottom:24, opacity:0, position:"relative", zIndex:2 }}>
+                  <div id="anim-dots" style={{ display:"flex", gap:6, marginBottom:29, opacity:0, position:"relative", zIndex:2 }}>
                     {[0,1,2].map(i => (
-                      <div key={i} style={{ width:5, height:5, borderRadius:"50%", background:"#387df8", animation:`qhero-dot 1.4s ease-in-out infinite`, animationDelay:`${i*0.22}s` }} />
+                      <div key={i} style={{ width:6, height:6, borderRadius:"50%", background:"#387df8", animation:`qhero-dot 1.4s ease-in-out infinite`, animationDelay:`${i*0.22}s` }} />
                     ))}
                   </div>
                   {/* tagline */}
                   <div id="anim-tag" style={{ display:"flex", gap:5, opacity:0, position:"relative", zIndex:2 }}>
                     {(["Qarta","est","là."] as const).map((word, i) => (
-                      <span key={i} id={`anim-tw${i}`} style={{ display:"inline-block", opacity:0, transform:"translateY(14px)", fontSize:15, fontWeight:500, color:"rgba(255,255,255,.9)", letterSpacing:"-.2px" }}>
+                      <span key={i} id={`anim-tw${i}`} style={{ display:"inline-block", opacity:0, transform:"translateY(14px)", fontSize:18, fontWeight:500, color:"rgba(255,255,255,.9)", letterSpacing:"-.2px" }}>
                         {word}
                       </span>
                     ))}
                   </div>
                   {/* shine */}
-                  <div style={{ position:"absolute", bottom:0, left:0, right:0, height:80, background:"linear-gradient(0deg,rgba(56,125,248,.04),transparent)", borderRadius:"0 0 41px 41px", pointerEvents:"none" }} />
+                  <div style={{ position:"absolute", bottom:0, left:0, right:0, height:96, background:"linear-gradient(0deg,rgba(56,125,248,.04),transparent)", borderRadius:"0 0 49px 49px", pointerEvents:"none" }} />
                 </div>
               </div>
             </div>

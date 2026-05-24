@@ -5,6 +5,11 @@ import LiveThemeListener from "./components/LiveThemeListener";
 export const metadata: Metadata = {
   title: "Qarta — Fidélité digitale",
   description: "Toutes vos cartes de fidélité réunies dans une seule application. Simple. Digital.",
+  icons: {
+    icon: "/logo-qarta.png",
+    shortcut: "/logo-qarta.png",
+    apple: "/logo-qarta.png",
+  },
 };
 
 export default function RootLayout({

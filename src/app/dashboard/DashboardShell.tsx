@@ -35,6 +35,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard, stripeSucc
   const pendingNotice = (h.pendingNotice as string) ?? "Votre abonnement n'est pas encore actif — vous n'avez pas accès à toutes les fonctionnalités. Activez votre compte pour débloquer les statistiques et la gestion d'abonnement.";
 
   const [activeTab, setActiveTab] = useState<Tab>("carte");
+  const [showComingSoon, setShowComingSoon] = useState(false);
   const isActive = merchant?.subscription_status === "active";
 
   const tabs: { id: Tab; label: string; icon: LucideIcon }[] = [
@@ -107,11 +108,14 @@ export default function DashboardShell({ user, merchant, loyaltyCard, stripeSucc
         <nav className="flex-1 px-3 py-4 space-y-1">
           {tabs.map(({ id, label, icon: Icon }) => {
             const selected = activeTab === id;
-            const locked = !isActive && id === "statistiques";
+            const locked = (!isActive && id === "statistiques") || id === "abonnement";
             return (
               <button
                 key={id}
-                onClick={() => { if (!locked) setActiveTab(id); }}
+                onClick={() => {
+                  if (id === "abonnement") { setShowComingSoon(true); return; }
+                  if (!locked) setActiveTab(id);
+                }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all text-left ${locked ? "opacity-40 cursor-not-allowed" : ""}`}
                 style={
                   selected && !locked
@@ -216,7 +220,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard, stripeSucc
               <span className="text-white/45"> — {pendingNotice}</span>
             </p>
             <button
-              onClick={() => setActiveTab("abonnement")}
+              onClick={() => setShowComingSoon(true)}
               className="flex-shrink-0 px-3 py-1.5 rounded-xl text-[12px] font-semibold transition-all hover:scale-105"
               style={{
                 background: "rgba(243,156,18,0.15)",
@@ -224,7 +228,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard, stripeSucc
                 color: "#f39c12",
               }}
             >
-              Activer →
+              Bientôt →
             </button>
           </div>
         )}
@@ -243,6 +247,62 @@ export default function DashboardShell({ user, merchant, loyaltyCard, stripeSucc
           </div>
         </div>
       </main>
+
+      {/* ── Modale Bientôt disponible ── */}
+      {showComingSoon && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(6px)" }}
+          onClick={() => setShowComingSoon(false)}
+        >
+          <div
+            className="relative flex flex-col items-center text-center rounded-3xl px-10 py-10 mx-4"
+            style={{
+              background: "#111927",
+              border: "1px solid rgba(255,255,255,0.1)",
+              boxShadow: "0 32px 80px -20px rgba(0,0,0,0.8)",
+              maxWidth: 420,
+              width: "100%",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Icône */}
+            <div
+              className="flex items-center justify-center w-14 h-14 rounded-2xl mb-5"
+              style={{ background: "rgba(74,158,255,0.12)", border: "1px solid rgba(74,158,255,0.25)" }}
+            >
+              <Lock size={22} color="#4a9eff" strokeWidth={2} />
+            </div>
+
+            {/* Titre */}
+            <h2 className="text-[20px] font-bold mb-2" style={{ letterSpacing: "-0.02em" }}>
+              Bientôt disponible
+            </h2>
+
+            {/* Message */}
+            <p className="text-[14px] leading-relaxed mb-2" style={{ color: "rgba(255,255,255,0.55)" }}>
+              La gestion des abonnements sera disponible lors du lancement officiel de Qarta.
+            </p>
+            <p className="text-[13px] font-semibold mb-7" style={{ color: "#4a9eff" }}>
+              Lancement prévu fin juin — début juillet 2026
+            </p>
+
+            {/* Bouton fermer */}
+            <button
+              onClick={() => setShowComingSoon(false)}
+              className="px-8 py-3 rounded-2xl text-[14px] font-semibold transition-all hover:scale-105 active:scale-100"
+              style={{
+                background: "#0f2044",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "#ffffff",
+                boxShadow: "0 8px 24px -8px rgba(0,0,0,0.5)",
+              }}
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { QartaLogo, QartaWordmark } from "./QartaLogo";
+import { QartaWordmark } from "./QartaLogo";
 
 const NAV_DEFAULT = [
   { label: "À propos",   href: "#immersion",  scrollId: "scroll-immersion" },
@@ -20,7 +21,7 @@ export default function Header({ content }: { content?: Record<string, unknown> 
   // Merge DB content with defaults
   const c = content ?? {};
   const NAV = NAV_DEFAULT;
-  const DEMO         = { label: (c.demoLabel as string)     ?? "Démo",            href: (c.demoHref as string)  ?? "/register?role=merchant" };
+  const DEMO         = { label: (c.demoLabel as string)     ?? "Démo",            href: "/demo" };
   const loginLabel   = (c.loginLabel    as string) ?? "Connexion";
   const registerLabel = (c.registerLabel as string) ?? "Créer un compte";
 
@@ -72,7 +73,7 @@ export default function Header({ content }: { content?: Record<string, unknown> 
               }
             }}
           >
-            <QartaLogo size={40} variant="badge" />
+            <Image src="/logo-qarta.png" width={40} height={40} alt="Qarta" style={{ borderRadius: 10 }} />
             <QartaWordmark color={scrolled ? "#0f2044" : "#ffffff"} />
           </Link>
 
