@@ -676,33 +676,30 @@ function renderS4Card(){
   }).join('');
   const el=document.getElementById('fcard');
   el.innerHTML=
-    '<div style="position:relative;z-index:10;height:100%;display:flex;flex-direction:column;padding:5% 6% 4%;box-sizing:border-box;text-shadow:0 1px 4px rgba(0,0,0,0.25)">'+
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'+
-        '<div style="flex:1;min-width:0">'+
-          '<h2 style="margin:0;font-weight:900;line-height:1;color:'+textC+';font-size:clamp(16px,5.5cqw,30px);letter-spacing:0.01em;text-transform:uppercase">'+name+'</h2>'+
-          '<p style="margin:4px 0 0;color:'+textC+'99;font-size:clamp(9px,2cqw,12px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase">Carte Fidélité</p>'+
-        '</div>'+
-        '<div style="text-align:right;flex-shrink:0">'+
-          '<p style="margin:0;color:'+textC+'99;font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.18em;text-transform:uppercase">Titulaire</p>'+
-          '<p style="margin:2px 0 0;font-weight:700;color:'+textC+';font-size:clamp(10px,2.4cqw,15px);white-space:nowrap">Pierre Dubois</p>'+
-        '</div>'+
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'+
+      '<div style="flex:1;min-width:0">'+
+        '<h2 style="margin:0;font-weight:900;line-height:1;color:'+textC+';font-size:clamp(16px,5.5cqw,30px);letter-spacing:0.01em;text-transform:uppercase">'+name+'</h2>'+
+        '<p style="margin:4px 0 0;color:'+textC+'99;font-size:clamp(9px,2cqw,12px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase">Carte Fidélité</p>'+
       '</div>'+
-      '<div style="margin-top:auto">'+
-        '<p style="margin:0 0 8px;color:'+accFirst+';font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.2em;text-transform:uppercase">'+dbSt.stampLabel.toUpperCase()+'</p>'+
-        '<div style="display:flex;flex-wrap:wrap;gap:8px">'+stamps+'</div>'+
+      '<div style="text-align:right;flex-shrink:0">'+
+        '<p style="margin:0;color:'+textC+'99;font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.18em;text-transform:uppercase">Titulaire</p>'+
+        '<p style="margin:2px 0 0;font-weight:700;color:'+textC+';font-size:clamp(10px,2.4cqw,15px);white-space:nowrap">Pierre Dubois</p>'+
       '</div>'+
-      '<div style="margin-top:4%">'+
-        '<div style="width:100%;border-radius:999px;overflow:hidden;height:2px;background:rgba(255,255,255,0.1);margin-bottom:8px">'+
-          '<div style="height:100%;border-radius:999px;width:'+pct+'%;background:linear-gradient(90deg,'+accFirst+','+accLast+')"></div>'+
-        '</div>'+
-        '<div style="display:flex;align-items:center;justify-content:space-between">'+
-          '<p style="margin:0;color:'+textC+';font-size:clamp(7px,1.5cqw,9px)">Encore <span style="color:'+accFirst+';font-weight:700">'+remaining+'</span> pour votre <span style="color:'+accFirst+'">'+reward+'</span></p>'+
-          '<p style="margin:0;color:'+accFirst+';font-weight:700;font-size:clamp(9px,1.8cqw,12px)">'+filled+' / '+total+'</p>'+
-        '</div>'+
+    '</div>'+
+    '<div style="margin-top:auto">'+
+      '<p style="margin:0 0 8px;color:'+accFirst+';font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.2em;text-transform:uppercase">'+dbSt.stampLabel.toUpperCase()+'</p>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:8px">'+stamps+'</div>'+
+    '</div>'+
+    '<div style="margin-top:4%">'+
+      '<div style="width:100%;border-radius:999px;overflow:hidden;height:2px;background:rgba(255,255,255,0.1);margin-bottom:8px">'+
+        '<div style="height:100%;border-radius:999px;width:'+pct+'%;background:linear-gradient(90deg,'+accFirst+','+accLast+')"></div>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;justify-content:space-between">'+
+        '<p style="margin:0;color:'+textC+';font-size:clamp(7px,1.5cqw,9px)">Encore <span style="color:'+accFirst+';font-weight:700">'+remaining+'</span> pour votre <span style="color:'+accFirst+'">'+reward+'</span></p>'+
+        '<p style="margin:0;color:'+accFirst+';font-weight:700;font-size:clamp(9px,1.8cqw,12px)">'+filled+' / '+total+'</p>'+
       '</div>'+
     '</div>';
-  el.style.cssText='background:'+bg+';border-radius:16px;overflow:hidden;width:100%;aspect-ratio:380/240;position:relative;box-shadow:0 24px 60px -16px '+accFirst+'33;container-type:inline-size';
-  el.style.fontFamily="'"+font+"',sans-serif";
+  el.style.cssText='background:'+bg+';font-family:\''+font+'\',sans-serif;border-radius:16px;overflow:hidden;width:100%;aspect-ratio:380/240;position:relative;box-shadow:0 24px 60px -16px '+accFirst+'33;container-type:inline-size;display:flex;flex-direction:column;padding:5% 6% 4%;box-sizing:border-box;text-shadow:0 1px 4px rgba(0,0,0,0.25)';
 }
 
 function showSuccess(card){
