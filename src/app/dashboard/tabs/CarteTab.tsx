@@ -13,7 +13,7 @@ interface Props {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: "rgba(255,255,255,0.85)" }}>{children}</p>
+    <p className="text-[11px] font-bold uppercase tracking-widest mb-3" style={{ color: "#4a9eff" }}>{children}</p>
   );
 }
 
