@@ -134,7 +134,7 @@
     .db-save-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
     .db-preview-label{font-size:10px;font-weight:700;letter-spacing:0.14em;color:rgba(58,48,40,0.5);text-transform:uppercase;margin-bottom:10px;font-family:'Manrope',sans-serif}
     .db-card-canvas{border-radius:20px;padding:22px 18px;background:radial-gradient(ellipse 92% 58% at 50% 50%,rgba(0,0,0,0.30) 0%,transparent 72%);margin:0 auto 4px;width:360px;max-width:100%}
-    .db-card-preview{border-radius:18px;padding:20px;position:relative;overflow:hidden;aspect-ratio:380/240;display:flex;flex-direction:column;box-shadow:0 20px 50px -15px rgba(0,0,0,0.6);transition:background 0.4s;text-shadow:0 1px 4px rgba(0,0,0,0.25)}
+    .db-card-preview{border-radius:18px;padding:20px;position:relative;overflow:hidden;aspect-ratio:380/240;display:flex;flex-direction:column;box-shadow:0 20px 50px -15px rgba(0,0,0,0.6);transition:background 0.4s;text-shadow:0 1px 4px rgba(0,0,0,0.25);container-type:inline-size}
     .db-card-watermark{position:absolute;font-size:140px;font-weight:900;color:rgba(255,255,255,0.05);right:-15px;bottom:-25px;line-height:1;pointer-events:none;font-family:'Manrope',sans-serif}
     .db-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
     .db-card-name{font-size:18px;font-weight:800;letter-spacing:0.04em;line-height:1.1;transition:color .3s,font-family .3s}
@@ -143,7 +143,7 @@
     .db-card-holder-label{font-size:8px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;font-family:'Manrope',sans-serif}
     .db-card-holder-name{font-size:12px;font-weight:700;color:#fff;margin-top:2px;font-family:'Manrope',sans-serif}
     .db-points-label-card{font-size:8px;font-weight:700;letter-spacing:0.14em;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:8px;font-family:'Manrope',sans-serif}
-    .db-points-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+    .db-points-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
     .db-point{border-radius:50%;border:2px solid rgba(255,255,255,0.2);transition:background .3s,border-color .3s,width .15s,height .15s;flex-shrink:0}
     .db-point.filled{border-color:transparent}
     .db-card-footer{display:flex;align-items:center;justify-content:space-between}
@@ -151,7 +151,7 @@
     .db-card-progress-text strong{font-weight:700}
     .db-card-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.6);font-family:'Manrope',sans-serif}
     .db-card-count span{color:#fff}
-    #db-stamps-display{display:block;margin-top:auto}
+    #db-stamps-display{display:flex;flex-direction:column;margin-top:auto}
     #db-points-display{display:none;margin-top:auto}
     .db-points-big{font-size:44px;font-weight:800;color:#fff;text-align:center;line-height:1;font-family:'Manrope',sans-serif}
     .db-points-unit{font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-top:4px;letter-spacing:0.1em;text-transform:uppercase;font-family:'Manrope',sans-serif}
@@ -570,9 +570,11 @@ function dbUpdateStamps(val){dbSt.total=parseInt(val);dbSt.filled=Math.min(dbSt.
 function dbUpdatePoints(val){dbSt.pointsGoal=parseInt(val);document.getElementById('points-goal-badge').textContent=val;const lbl=document.getElementById('db-points-goal-label');if(lbl)lbl.textContent='Palier : '+parseInt(val).toLocaleString();}
 function dbRenderStamps(){
   const row=document.getElementById('db-points-row');row.innerHTML='';
-  const perRow=dbSt.total<=10?dbSt.total:dbSt.total/2;
+  const isDouble=dbSt.total>10;
+  const perRow=isDouble?dbSt.total/2:dbSt.total;
   row.style.display='grid';
   row.style.gridTemplateColumns='repeat('+perRow+',1fr)';
+  row.style.justifyItems=isDouble?'center':'';
   row.style.width='100%';
   row.style.gap='0';
   const chkColor=contrastColor(dbSt.acc1);
@@ -580,7 +582,7 @@ function dbRenderStamps(){
   for(let i=0;i<dbSt.total;i++){
     const d=document.createElement('div');
     d.className='db-point'+(i<dbSt.filled?' filled':'');
-    d.style.cssText='width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border-radius:50%;';
+    d.style.cssText='width:'+(isDouble?'min(100%, 12cqw)':'100%')+';aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border-radius:50%;';
     if(i<dbSt.filled){d.style.background=dbSt.acc1;d.style.boxShadow='0 2px 10px '+dbSt.acc1+'55';d.innerHTML=chkSvg;}
     else{d.style.border='1.5px solid '+dbSt.acc1+'44';}
     row.appendChild(d);

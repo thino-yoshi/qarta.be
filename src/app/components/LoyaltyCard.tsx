@@ -144,6 +144,7 @@ export default function LoyaltyCard({
         aspectRatio: "380 / 240",
         fontFamily: `'${d.fontFamily}', sans-serif`,
         boxShadow: `0 24px 60px -16px ${accentFirst}33`,
+        containerType: "inline-size",
       }}
     >
       {/* Image de fond */}
@@ -258,37 +259,43 @@ export default function LoyaltyCard({
 
         ) : (
           /* ── Mode TAMPONS ── */
-          <>
-            <div className="mt-auto">
-              <p style={{ color: accentFirst, fontSize: "clamp(6px, 1.4cqw, 9px)",
-                fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
-                {d.stampLabel}
-              </p>
-              <div style={{ display: "grid", gridTemplateColumns: `repeat(${perRow}, 1fr)`, width: "100%", gap: "0" }}>
-                {Array.from({ length: d.stampsRequired }).map((_, i) => (
-                  <div key={i} className="rounded-full"
-                    style={{
-                      width: "100%", aspectRatio: "1 / 1",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      ...(i < stamps
-                        ? { background: accentFirst, boxShadow: `0 2px 10px ${accentFirst}55` }
-                        : { border: `1.5px solid ${accentFirst}44`, background: "transparent" }
-                      ),
-                    }}>
-                    {i < stamps && (
-                      <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(accentFirst)}
-                        strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-                        style={{ width: "52%", height: "52%" }}>
-                        <path d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                  </div>
-                ))}
-              </div>
+          <div className="mt-auto">
+            <p style={{ color: accentFirst, fontSize: "clamp(6px, 1.4cqw, 9px)",
+              fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
+              {d.stampLabel}
+            </p>
+            {/* Grille tampons — 1 ligne N≤10, 2 lignes N≥12. Cap 12cqw en 2 lignes pour rester dans la carte */}
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${perRow}, 1fr)`,
+              width: "100%",
+              gap: "0",
+              ...(perRow < d.stampsRequired && { justifyItems: "center" }),
+            }}>
+              {Array.from({ length: d.stampsRequired }).map((_, i) => (
+                <div key={i} className="rounded-full"
+                  style={{
+                    width: perRow < d.stampsRequired ? "min(100%, 12cqw)" : "100%",
+                    aspectRatio: "1 / 1",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    ...(i < stamps
+                      ? { background: accentFirst, boxShadow: `0 2px 10px ${accentFirst}55` }
+                      : { border: `1.5px solid ${accentFirst}44`, background: "transparent" }
+                    ),
+                  }}>
+                  {i < stamps && (
+                    <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(accentFirst)}
+                      strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ width: "52%", height: "52%" }}>
+                      <path d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+              ))}
             </div>
-            {/* Barre de progression + texte */}
-            <div style={{ marginTop: "4%" }}>
-              <div className="w-full rounded-full overflow-hidden" style={{ height: 2, background: "rgba(255,255,255,0.1)", marginBottom: 8 }}>
+            {/* Barre de progression + texte — toujours dans la carte */}
+            <div style={{ marginTop: "3%" }}>
+              <div className="w-full rounded-full overflow-hidden" style={{ height: 2, background: "rgba(255,255,255,0.1)", marginBottom: 6 }}>
                 <div className="h-full rounded-full transition-all duration-500"
                   style={{ width: `${progress * 100}%`, background: `linear-gradient(90deg, ${accentFirst}, ${accentLast})` }} />
               </div>
@@ -304,7 +311,7 @@ export default function LoyaltyCard({
                 </p>
               </div>
             </div>
-          </>
+          </div>
         )}
 
       </div>
