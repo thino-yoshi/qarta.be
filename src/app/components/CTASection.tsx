@@ -159,9 +159,9 @@ export default function CTASection({ content }: { content?: Record<string, unkno
         <div className="grid lg:grid-cols-[1fr_2px_1fr_1fr] gap-x-8 gap-y-3 items-stretch">
 
           {/* ── ROW 0 : column titles ── */}
-          <p className="text-[12px] font-semibold text-[#0f2044]/60 uppercase tracking-[0.15em] text-center">Notre offre de lancement</p>
+          <div className="flex justify-center"><span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.15em] text-[#2c7be5] border border-[#2c7be5]/20" style={{ background: "rgba(44,123,229,0.08)" }}>Notre offre de lancement</span></div>
           <div />
-          <p className="lg:col-span-2 text-[12px] font-semibold text-[#0f2044]/60 uppercase tracking-[0.15em] text-center">Calculer ce que vous perdez sans Qarta</p>
+          <div className="lg:col-span-2 flex justify-center"><span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.15em] text-[#2c7be5] border border-[#2c7be5]/20" style={{ background: "rgba(44,123,229,0.08)" }}>Calculer ce que vous perdez sans Qarta</span></div>
 
           {/* ── LEFT : pricing card ── */}
           <div
@@ -274,18 +274,18 @@ export default function CTASection({ content }: { content?: Record<string, unkno
                 ))}
               </div>
 
-              <p className="text-[11.5px] mb-1 leading-relaxed" style={{ color: "#b8d9ff" }}>
+              <p className="text-[11.5px] mb-1 leading-relaxed" style={{ color: "#e8dfc8" }}>
                 Si seulement{" "}
-                <span className="font-bold" style={{ color: "#7ec4ff" }}>{SC[heroSc].pct} %</span>{" "}
+                <span className="font-bold" style={{ color: "#e8dfc8" }}>{SC[heroSc].pct} %</span>{" "}
                 de vos clients revient
               </p>
               <div
                 className="font-black leading-none mb-1 tabular-nums"
-                style={{ fontSize: "clamp(26px,3.5vw,38px)", color: "#7ec4ff", letterSpacing: "-0.04em" }}
+                style={{ fontSize: "clamp(26px,3.5vw,38px)", color: "#e8dfc8", letterSpacing: "-0.04em" }}
               >
                 {fmtF(heroGains.total / 12)}
               </div>
-              <p className="text-[10.5px] mb-4" style={{ color: "rgba(255,255,255,0.3)" }}>
+              <p className="text-[10.5px] mb-4" style={{ color: "#e8dfc8" }}>
                 de ventes supplémentaires / mois
               </p>
 

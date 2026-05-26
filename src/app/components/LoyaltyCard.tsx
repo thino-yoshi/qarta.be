@@ -31,9 +31,6 @@ export interface CardDesign {
   textColor:          string;
   // Police
   fontFamily:         string;
-  // Q watermark
-  showQ:              boolean;
-  qOpacity:           number;        // 0-1
   compactPointsSize:  number;        // taille du grand chiffre en mode points — carte compacte (px)
   // ── Mode de fidélité ────────────────────────────────────────────
   loyaltyMode:        "stamps" | "points";
@@ -54,8 +51,6 @@ export const DEFAULT_DESIGN: CardDesign = {
   accentAngle:        135,
   textColor:          "#EDE9FE",
   fontFamily:         "Manrope",
-  showQ:              true,
-  qOpacity:           0.05,
   compactPointsSize:  68,
   // Mode de fidélité
   loyaltyMode:        "stamps",
@@ -156,20 +151,7 @@ export default function LoyaltyCard({
         />
       )}
 
-      {/* Watermark Q */}
-      {d.showQ && (
-        <div
-          className="absolute right-[6%] top-1/2 -translate-y-[48%] leading-none pointer-events-none"
-          style={{
-            fontSize: "clamp(72px, 28cqw, 170px)",
-            fontFamily: `'${d.fontFamily}', sans-serif`,
-            fontWeight: 900,
-            color: `rgba(255,255,255,${d.qOpacity})`,
-          }}
-        >
-          Q
-        </div>
-      )}
+
 
       {/* Contenu */}
       <div className="relative z-10 h-full flex flex-col" style={{ padding: "5% 6% 4%", textShadow: "0 1px 4px rgba(0,0,0,0.25)" }}>
@@ -178,7 +160,7 @@ export default function LoyaltyCard({
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <p style={{
-              color: `${d.textColor}99`,
+              color: accentFirst,
               fontSize: "clamp(9px, 2cqw, 12px)",
               fontWeight: 600,
               letterSpacing: "0.18em",
@@ -202,7 +184,7 @@ export default function LoyaltyCard({
 
           <div className="text-right flex-shrink-0">
             <p style={{
-              color: `${d.textColor}99`,
+              color: accentFirst,
               fontSize: "clamp(6px, 1.4cqw, 9px)",
               fontWeight: 700,
               letterSpacing: "0.18em",
@@ -279,12 +261,12 @@ export default function LoyaltyCard({
                     aspectRatio: "1 / 1",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     ...(i < stamps
-                      ? { background: accentFirst, boxShadow: `0 2px 10px ${accentFirst}55` }
-                      : { border: `1.5px solid ${accentFirst}44`, background: "transparent" }
+                      ? { background: d.textColor, boxShadow: `0 2px 10px ${d.textColor}55` }
+                      : { border: `1.5px solid ${d.textColor}44`, background: "transparent" }
                     ),
                   }}>
                   {i < stamps && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(accentFirst)}
+                    <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(d.textColor)}
                       strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
                       style={{ width: "52%", height: "52%" }}>
                       <path d="M5 13l4 4L19 7" />
@@ -297,16 +279,16 @@ export default function LoyaltyCard({
             <div style={{ marginTop: "3%" }}>
               <div className="w-full rounded-full overflow-hidden" style={{ height: 2, background: "rgba(255,255,255,0.1)", marginBottom: 6 }}>
                 <div className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${progress * 100}%`, background: `linear-gradient(90deg, ${accentFirst}, ${accentLast})` }} />
+                  style={{ width: `${progress * 100}%`, background: d.textColor }} />
               </div>
               <div className="flex items-center justify-between">
-                <p style={{ color: d.textColor, fontSize: "clamp(7px, 1.5cqw, 9px)" }}>
+                <p style={{ color: accentFirst, fontSize: "clamp(7px, 1.5cqw, 9px)" }}>
                   {remaining > 0 ? (
-                    <>Encore{" "}<span style={{ color: accentFirst, fontWeight: 700 }}>{remaining}</span>
-                      {" "}pour votre{" "}<span style={{ color: accentFirst }}>{d.rewardDescription}</span></>
-                  ) : <span style={{ color: accentFirst, fontWeight: 700 }}>Récompense disponible 🎉</span>}
+                    <>Encore{" "}<span style={{ fontWeight: 700 }}>{remaining}</span>
+                      {" "}pour votre{" "}<span>{d.rewardDescription}</span></>
+                  ) : <span style={{ fontWeight: 700 }}>Récompense disponible 🎉</span>}
                 </p>
-                <p style={{ color: accentFirst, fontWeight: 700, fontSize: "clamp(9px, 1.8cqw, 12px)" }}>
+                <p style={{ color: d.textColor, fontWeight: 700, fontSize: "clamp(9px, 1.8cqw, 12px)" }}>
                   {stamps} / {d.stampsRequired}
                 </p>
               </div>

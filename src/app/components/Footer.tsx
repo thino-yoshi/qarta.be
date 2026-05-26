@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { QartaLogo, QartaWordmark } from "./QartaLogo";
+import Image from "next/image";
+import { QartaWordmark } from "./QartaLogo";
 
 export default function Footer({ content }: { content?: Record<string, unknown> }) {
   const c = content ?? {};
@@ -13,7 +14,7 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
     { label: "Abonnement", href: "#pricing" },
   ];
   const companyLinks    = (c.companyLinks    as { label: string; href: string }[]) ?? [
-    { label: "À propos",         href: "#" },
+    { label: "À propos",         href: "#immersion" },
     { label: "Mentions légales", href: "#" },
     { label: "Confidentialité",  href: "#" },
   ];
@@ -63,7 +64,7 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10 pt-16 pb-12 grid lg:grid-cols-2 gap-16">
         <div className="flex flex-col items-center text-center">
           <div className="flex items-center gap-3">
-            <QartaLogo size={52} variant="badge" />
+            <Image src="/logo-qarta.png" width={52} height={52} alt="Qarta" style={{ borderRadius: 13 }} />
             <QartaWordmark color="#fff" />
           </div>
           <p className="mt-6 text-white/70 text-[15px] leading-relaxed max-w-md">
@@ -119,9 +120,11 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
           >
             {contactTitle}
           </h3>
-          <p className="text-white/60 text-[14px] mt-2">
-            {contactSubtitle}
-          </p>
+          <div className="mt-2">
+            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-[0.15em] text-[#4a9eff] border border-[#4a9eff]/20" style={{ background: "rgba(74,158,255,0.08)" }}>
+              {contactSubtitle}
+            </span>
+          </div>
 
           {status === "sent" ? (
             <div className="mt-8 p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
@@ -165,7 +168,8 @@ export default function Footer({ content }: { content?: Record<string, unknown> 
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className="q-btn-primary w-full justify-center disabled:opacity-60"
+                className="w-full justify-center disabled:opacity-60 flex items-center px-6 py-3.5 rounded-2xl font-semibold text-[15px] transition-all hover:opacity-90"
+                style={{ background: "#0f2044", color: "#e8dfc8" }}
               >
                 {status === "sending" ? "Envoi…" : "Envoyer"}
               </button>

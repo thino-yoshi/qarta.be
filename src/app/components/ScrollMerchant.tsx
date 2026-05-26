@@ -7,15 +7,15 @@ const FEATURE_ICONS: LucideIcon[] = [Stamp, Bell, TrendingUp, Star];
 
 /* ─── Flying cards data ─── */
 const CARDS = [
-  { icon:"⭐", bg:"rgba(245,158,11,.14)", title:"Nouvel avis Google ★★★★★", sub:"Marie a laissé 5 étoiles · +1 récompense créditée." },
-  { icon:"🔔", bg:"rgba(58,128,240,.13)",  title:"Rappel de visite envoyé",    sub:"12 clients relancés sans effort." },
-  { icon:"🎁", bg:"rgba(46,204,113,.13)",  title:"3 récompenses à distribuer", sub:"Vos clients réguliers en attente." },
-  { icon:"👤", bg:"rgba(58,128,240,.13)",  title:"Marie a tamponné",            sub:"Votre commerce · il y a 2 min" },
-  { icon:"🏆", bg:"rgba(245,158,11,.14)", title:"Paul a reçu un reward",       sub:"10 tampons accomplis 🎉" },
-  { icon:"💬", bg:"rgba(46,204,113,.13)", title:"Ana a laissé un avis",        sub:"« Service impeccable ! » · 5 ★" },
-  { icon:"📈", bg:"rgba(58,128,240,.13)", title:"Visites en hausse +12%",      sub:"Record cette semaine." },
-  { icon:"🔥", bg:"rgba(220,38,38,.11)",  title:"Heure creuse détectée",       sub:"Mardi 19h–21h · Envoyer une notif ?" },
-  { icon:"✅", bg:"rgba(46,204,113,.13)", title:"Notification envoyée",        sub:"20 clients · Taux ouverture 68%" },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`, bg:"rgba(245,158,11,.10)", title:"Nouvel avis Google ★★★★★", sub:"Marie a laissé 5 étoiles · +1 récompense créditée." },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#3a80f0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`, bg:"rgba(58,128,240,.10)",  title:"Rappel de visite envoyé",    sub:"12 clients relancés sans effort." },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>`, bg:"rgba(46,204,113,.10)",  title:"3 récompenses à distribuer", sub:"Vos clients réguliers en attente." },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#3a80f0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`, bg:"rgba(58,128,240,.10)",  title:"Marie a tamponné",            sub:"Votre commerce · il y a 2 min" },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg>`, bg:"rgba(46,204,113,.10)", title:"Paul a reçu un reward",       sub:"10 tampons accomplis." },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`, bg:"rgba(46,204,113,.10)", title:"Ana a laissé un avis",        sub:"« Service impeccable ! » · 5 ★" },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#3a80f0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`, bg:"rgba(58,128,240,.10)", title:"Visites en hausse +12%",      sub:"Record cette semaine." },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`, bg:"rgba(245,158,11,.10)",  title:"Heure creuse détectée",       sub:"Mardi 19h–21h · Envoyer une notif ?" },
+  { icon:`<svg viewBox="0 0 24 24" fill="none" stroke="#2ecc71" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`, bg:"rgba(46,204,113,.10)", title:"Notification envoyée",        sub:"20 clients · Taux ouverture 68%" },
 ];
 const ANIMS = ["qfly-left","qfly-up","qfly-upleft","qfly-upright","qfly-downleft","qfly-right"];
 
@@ -63,7 +63,7 @@ function PhoneDashboard() {
         </div>
       </div>
       {/* body */}
-      <div style={{ flex:1, overflowY:"auto", background:"#ede8df", padding:"14px 14px 80px" }}>
+      <div style={{ flex:1, overflowY:"hidden", background:"#ede8df", padding:"14px 14px 80px" }}>
         {/* Google CTA */}
         <div style={{ background:"#121f3a", borderRadius:16, padding:"14px 14px 14px 16px", display:"flex", alignItems:"center", gap:11, marginBottom:12 }}>
           <svg width="28" height="28" viewBox="0 0 48 48" style={{ flexShrink:0 }}><circle cx="24" cy="24" r="24" fill="white"/><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
@@ -149,7 +149,6 @@ export default function ScrollMerchant({ content }: Props) {
 
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const phoneY      = useTransform(scrollYProgress, [0, 1], [80, -80]);
-  const phoneRotate = useTransform(scrollYProgress, [0, 1], [-2, 4]);
 
   useEffect(() => {
     /* inject keyframes once */
@@ -184,7 +183,7 @@ export default function ScrollMerchant({ content }: Props) {
       el.style.cssText = `position:absolute;background:#fff;border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.14),0 0 0 1px rgba(0,0,0,.04);padding:12px 14px;display:flex;align-items:center;gap:10px;width:220px;opacity:0;pointer-events:none;font-family:Sora,sans-serif;`;
       el.style.left = (cx + ox - 110) + "px";
       el.style.top  = (cy + oy) + "px";
-      el.innerHTML  = `<div style="width:40px;height:40px;border-radius:11px;background:${d.bg};display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">${d.icon}</div><div style="flex:1;min-width:0"><div style="font-size:11px;font-weight:700;color:#0f1828;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.title}</div><div style="font-size:9px;color:#6b7280;line-height:1.4">${d.sub}</div></div>`;
+      el.innerHTML  = `<div style="width:40px;height:40px;border-radius:11px;background:${d.bg};display:flex;align-items:center;justify-content:center;flex-shrink:0">${d.icon}</div><div style="flex:1;min-width:0"><div style="font-size:11px;font-weight:700;color:#0f1828;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.title}</div><div style="font-size:9px;color:#6b7280;line-height:1.4">${d.sub}</div></div>`;
 
       const dur = 3000 + Math.random() * 1000;
       el.style.animation = `${anim} ${dur}ms cubic-bezier(.22,.61,.36,1) forwards`;
@@ -279,7 +278,7 @@ export default function ScrollMerchant({ content }: Props) {
             {/* overlay for flying cards — above the phone */}
             <div ref={overlayRef} style={{ position:"absolute", inset:0, zIndex:20, pointerEvents:"none" }} />
 
-            <motion.div style={{ y: phoneY, rotate: phoneRotate }} className="relative z-10">
+            <motion.div style={{ y: phoneY }} className="relative z-10">
               {/* phone shell */}
               <div style={{ width:300, height:640, background:"#0b1322", borderRadius:52, padding:10, border:"1.5px solid rgba(80,140,255,.2)", position:"relative" }}>
                 {/* side buttons */}

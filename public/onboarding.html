@@ -135,7 +135,7 @@
     .db-preview-label{font-size:10px;font-weight:700;letter-spacing:0.14em;color:rgba(58,48,40,0.5);text-transform:uppercase;margin-bottom:10px;font-family:'Manrope',sans-serif}
     .db-card-canvas{border-radius:20px;padding:22px 18px;background:radial-gradient(ellipse 92% 58% at 50% 50%,rgba(0,0,0,0.30) 0%,transparent 72%);margin:0 auto 4px;width:360px;max-width:100%}
     .db-card-preview{border-radius:18px;padding:20px;position:relative;overflow:hidden;aspect-ratio:380/240;display:flex;flex-direction:column;box-shadow:0 20px 50px -15px rgba(0,0,0,0.6);transition:background 0.4s;text-shadow:0 1px 4px rgba(0,0,0,0.25);container-type:inline-size}
-    .db-card-watermark{position:absolute;font-size:140px;font-weight:900;color:rgba(255,255,255,0.05);right:-15px;bottom:-25px;line-height:1;pointer-events:none;font-family:'Manrope',sans-serif}
+
     .db-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
     .db-card-name{font-size:18px;font-weight:800;letter-spacing:0.04em;line-height:1.1;transition:color .3s,font-family .3s}
     .db-card-subtitle{font-size:9px;color:rgba(255,255,255,0.5);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;font-family:'Manrope',sans-serif}
@@ -242,7 +242,7 @@
           </div>
           <div class="db-form-group">
             <label class="db-form-label" id="stamp-label-lbl">Label des tampons</label>
-            <input class="db-input" id="input-stamp-label" type="text" value="TAMPONS COLLECTÉS" oninput="dbUpdateStampLabel(this.value)"/>
+            <input class="db-input" id="input-stamp-label" type="text" value="POINTS COLLECTÉS" oninput="dbUpdateStampLabel(this.value)"/>
           </div>
           <div class="db-form-group">
             <label class="db-form-label">Récompense *</label>
@@ -253,7 +253,7 @@
           <div class="db-label">Nombre de tampons</div>
           <div class="db-slider-row">
             <div class="db-slider-wrap"><input type="range" id="slider-stamps" min="6" max="20" step="2" value="6" oninput="dbUpdateStamps(this.value)"/></div>
-            <div class="db-slider-val" id="stamp-count-badge">5</div>
+            <div class="db-slider-val" id="stamp-count-badge">6</div>
           </div>
         </div>
         <div class="db-section" id="db-points-section" style="display:none">
@@ -272,18 +272,18 @@
           </div>
           <div id="db-single-color-section">
             <div class="db-color-row">
-              <div class="db-color-swatch" id="db-swatch-solo" style="background:#FF2D78"><input type="color" value="#FF2D78" oninput="dbUpdateSoloColor(this.value)"/></div>
-              <input class="db-color-hex" id="db-hex-solo" type="text" value="#FF2D78" oninput="dbUpdateSoloColorHex(this.value)"/>
+              <div class="db-color-swatch" id="db-swatch-solo" style="background:#4A1D96"><input type="color" value="#4A1D96" oninput="dbUpdateSoloColor(this.value)"/></div>
+              <input class="db-color-hex" id="db-hex-solo" type="text" value="#4A1D96" oninput="dbUpdateSoloColorHex(this.value)"/>
             </div>
           </div>
           <div id="db-gradient-section">
             <div class="db-color-row">
-              <div class="db-color-swatch" id="db-swatch-1" style="background:#FF2D78"><input type="color" value="#FF2D78" oninput="dbUpdateGradient('c1',this.value)"/></div>
-              <input class="db-color-hex" id="db-hex-1" type="text" value="#FF2D78" oninput="dbUpdateGradientHex('c1',this.value)"/>
+              <div class="db-color-swatch" id="db-swatch-1" style="background:#4A1D96"><input type="color" value="#4A1D96" oninput="dbUpdateGradient('c1',this.value)"/></div>
+              <input class="db-color-hex" id="db-hex-1" type="text" value="#4A1D96" oninput="dbUpdateGradientHex('c1',this.value)"/>
             </div>
             <div class="db-color-row">
-              <div class="db-color-swatch" id="db-swatch-2" style="background:#985986"><input type="color" value="#985986" oninput="dbUpdateGradient('c2',this.value)"/></div>
-              <input class="db-color-hex" id="db-hex-2" type="text" value="#985986" oninput="dbUpdateGradientHex('c2',this.value)"/>
+              <div class="db-color-swatch" id="db-swatch-2" style="background:#7C3AED"><input type="color" value="#7C3AED" oninput="dbUpdateGradient('c2',this.value)"/></div>
+              <input class="db-color-hex" id="db-hex-2" type="text" value="#7C3AED" oninput="dbUpdateGradientHex('c2',this.value)"/>
             </div>
             <div class="db-color-row" style="margin-bottom:0"><span style="font-size:12px;color:rgba(255,255,255,0.4);cursor:pointer;font-family:'Manrope',sans-serif">+ Ajouter une couleur</span></div>
             <div class="db-angle-row">
@@ -302,9 +302,10 @@
         </div>
         <div class="db-section">
           <div class="db-label">Tampons &amp; barre de progression</div>
+          <p style="font-size:11px;color:rgba(255,255,255,0.45);margin:-6px 0 10px;font-family:'Manrope',sans-serif">Couleur du texte secondaire</p>
           <div class="db-color-row">
-            <div class="db-color-swatch" id="db-swatch-acc1" style="background:#FF2D78"><input type="color" value="#FF2D78" oninput="dbUpdateAccent1(this.value)"/></div>
-            <input class="db-color-hex" id="db-hex-acc1" type="text" value="#FF2D78" oninput="dbUpdateAccentHex1(this.value)"/>
+            <div class="db-color-swatch" id="db-swatch-acc1" style="background:#DDD6FE"><input type="color" value="#DDD6FE" oninput="dbUpdateAccent1(this.value)"/></div>
+            <input class="db-color-hex" id="db-hex-acc1" type="text" value="#DDD6FE" oninput="dbUpdateAccentHex1(this.value)"/>
           </div>
         </div>
         <div class="db-section">
@@ -312,8 +313,8 @@
           <div class="db-form-group">
             <label class="db-form-label">Couleur du texte principal</label>
             <div class="db-color-row" style="align-items:center">
-              <div class="db-color-swatch" id="db-swatch-text" style="background:#ffffff"><input type="color" value="#ffffff" oninput="dbUpdateTextColor(this.value)"/></div>
-              <input class="db-color-hex" id="db-hex-text" type="text" value="#ffffff" oninput="dbUpdateTextColorHex(this.value)"/>
+              <div class="db-color-swatch" id="db-swatch-text" style="background:#EDE9FE"><input type="color" value="#EDE9FE" oninput="dbUpdateTextColor(this.value)"/></div>
+              <input class="db-color-hex" id="db-hex-text" type="text" value="#EDE9FE" oninput="dbUpdateTextColorHex(this.value)"/>
               <button onclick="dbUpdateTextColor(contrastColor(dbSt.bgType==='couleur'?dbSt.soloColor:dbSt.c1))" title="Couleur la plus lisible sur ce fond" style="flex-shrink:0;padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.5);font-size:11px;font-weight:600;cursor:pointer;font-family:'Manrope',sans-serif;transition:color .15s">Auto</button>
             </div>
           </div>
@@ -345,7 +346,7 @@
           <div class="db-preview-label">Aperçu carte</div>
           <div class="db-card-canvas">
           <div class="db-card-preview" id="db-card-bg">
-            <div class="db-card-watermark" id="db-card-watermark" style="display:none">Q</div>
+
             <div class="db-card-top">
               <div>
                 <div class="db-card-subtitle">Carte de fidélité</div>
@@ -359,11 +360,11 @@
               </div>
             </div>
             <div id="db-stamps-display">
-              <div class="db-points-label-card" id="db-stamp-label-card">TAMPONS COLLECTÉS</div>
+              <div class="db-points-label-card" id="db-stamp-label-card">POINTS COLLECTÉS</div>
               <div class="db-points-row" id="db-points-row"></div>
               <div class="db-card-footer">
-                <div class="db-card-progress-text">Encore <strong id="db-remaining">2</strong> pour votre <strong id="db-reward-text">récompense</strong></div>
-                <div class="db-card-count"><span id="db-count-current">3</span> / <span id="db-count-total">5</span></div>
+                <div class="db-card-progress-text">Encore <strong id="db-remaining">3</strong> pour votre <strong id="db-reward-text">récompense</strong></div>
+                <div class="db-card-count"><span id="db-count-current">3</span> / <span id="db-count-total">6</span></div>
               </div>
             </div>
             <div id="db-points-display">
@@ -488,7 +489,7 @@ function dbApplyPreset(idx){
 
 function contrastColor(hex){var h=(hex||'').replace('#','');if(h.length<6)return '#ffffff';var r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255;var lin=function(c){return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);};var L=0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);return L>0.179?'#1a1a1a':'#ffffff';}
 let typ='visit',busy=false;
-let dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:5,filled:3,watermark:false,opacity:5,pointsGoal:1000,_imgUrl:null};
+let dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'POINTS COLLECTÉS',reward:'',total:6,filled:3,pointsGoal:1000,_imgUrl:null};
 
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -560,7 +561,7 @@ function dbUpdateAccent1(val){dbSt.acc1=val;['db-swatch-acc1','db-swatch-acc1b']
 function dbUpdateAccentHex1(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent1(val);}
 function dbUpdateAccent2(val){dbSt.acc2=val;dbSyncSwatch('db-swatch-acc2',val);const h=document.getElementById('db-hex-acc2');if(h)h.value=val;dbRenderStamps();}
 function dbUpdateAccentHex2(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent2(val);}
-function dbUpdateTextColor(val){dbSt.textColor=val;dbSyncSwatch('db-swatch-text',val);document.getElementById('db-hex-text').value=val;document.getElementById('db-card-name').style.color=val;const sub=document.querySelector('.db-card-subtitle');if(sub)sub.style.color=val+'99';const pt=document.querySelector('.db-card-progress-text');if(pt)pt.style.color=val;const hl=document.querySelector('.db-card-holder-label');if(hl)hl.style.color=val+'99';const hn=document.querySelector('.db-card-holder-name');if(hn)hn.style.color=val;}
+function dbUpdateTextColor(val){dbSt.textColor=val;dbSyncSwatch('db-swatch-text',val);document.getElementById('db-hex-text').value=val;document.getElementById('db-card-name').style.color=val;const hn=document.querySelector('.db-card-holder-name');if(hn)hn.style.color=val;dbRenderStamps();}
 function dbUpdateTextColorHex(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateTextColor(val);}
 function dbSetFont(font,btn){dbSt.font=font;document.querySelectorAll('#db-font-grid .db-font-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-card-name').style.fontFamily="'"+font+"',sans-serif";}
 function dbUpdateName(val){dbSt.name=val;const u=val.toUpperCase();document.getElementById('db-card-name').textContent=u||'—';}
@@ -577,30 +578,41 @@ function dbRenderStamps(){
   row.style.justifyItems=isDouble?'center':'';
   row.style.width='100%';
   row.style.gap='0';
-  const chkColor=contrastColor(dbSt.acc1);
+  const chkColor=contrastColor(dbSt.textColor);
   const chkSvg='<svg viewBox="0 0 24 24" fill="none" stroke="'+chkColor+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%"><path d="M5 13l4 4L19 7"/></svg>';
   for(let i=0;i<dbSt.total;i++){
     const d=document.createElement('div');
     d.className='db-point'+(i<dbSt.filled?' filled':'');
     d.style.cssText='width:'+(isDouble?'min(100%, 12cqw)':'100%')+';aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;border-radius:50%;';
-    if(i<dbSt.filled){d.style.background=dbSt.acc1;d.style.boxShadow='0 2px 10px '+dbSt.acc1+'55';d.innerHTML=chkSvg;}
-    else{d.style.border='1.5px solid '+dbSt.acc1+'44';}
+    if(i<dbSt.filled){d.style.background=dbSt.textColor;d.style.boxShadow='0 2px 10px '+dbSt.textColor+'55';d.innerHTML=chkSvg;}
+    else{d.style.border='1.5px solid '+dbSt.textColor+'44';}
     row.appendChild(d);
   }
-  // Sync accent color on card elements (comme dashboard)
+  // Sync colors on card elements (aligned with dashboard)
   const sl=document.getElementById('db-stamp-label-card');if(sl)sl.style.color=dbSt.acc1;
-  const rem=document.getElementById('db-remaining');if(rem)rem.style.color=dbSt.acc1;
+  const sub=document.querySelector('.db-card-subtitle');if(sub)sub.style.color=dbSt.acc1;
+  const hl=document.querySelector('.db-card-holder-label');if(hl)hl.style.color=dbSt.acc1;
+  const rem=document.getElementById('db-remaining');if(rem){rem.style.color=dbSt.acc1;const pt=rem.closest('.db-card-progress-text');if(pt)pt.style.color=dbSt.acc1;}
   const rew=document.getElementById('db-reward-text');if(rew)rew.style.color=dbSt.acc1;
-  const cnt=document.getElementById('db-count-current');if(cnt)cnt.style.color=dbSt.acc1;
-  const ctt=document.getElementById('db-count-total');if(ctt)ctt.parentElement.style.color=dbSt.acc1;
+  const cnt=document.getElementById('db-count-current');if(cnt)cnt.style.color=dbSt.textColor;
+  const ctt=document.getElementById('db-count-total');if(ctt){ctt.style.color=dbSt.textColor;ctt.parentElement.style.color=dbSt.textColor;}
   const card=document.getElementById('db-card-bg');if(card)card.style.boxShadow='0 20px 50px -15px '+dbSt.acc1+'55';
-  const pbf=document.querySelector('.db-points-bar-fill');if(pbf)pbf.style.background=dbSt.acc1;
+  const pbf=document.querySelector('.db-points-bar-fill');if(pbf)pbf.style.background=dbSt.textColor;
 }
-function dbToggleWatermark(){dbSt.watermark=!dbSt.watermark;document.getElementById('db-watermark-toggle').classList.toggle('off',!dbSt.watermark);document.getElementById('db-card-watermark').style.display=dbSt.watermark?'block':'none';}
-function dbUpdateOpacity(val){dbSt.opacity=val;document.getElementById('db-opacity-label').textContent='Opacité : '+val+'%';document.getElementById('db-card-watermark').style.color='rgba(255,255,255,'+val/100+')';}
+
 
 function dbInit(){
-  dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',reward:'',total:6,filled:3,watermark:false,opacity:5,pointsGoal:1000,_imgUrl:null};
+  dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'POINTS COLLECTÉS',reward:'',total:6,filled:3,pointsGoal:1000,_imgUrl:null};
+  // Sync gradient swatches
+  dbSyncSwatch('db-swatch-1',dbSt.c1);const h1=document.getElementById('db-hex-1');if(h1)h1.value=dbSt.c1;
+  dbSyncSwatch('db-swatch-2',dbSt.c2);const h2=document.getElementById('db-hex-2');if(h2)h2.value=dbSt.c2;
+  dbSyncSwatch('db-swatch-solo',dbSt.soloColor);const hs=document.getElementById('db-hex-solo');if(hs)hs.value=dbSt.soloColor;
+  // Sync accent swatch
+  dbSyncSwatch('db-swatch-acc1',dbSt.acc1);const ha=document.getElementById('db-hex-acc1');if(ha)ha.value=dbSt.acc1;
+  // Sync text color swatch
+  dbSyncSwatch('db-swatch-text',dbSt.textColor);const ht=document.getElementById('db-hex-text');if(ht)ht.value=dbSt.textColor;
+  // Sync angle slider
+  const as=document.getElementById('db-angle-slider');if(as)as.value=dbSt.angle;
   dbApplyCardBg();dbRenderStamps();dbUpdateTextColor(dbSt.textColor);
 }
 
@@ -656,7 +668,6 @@ function buildCardDesign(){
     cardName:dbSt.name,stampLabel:dbSt.stampLabel,stampsRequired:dbSt.total,rewardDescription:dbSt.reward,
     bgType,bgColors,bgGradientAngle:dbSt.angle,bgImageUrl:null,bgImageOpacity:0.3,
     accentColors,accentAngle:135,textColor:dbSt.textColor,fontFamily:dbSt.font,
-    showQ:dbSt.watermark,qOpacity:dbSt.opacity/100,
     compactPointsSize:68,
     loyaltyMode:dbSt.mode==='points'?'points':'stamps',pointsGoal:dbSt.pointsGoal
   };
@@ -675,21 +686,21 @@ function renderS4Card(){
   const textC=dbSt.textColor;
   const font=dbSt.font;
   const stampPx=total<=5?40:total<=8?32:total<=12?26:20;
-  const chkColor=contrastColor(accFirst);
+  const chkColor=contrastColor(textC);
   const chkSvg='<svg viewBox="0 0 24 24" fill="none" stroke="'+chkColor+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:52%;height:52%"><path d="M5 13l4 4L19 7"/></svg>';
   const stamps=Array.from({length:total},(_,i)=>{
     const on=i<filled;
-    return '<div style="width:'+stampPx+'px;height:'+stampPx+'px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;'+(on?'background:'+accFirst+';box-shadow:0 2px 10px '+accFirst+'55;':'border:1.5px solid '+accFirst+'44;background:transparent;')+'">'+(on?chkSvg:'')+'</div>';
+    return '<div style="width:'+stampPx+'px;height:'+stampPx+'px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;'+(on?'background:'+textC+';box-shadow:0 2px 10px '+textC+'55;':'border:1.5px solid '+textC+'44;background:transparent;')+'">'+(on?chkSvg:'')+'</div>';
   }).join('');
   const el=document.getElementById('fcard');
   el.innerHTML=
     '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'+
       '<div style="flex:1;min-width:0">'+
         '<h2 style="margin:0;font-weight:900;line-height:1;color:'+textC+';font-size:clamp(16px,5.5cqw,30px);letter-spacing:0.01em;text-transform:uppercase">'+name+'</h2>'+
-        '<p style="margin:4px 0 0;color:'+textC+'99;font-size:clamp(9px,2cqw,12px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase">Carte Fidélité</p>'+
+        '<p style="margin:4px 0 0;color:'+accFirst+';font-size:clamp(9px,2cqw,12px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase">Carte Fidélité</p>'+
       '</div>'+
       '<div style="text-align:right;flex-shrink:0">'+
-        '<p style="margin:0;color:'+textC+'99;font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.18em;text-transform:uppercase">Titulaire</p>'+
+        '<p style="margin:0;color:'+accFirst+';font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.18em;text-transform:uppercase">Titulaire</p>'+
         '<p style="margin:2px 0 0;font-weight:700;color:'+textC+';font-size:clamp(10px,2.4cqw,15px);white-space:nowrap">Pierre Dubois</p>'+
       '</div>'+
     '</div>'+
@@ -699,11 +710,11 @@ function renderS4Card(){
     '</div>'+
     '<div style="margin-top:4%">'+
       '<div style="width:100%;border-radius:999px;overflow:hidden;height:2px;background:rgba(255,255,255,0.1);margin-bottom:8px">'+
-        '<div style="height:100%;border-radius:999px;width:'+pct+'%;background:linear-gradient(90deg,'+accFirst+','+accLast+')"></div>'+
+        '<div style="height:100%;border-radius:999px;width:'+pct+'%;background:'+textC+'"></div>'+
       '</div>'+
       '<div style="display:flex;align-items:center;justify-content:space-between">'+
-        '<p style="margin:0;color:'+textC+';font-size:clamp(7px,1.5cqw,9px)">Encore <span style="color:'+accFirst+';font-weight:700">'+remaining+'</span> pour votre <span style="color:'+accFirst+'">'+reward+'</span></p>'+
-        '<p style="margin:0;color:'+accFirst+';font-weight:700;font-size:clamp(9px,1.8cqw,12px)">'+filled+' / '+total+'</p>'+
+        '<p style="margin:0;color:'+accFirst+';font-size:clamp(7px,1.5cqw,9px)">Encore <span style="font-weight:700">'+remaining+'</span> pour votre <span>'+reward+'</span></p>'+
+        '<p style="margin:0;color:'+textC+';font-weight:700;font-size:clamp(9px,1.8cqw,12px)">'+filled+' / '+total+'</p>'+
       '</div>'+
     '</div>';
   el.style.cssText='background:'+bg+';font-family:\''+font+'\',sans-serif;border-radius:16px;overflow:hidden;width:100%;aspect-ratio:380/240;position:relative;box-shadow:0 24px 60px -16px '+accFirst+'33;container-type:inline-size;display:flex;flex-direction:column;padding:5% 6% 4%;box-sizing:border-box;text-shadow:0 1px 4px rgba(0,0,0,0.25)';

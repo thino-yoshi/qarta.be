@@ -87,18 +87,14 @@ export default function LoginForm({ content }: { content?: Record<string, unknow
       {/* Card */}
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-12">
         <div
-          className="w-full max-w-[1300px] rounded-3xl p-16 sm:p-20"
+          className="w-full max-w-lg rounded-3xl p-5 sm:p-7"
           style={{
-            background: "#0d1b3e",
-            border: "1px solid rgba(255,255,255,0.08)",
-            boxShadow: "0 40px 80px -20px rgba(0,0,0,0.5)",
-            minHeight: "850px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
+            background: "#0b1220",
+            border: "1px solid rgba(255,255,255,0.10)",
+            boxShadow: "0 40px 80px -30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.07)",
           }}
         >
-          <div className="max-w-lg mx-auto">
+          <div>
             {/* Header card */}
             <div className="text-center mb-10">
               <div className="inline-flex items-center justify-center w-24 h-24 rounded-3xl mb-7"

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Save, Plus, Minus, ImageIcon } from "lucide-react";
+import { CreditCard, Plus, Minus, ImageIcon } from "lucide-react";
 import LoyaltyCard, { CardDesign, DEFAULT_DESIGN, FONT_OPTIONS, contrastColor } from "@/app/components/LoyaltyCard";
 
 interface Props {
@@ -239,7 +239,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
               style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties}
             />
             <div className="w-12 h-10 rounded-xl flex items-center justify-center text-[20px] font-bold flex-shrink-0"
-              style={{ background: `${design.accentColors[0]}22`, color: design.accentColors[0] }}>
+              style={{ background: "#4a9eff", color: "#ffffff" }}>
               {design.stampsRequired}
             </div>
           </div>
@@ -311,7 +311,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
         </Section>
 
         {/* Couleur d'accent */}
-        <Section title="Tampons & barre de progression">
+        <Section title="Tampons & barre de progression" sub="Couleur du texte secondaire">
           <ColorInput value={design.accentColors[0]} onChange={(v) => set("accentColors", [v])} />
         </Section>
 
@@ -462,15 +462,16 @@ function SaveButton({ saving, saveOk, onClick }: { saving: boolean; saveOk: bool
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"/>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
         </svg>
-      ) : saveOk ? "✓ Carte sauvegardée !" : <><Save size={15}/> Sauvegarder la carte</>}
+      ) : saveOk ? "✓ Carte sauvegardée !" : <><CreditCard size={15}/> Sauvegarder la carte</>}
     </button>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
       <SectionTitle>{title}</SectionTitle>
+      {sub && <p className="text-[11px] text-white -mt-2 mb-3">{sub}</p>}
       <div className="space-y-4">{children}</div>
     </div>
   );

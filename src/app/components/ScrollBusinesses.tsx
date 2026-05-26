@@ -2,7 +2,7 @@
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { Coffee, Scissors, ShoppingBag, Cpu, Car, Dumbbell, Utensils, Smile, Star, Zap, Package, Droplets, type LucideIcon } from "lucide-react";
-import { QartaLogo } from "./QartaLogo";
+import Image from "next/image";
 
 // Pool d'icônes disponibles — on en prend autant que nécessaire (cycliquement)
 const ICON_POOL: LucideIcon[] = [Coffee, Scissors, Utensils, ShoppingBag, Cpu, Car, Dumbbell, Smile, Star, Zap, Package, Droplets];
@@ -62,7 +62,7 @@ export default function ScrollBusinesses({ content }: Props) {
               <motion.div animate={{ y: [-6, 6, -6] }} transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }} className="relative">
                 <div className="w-36 h-36 rounded-3xl flex items-center justify-center"
                   style={{ background: "linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))", backdropFilter: "blur(14px)", border: "1px solid rgba(255,255,255,0.15)", boxShadow: "0 20px 60px -10px rgba(74,158,255,.35)" }}>
-                  <QartaLogo size={92} variant="badge" />
+                  <Image src="/logo-qarta.png" width={92} height={92} alt="Qarta" style={{ borderRadius: 22 }} />
                 </div>
                 <div className="absolute -inset-6 rounded-[40px] bg-[#4a9eff]/20 blur-2xl -z-10 animate-pulse-glow" />
               </motion.div>
