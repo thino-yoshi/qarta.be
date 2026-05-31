@@ -128,8 +128,8 @@ export default function LoyaltyCard({
     : d.stampsRequired > 0 ? stamps / d.stampsRequired : 0;
   const remaining = isPoints ? Math.max(0, d.pointsGoal - currentPoints) : d.stampsRequired - stamps;
 
-  // 1 ligne pour N≤10, 2 lignes pour N≥12 — tampons par pas de 2, max 20
-  const perRow = d.stampsRequired <= 10 ? d.stampsRequired : d.stampsRequired / 2;
+  // Toujours 2 lignes de N/2
+  const perRow = d.stampsRequired / 2;
 
   return (
     <div
@@ -252,12 +252,12 @@ export default function LoyaltyCard({
               gridTemplateColumns: `repeat(${perRow}, 1fr)`,
               width: "100%",
               gap: "0",
-              ...(perRow < d.stampsRequired && { justifyItems: "center" }),
+              justifyItems: "center",
             }}>
               {Array.from({ length: d.stampsRequired }).map((_, i) => (
                 <div key={i} className="rounded-full"
                   style={{
-                    width: perRow < d.stampsRequired ? "min(100%, 12cqw)" : "100%",
+                    width: "min(100%, 12cqw)",
                     aspectRatio: "1 / 1",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     ...(i < stamps
