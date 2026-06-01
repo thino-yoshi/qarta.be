@@ -361,9 +361,13 @@
     });
 
     /* ── QR : démo prochainement ── */
+    let demoTimer = null;
     document.getElementById('qr-container').addEventListener('click', (e) => {
-      e.stopPropagation(); // ne pas retourner la carte
-      document.getElementById('demo-hint').classList.add('visible');
+      e.stopPropagation();
+      const hint = document.getElementById('demo-hint');
+      hint.classList.add('visible');
+      clearTimeout(demoTimer);
+      demoTimer = setTimeout(() => hint.classList.remove('visible'), 3000);
     });
 
     /* ── Partager ── */
