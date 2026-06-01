@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carte Digitale — Qarta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sora', sans-serif;
+      background: #0d0d0d;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.04); }
+    }
+    @keyframes shimmer {
+      0%   { left: -60%; }
+      60%  { left: 120%; }
+      100% { left: 120%; }
+    }
+
+    /* ── Glow ring sur le bord de la carte ── */
+    @keyframes cardGlow {
+      0%, 100% { box-shadow: none; }
+      50%       { box-shadow: 0 0 0 2.5px rgba(74,158,255,.55), 0 0 32px rgba(74,158,255,.22); }
+    }
+    #glow-ring {
+      position: absolute; inset: 0; border-radius: inherit;
+      pointer-events: none;
+      animation: cardGlow 2.2s ease-in-out infinite;
+      transition: opacity 0.6s ease;
+    }
+    #glow-ring.faded { opacity: 0; }
+
+    /* ── Label "Tap" flottant ── */
+    @keyframes tapFade {
+      0%, 100% { opacity: 0; transform: translateY(6px); }
+      35%, 65%  { opacity: 1; transform: translateY(0); }
+    }
+    #tap-hint {
+      font-size: 10px; font-weight: 800; letter-spacing: .18em;
+      text-transform: uppercase; color: #4a9eff;
+      animation: tapFade 2.2s ease-in-out infinite;
+      pointer-events: none; user-select: none;
+    }
+    /* wrapper gère la visibilité sans toucher au layout */
+    #tap-hint-wrap { transition: opacity 0.6s ease; }
+    #tap-hint-wrap.faded { opacity: 0; }
+
+    /* ── Flip mechanic ── */
+    .flip-card { perspective: 1200px; }
+    .flip-inner {
+      position: relative;
+      width: 268px;
+      height: 165px;
+      transition: transform 0.7s cubic-bezier(.4,0,.2,1);
+      transform-style: preserve-3d;
+    }
+    .flip-inner.flipped { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-back { transform: rotateY(180deg); }
+  </style>
+</head>
+<body>
+
+  <div style="display:flex; flex-direction:column; align-items:center; gap:16px;">
+    <div id="tap-hint-wrap">
+      <div id="tap-hint">✦ &nbsp;Tap</div>
+    </div>
+
+  <!-- outer: réserve l'espace à la bonne taille mise à l'échelle -->
+  <div id="card-outer" style="width:95vw; aspect-ratio:268/165; position:relative;">
+    <div id="glow-ring"></div>
+    <!-- scaler: applique le scale tout en gardant 268×165 en interne -->
+    <div id="card-scaler" style="position:absolute; top:0; left:0; transform-origin:top left;">
+  <div class="flip-card" style="width:268px;height:165px;">
+    <div class="flip-inner" id="flip-inner">
+
+      <!-- ══════════════ RECTO ══════════════ -->
+      <div class="flip-face" id="recto" style="
+        border-radius:20px; overflow:hidden; cursor:pointer;
+        background: linear-gradient(140deg,#0b1220 0%,#162854 55%,#0f2044 100%);
+        border: 1.5px solid rgba(74,158,255,.22);
+        box-shadow: 0 20px 56px rgba(0,0,0,.7);
+      ">
+
+        <!-- Watermark logo (bottom-right) -->
+        <div style="position:absolute;bottom:-24px;right:-24px;pointer-events:none;">
+          <img src="qarta-logo.png" width="130" height="130"
+            style="display:block;border-radius:20%;mix-blend-mode:screen;opacity:.06;pointer-events:none;user-select:none;">
+        </div>
+
+        <!-- Shimmer badge (top-left) -->
+        <div style="position:absolute;top:13px;left:16px;">
+          <div style="
+            display:inline-block;
+            background: linear-gradient(135deg,rgba(255,255,255,.12),rgba(74,158,255,.08));
+            border: 1px solid rgba(255,255,255,.22);
+            border-radius: 7px; padding: 5px 9px;
+            box-shadow: 0 0 12px rgba(74,158,255,.2), inset 0 1px 0 rgba(255,255,255,.15);
+            position: relative; overflow: hidden;
+          ">
+            <!-- shimmer sweep -->
+            <div style="
+              position:absolute;top:0;left:-60%;width:40%;height:100%;
+              background: linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);
+              transform: skewX(-20deg);
+              animation: shimmer 2.8s ease-in-out infinite;
+            "></div>
+            <span style="
+              font-size:8.5px; font-weight:800; letter-spacing:.06em;
+              background: linear-gradient(135deg,#fff 40%,rgba(74,158,255,.9) 100%);
+              -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+              filter: drop-shadow(0 0 6px rgba(74,158,255,.5));
+              position:relative; z-index:1; text-transform:uppercase;
+            ">la fidélité réinventée</span>
+          </div>
+        </div>
+
+        <!-- Logo + "Qarta" (top-right) -->
+        <div style="position:absolute;top:12px;right:16px;display:flex;align-items:center;gap:5px;">
+          <img src="qarta-logo.png" width="20" height="20" style="
+            display:block; border-radius:28%; mix-blend-mode:screen;
+            filter: drop-shadow(0 0 6px rgba(74,158,255,.9)) drop-shadow(0 0 12px rgba(44,123,229,.5));
+            pointer-events:none; user-select:none;">
+          <span style="font-size:11px;font-weight:800;color:#fff;">Qarta</span>
+        </div>
+
+        <!-- QR code + text (bottom-left) -->
+        <div style="position:absolute;bottom:12px;left:14px;display:flex;align-items:flex-end;gap:8px;">
+          <div style="
+            background:rgba(255,255,255,.96); border-radius:9px; padding:7px;
+            box-shadow:0 3px 12px rgba(0,0,0,.3);
+            animation: pulse 2.5s ease-in-out infinite;
+          ">
+            <div id="qr-svg"></div>
+          </div>
+          <div style="padding-bottom:5px;">
+            <div style="font-size:8.5px;font-weight:700;color:rgba(255,255,255,.85);line-height:1.5;margin-bottom:2px;">
+              Testez avec<br>votre commerce
+            </div>
+            <div style="display:flex;align-items:center;gap:3px;">
+              <svg width="16" height="10" viewBox="0 0 16 10">
+                <path d="M14 5H2M2 5l4-3M2 5l4 3" stroke="#4a9eff" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+              </svg>
+              <span style="font-size:8px;font-weight:800;color:#4a9eff;">Clique ici</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- "↻ Retourner" (bottom-right) -->
+        <div style="position:absolute;bottom:16px;right:16px;font-size:8px;color:rgba(255,255,255,.35);font-weight:500;">
+          ↻ Retourner
+        </div>
+      </div>
+      <!-- ══════════════ / RECTO ══════════════ -->
+
+
+      <!-- ══════════════ VERSO ══════════════ -->
+      <div class="flip-face flip-back" id="verso" style="
+        border-radius:20px; overflow:hidden; cursor:pointer;
+        background: linear-gradient(140deg,#162854 0%,#0b1220 55%,#1a1033 100%);
+        border: 1.5px solid rgba(74,158,255,.22);
+        box-shadow: 0 20px 56px rgba(0,0,0,.7);
+      ">
+
+        <!-- Logo + "Qarta" (top-right) -->
+        <div style="position:absolute;top:12px;right:16px;display:flex;align-items:center;gap:5px;">
+          <img src="qarta-logo.png" width="20" height="20" style="
+            display:block; border-radius:28%; mix-blend-mode:screen;
+            filter: drop-shadow(0 0 6px rgba(74,158,255,.9)) drop-shadow(0 0 12px rgba(44,123,229,.5));
+            pointer-events:none; user-select:none;">
+          <span style="font-size:11px;font-weight:800;color:#fff;">Qarta</span>
+        </div>
+
+        <!-- Contact info (bottom-left) -->
+        <div style="position:absolute;bottom:12px;left:16px;display:flex;flex-direction:column;gap:5px;">
+
+          <!-- Mail -->
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div style="width:14px;height:14px;border-radius:4px;background:rgba(44,123,229,.2);border:1px solid rgba(74,158,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="8" height="6" viewBox="0 0 8 6">
+                <path d="M1 1h6v4H1zM1 1l3 2.5L7 1" stroke="#4a9eff" stroke-width=".9" fill="none"/>
+              </svg>
+            </div>
+            <span style="font-size:8.5px;color:rgba(255,255,255,.55);font-weight:500;">qarta.contact@gmail.com</span>
+          </div>
+
+          <!-- Phone -->
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div style="width:14px;height:14px;border-radius:4px;background:rgba(44,123,229,.2);border:1px solid rgba(74,158,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="7" height="7" viewBox="0 0 7 7">
+                <path d="M1.5 1C1.5 5 2 5.5 5.5 5.5" stroke="#4a9eff" stroke-width=".9" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <span style="font-size:8.5px;color:rgba(255,255,255,.55);font-weight:500;">0474/16.26.44</span>
+          </div>
+
+          <!-- Web -->
+          <div style="display:flex;align-items:center;gap:5px;">
+            <div style="width:14px;height:14px;border-radius:4px;background:rgba(44,123,229,.2);border:1px solid rgba(74,158,255,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <svg width="8" height="8" viewBox="0 0 8 8">
+                <circle cx="4" cy="4" r="3" stroke="#4a9eff" stroke-width=".9" fill="none"/>
+                <line x1="1" y1="4" x2="7" y2="4" stroke="#4a9eff" stroke-width=".9"/>
+                <path d="M4 1c-1 1.5-1 4.5 0 6" stroke="#4a9eff" stroke-width=".9" fill="none"/>
+              </svg>
+            </div>
+            <span style="font-size:8.5px;color:#4a9eff;font-weight:700;">qarta.be</span>
+          </div>
+        </div>
+
+        <!-- "Partager" button (bottom-right) -->
+        <div style="position:absolute;bottom:12px;right:14px;">
+          <div style="border-radius:10px;padding:5px 9px;font-size:9.5px;font-weight:700;background:#2c7be5;color:#fff;display:flex;align-items:center;gap:4px;">
+            <svg width="9" height="9" viewBox="0 0 9 9">
+              <path d="M4.5 1v6M1 4.5l3.5-3.5 3.5 3.5" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+            </svg>
+            Partager
+          </div>
+        </div>
+
+        <!-- "↻ Retourner" (top-left) -->
+        <div style="position:absolute;top:14px;left:16px;font-size:8px;color:rgba(255,255,255,.2);font-weight:600;">
+          ↻ Retourner
+        </div>
+      </div>
+      <!-- ══════════════ / VERSO ══════════════ -->
+
+    </div>
+    </div><!-- /card-scaler -->
+  </div><!-- /card-outer -->
+  </div><!-- /column wrapper -->
+
+  <script>
+    /* ── QR SVG (19×19 cells, size=54px) ── */
+    (function() {
+      const cells = [
+        [1,1,1,1,1,1,1,0,1,0,1,0,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,1],
+        [1,0,1,1,1,0,1,0,0,1,0,0,1,0,1,1,1,0,1],
+        [1,0,1,1,1,0,1,0,1,0,1,0,1,0,1,1,1,0,1],
+        [1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,0,1,0,1,0,1,1,1,1,1,1,1],
+        [0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0],
+        [1,0,1,1,0,1,1,1,0,1,0,1,1,0,1,0,1,1,0],
+        [0,1,0,0,1,0,0,0,1,0,1,0,0,1,0,1,0,0,1],
+        [1,0,1,0,1,1,1,1,0,1,0,1,1,0,1,0,1,0,1],
+        [0,1,0,1,0,0,0,0,1,0,1,0,0,1,0,1,0,1,0],
+        [0,0,0,0,0,0,0,0,1,1,0,1,0,0,0,0,0,0,0],
+        [1,1,1,1,1,1,1,0,0,0,1,0,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,1,0,1,0,0,1,1,0,0,0,0,0,1],
+        [1,0,1,1,1,0,1,0,0,1,1,0,1,0,1,1,1,0,1],
+        [1,0,1,1,1,0,1,0,1,0,0,1,1,0,1,1,1,0,1],
+        [1,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1],
+        [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+      ];
+      const size = 54, c = size / 19, color = '#0b1220';
+      let rects = '';
+      cells.forEach((row, r) =>
+        row.forEach((v, col) => {
+          if (v) rects += `<rect x="${(col*c).toFixed(2)}" y="${(r*c).toFixed(2)}" width="${(c-.5).toFixed(2)}" height="${(c-.5).toFixed(2)}" rx="1" fill="${color}"/>`;
+        })
+      );
+      document.getElementById('qr-svg').innerHTML =
+        `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block">${rects}</svg>`;
+    })();
+
+    /* ── Scale 95vw ── */
+    const cardOuter  = document.getElementById('card-outer');
+    const glowRing   = document.getElementById('glow-ring');
+    const tapWrap    = document.getElementById('tap-hint-wrap');
+
+    function scaleCard() {
+      const scale = (window.innerWidth * 0.95) / 268;
+      document.getElementById('card-scaler').style.transform = `scale(${scale})`;
+      cardOuter.style.borderRadius = `${20 * scale}px`;
+    }
+    scaleCard();
+    window.addEventListener('resize', scaleCard);
+
+    /* ── Hint : fade in / fade out avec timer d'inactivité ── */
+    let inactivityTimer = null;
+
+    function showHint() {
+      tapWrap.classList.remove('faded');
+      glowRing.classList.remove('faded');
+    }
+    function hideHint() {
+      tapWrap.classList.add('faded');
+      glowRing.classList.add('faded');
+    }
+    function resetInactivity() {
+      clearTimeout(inactivityTimer);
+      hideHint();
+      inactivityTimer = setTimeout(showHint, 1000);
+    }
+
+    /* ── Flip mechanic ── */
+    const inner = document.getElementById('flip-inner');
+
+    document.getElementById('recto').addEventListener('click', () => {
+      inner.classList.add('flipped');
+      resetInactivity();
+    });
+    document.getElementById('verso').addEventListener('click', () => {
+      inner.classList.remove('flipped');
+      resetInactivity();
+    });
+  </script>
+
+</body>
+</html>
