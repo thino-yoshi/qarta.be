@@ -56,6 +56,31 @@
     #tap-hint-wrap { transition: opacity 0.6s ease; }
     #tap-hint-wrap.faded { opacity: 0; }
 
+    /* ── Message "démo prochainement" sous la carte ── */
+    #demo-hint {
+      font-size: 11px; font-weight: 700; letter-spacing: .08em;
+      color: rgba(255,255,255,.45); text-align: center;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      pointer-events: none;
+    }
+    #demo-hint.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Toast "Lien copié" ── */
+    #share-toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: rgba(44,123,229,.92); color: #fff;
+      font-size: 12px; font-weight: 700; letter-spacing: .04em;
+      padding: 9px 18px; border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(44,123,229,.4);
+      opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none; white-space: nowrap;
+    }
+    #share-toast.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+
     /* ── Flip mechanic ── */
     .flip-card { perspective: 1200px; }
     .flip-inner {
@@ -142,10 +167,11 @@
 
         <!-- QR code + text (bottom-left) -->
         <div style="position:absolute;bottom:12px;left:14px;display:flex;align-items:flex-end;gap:8px;">
-          <div style="
+          <div id="qr-container" style="
             background:rgba(255,255,255,.96); border-radius:9px; padding:7px;
             box-shadow:0 3px 12px rgba(0,0,0,.3);
             animation: pulse 2.5s ease-in-out infinite;
+            cursor:pointer;
           ">
             <div id="qr-svg"></div>
           </div>
@@ -219,13 +245,15 @@
                 <path d="M4 1c-1 1.5-1 4.5 0 6" stroke="#4a9eff" stroke-width=".9" fill="none"/>
               </svg>
             </div>
-            <span style="font-size:8.5px;color:#4a9eff;font-weight:700;">qarta.be</span>
+            <a href="https://qarta.be" target="_blank" rel="noopener"
+               style="font-size:8.5px;color:#4a9eff;font-weight:700;text-decoration:none;"
+               onclick="event.stopPropagation()">qarta.be</a>
           </div>
         </div>
 
         <!-- "Partager" button (bottom-right) -->
         <div style="position:absolute;bottom:12px;right:14px;">
-          <div style="border-radius:10px;padding:5px 9px;font-size:9.5px;font-weight:700;background:#2c7be5;color:#fff;display:flex;align-items:center;gap:4px;">
+          <div id="btn-partager" style="border-radius:10px;padding:5px 9px;font-size:9.5px;font-weight:700;background:#2c7be5;color:#fff;display:flex;align-items:center;gap:4px;cursor:pointer;">
             <svg width="9" height="9" viewBox="0 0 9 9">
               <path d="M4.5 1v6M1 4.5l3.5-3.5 3.5 3.5" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round"/>
             </svg>
@@ -243,7 +271,14 @@
     </div>
     </div><!-- /card-scaler -->
   </div><!-- /card-outer -->
+
+    <!-- Message démo sous la carte -->
+    <div id="demo-hint">🚀 &nbsp;Démo scanner disponible prochainement</div>
+
   </div><!-- /column wrapper -->
+
+  <!-- Toast partager -->
+  <div id="share-toast">✓ &nbsp;Lien copié !</div>
 
   <script>
     /* ── QR SVG (19×19 cells, size=54px) ── */
@@ -320,6 +355,29 @@
     document.getElementById('verso').addEventListener('click', () => {
       inner.classList.remove('flipped');
       resetInactivity();
+    });
+
+    /* ── QR : démo prochainement ── */
+    document.getElementById('qr-container').addEventListener('click', (e) => {
+      e.stopPropagation(); // ne pas retourner la carte
+      document.getElementById('demo-hint').classList.add('visible');
+    });
+
+    /* ── Partager ── */
+    document.getElementById('btn-partager').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const url  = 'https://qarta.be/visit-card';
+      const data = { title: 'Carte Digitale — Qarta', text: 'Découvrez la carte de fidélité digitale Qarta', url };
+      if (navigator.share && navigator.canShare && navigator.canShare(data)) {
+        navigator.share(data).catch(() => {});
+      } else {
+        // Fallback : copie dans le presse-papier
+        navigator.clipboard.writeText(url).then(() => {
+          const toast = document.getElementById('share-toast');
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 2200);
+        }).catch(() => {});
+      }
     });
   </script>
 
