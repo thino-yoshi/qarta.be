@@ -59,7 +59,7 @@
     /* ── Message "démo prochainement" sous la carte ── */
     #demo-hint {
       font-size: 11px; font-weight: 700; letter-spacing: .08em;
-      color: rgba(255,255,255,.45); text-align: center;
+      color: #4a9eff; text-align: center;
       opacity: 0; transform: translateY(6px);
       transition: opacity 0.5s ease, transform 0.5s ease;
       pointer-events: none;
@@ -324,6 +324,9 @@
       const scale = (window.innerWidth * 0.95) / 268;
       document.getElementById('card-scaler').style.transform = `scale(${scale})`;
       cardOuter.style.borderRadius = `${20 * scale}px`;
+      // force la hauteur explicitement — aspect-ratio seul peut échouer
+      // quand tous les enfants sont position:absolute
+      cardOuter.style.height = `${165 * scale}px`;
     }
     scaleCard();
     window.addEventListener('resize', scaleCard);
