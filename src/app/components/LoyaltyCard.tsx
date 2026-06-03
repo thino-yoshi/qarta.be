@@ -16,6 +16,7 @@ export const FONT_OPTIONS = [
 export interface CardDesign {
   cardName:           string;
   stampLabel:         string;
+  pointsLabel:        string;
   stampsRequired:     number;
   rewardDescription:  string;
   // Fond
@@ -39,7 +40,8 @@ export interface CardDesign {
 
 export const DEFAULT_DESIGN: CardDesign = {
   cardName:           "Mon Commerce",
-  stampLabel:         "POINTS COLLECTÉS",
+  stampLabel:         "TAMPONS COLLECTÉS",
+  pointsLabel:        "POINTS COLLECTÉS",
   stampsRequired:     6,
   rewardDescription:  "récompense offerte",
   bgType:             "gradient",
@@ -131,6 +133,11 @@ export default function LoyaltyCard({
   // Toujours 2 lignes de N/2
   const perRow = d.stampsRequired / 2;
 
+  // Police du nom : grande si ≤2 lignes attendues, réduite si 3 lignes nécessaires
+  const nameFontSize = d.cardName.length >= 39
+    ? "clamp(11px, 3.8cqw, 22px)"
+    : "clamp(16px, 5.5cqw, 30px)";
+
   return (
     <div
       className="relative rounded-2xl overflow-hidden w-full select-none"
@@ -160,7 +167,7 @@ export default function LoyaltyCard({
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <p style={{
-              color: accentFirst,
+              color: d.textColor,
               fontSize: "clamp(9px, 2cqw, 12px)",
               fontWeight: 600,
               letterSpacing: "0.18em",
@@ -170,12 +177,17 @@ export default function LoyaltyCard({
               Carte de fidélité
             </p>
             <h2
-              className="font-black leading-none"
+              className="font-black"
               style={{
                 color: d.textColor,
-                fontSize: "clamp(16px, 5.5cqw, 30px)",
+                fontSize: nameFontSize,
                 letterSpacing: "0.01em",
+                lineHeight: 1.15,
                 textTransform: "uppercase",
+                display: "-webkit-box",
+                WebkitBoxOrient: "vertical",
+                WebkitLineClamp: 3,
+                overflow: "hidden",
               }}
             >
               {d.cardName}
@@ -184,8 +196,8 @@ export default function LoyaltyCard({
 
           <div className="text-right flex-shrink-0">
             <p style={{
-              color: accentFirst,
-              fontSize: "clamp(6px, 1.4cqw, 9px)",
+              color: d.textColor,
+              fontSize: "clamp(9px, 2cqw, 12px)",
               fontWeight: 700,
               letterSpacing: "0.18em",
               textTransform: "uppercase",
@@ -205,11 +217,11 @@ export default function LoyaltyCard({
         {/* ── Mode POINTS ── */}
         {isPoints ? (
           <div className="mt-auto">
-            <p style={{ color: accentFirst, fontSize: "clamp(6px,1.4cqw,9px)",
+            <p style={{ color: d.textColor, fontSize: "clamp(9px, 2.2cqw, 13px)",
               fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "6px" }}>
-              {d.stampLabel}
+              {d.pointsLabel}
             </p>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "4px", marginBottom: "6%" }}>
+            <div style={{ height: "20cqw", display: "flex", alignItems: "center", gap: "4px" }}>
               <span style={{ color: accentFirst, fontWeight: 900, lineHeight: 1,
                 fontSize: `clamp(${Math.round(d.compactPointsSize * 0.47)}px, ${(d.compactPointsSize * 0.176).toFixed(1)}cqw, ${d.compactPointsSize}px)` }}>
                 {currentPoints.toLocaleString()}
@@ -220,19 +232,19 @@ export default function LoyaltyCard({
               </span>
             </div>
             {/* Barre */}
-            <div style={{ marginTop: "4%" }}>
+            <div style={{ marginTop: "2%" }}>
               <div className="w-full rounded-full overflow-hidden" style={{ height: 2, background: "rgba(255,255,255,0.1)", marginBottom: 8 }}>
                 <div className="h-full rounded-full transition-all duration-500"
                   style={{ width: `${progress * 100}%`, background: `linear-gradient(90deg, ${accentFirst}, ${accentLast})` }} />
               </div>
               <div className="flex items-center justify-between">
-                <p style={{ color: d.textColor, fontSize: "clamp(7px,1.5cqw,9px)" }}>
+                <p style={{ color: d.textColor, fontSize: "clamp(12px,2.6cqw,15px)" }}>
                   {remaining > 0 ? (
-                    <>Encore <span style={{ color: accentFirst, fontWeight: 700 }}>{remaining.toLocaleString()} pts</span>{" "}pour votre{" "}
-                      <span style={{ color: accentFirst }}>{d.rewardDescription}</span></>
-                  ) : <span style={{ color: accentFirst, fontWeight: 700 }}>Récompense disponible 🎉</span>}
+                    <>Encore <span style={{ fontWeight: 700 }}>{remaining.toLocaleString()} pts</span>{" "}pour votre{" "}
+                      <span>{d.rewardDescription}</span></>
+                  ) : <span style={{ fontWeight: 700 }}>Récompense disponible 🎉</span>}
                 </p>
-                <p style={{ color: accentFirst, fontWeight: 700, fontSize: "clamp(9px,1.8cqw,12px)" }}>
+                <p style={{ color: d.textColor, fontWeight: 700, fontSize: "clamp(13px,2.8cqw,16px)" }}>
                   {currentPoints.toLocaleString()} / {d.pointsGoal.toLocaleString()}
                 </p>
               </div>
@@ -242,7 +254,7 @@ export default function LoyaltyCard({
         ) : (
           /* ── Mode TAMPONS ── */
           <div className="mt-auto">
-            <p style={{ color: accentFirst, fontSize: "clamp(6px, 1.4cqw, 9px)",
+            <p style={{ color: d.textColor, fontSize: "clamp(9px, 2.2cqw, 13px)",
               fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: "8px" }}>
               {d.stampLabel}
             </p>
@@ -250,9 +262,12 @@ export default function LoyaltyCard({
             <div style={{
               display: "grid",
               gridTemplateColumns: `repeat(${perRow}, 1fr)`,
+              gridTemplateRows: "1fr 1fr",
+              height: "24cqw",
               width: "100%",
               gap: "0",
               justifyItems: "center",
+              alignItems: "center",
             }}>
               {Array.from({ length: d.stampsRequired }).map((_, i) => (
                 <div key={i} className="rounded-full"
@@ -261,12 +276,12 @@ export default function LoyaltyCard({
                     aspectRatio: "1 / 1",
                     display: "flex", alignItems: "center", justifyContent: "center",
                     ...(i < stamps
-                      ? { background: d.textColor, boxShadow: `0 2px 10px ${d.textColor}55` }
-                      : { border: `1.5px solid ${d.textColor}44`, background: "transparent" }
+                      ? { background: accentFirst, boxShadow: `0 2px 10px ${accentFirst}55` }
+                      : { border: `1.5px solid ${accentFirst}44`, background: "transparent" }
                     ),
                   }}>
                   {i < stamps && (
-                    <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(d.textColor)}
+                    <svg viewBox="0 0 24 24" fill="none" stroke={contrastColor(accentFirst)}
                       strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
                       style={{ width: "52%", height: "52%" }}>
                       <path d="M5 13l4 4L19 7" />
@@ -279,16 +294,16 @@ export default function LoyaltyCard({
             <div style={{ marginTop: "3%" }}>
               <div className="w-full rounded-full overflow-hidden" style={{ height: 2, background: "rgba(255,255,255,0.1)", marginBottom: 6 }}>
                 <div className="h-full rounded-full transition-all duration-500"
-                  style={{ width: `${progress * 100}%`, background: d.textColor }} />
+                  style={{ width: `${progress * 100}%`, background: `linear-gradient(90deg, ${accentFirst}, ${accentLast})` }} />
               </div>
               <div className="flex items-center justify-between">
-                <p style={{ color: accentFirst, fontSize: "clamp(7px, 1.5cqw, 9px)" }}>
+                <p style={{ color: d.textColor, fontSize: "clamp(12px, 2.6cqw, 15px)" }}>
                   {remaining > 0 ? (
                     <>Encore{" "}<span style={{ fontWeight: 700 }}>{remaining}</span>
                       {" "}pour votre{" "}<span>{d.rewardDescription}</span></>
                   ) : <span style={{ fontWeight: 700 }}>Récompense disponible 🎉</span>}
                 </p>
-                <p style={{ color: d.textColor, fontWeight: 700, fontSize: "clamp(9px, 1.8cqw, 12px)" }}>
+                <p style={{ color: d.textColor, fontWeight: 700, fontSize: "clamp(13px, 2.8cqw, 16px)" }}>
                   {stamps} / {d.stampsRequired}
                 </p>
               </div>

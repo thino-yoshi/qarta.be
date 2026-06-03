@@ -189,6 +189,22 @@ export default function DashboardShell({ user, merchant, loyaltyCard, stripeSucc
           </div>
         </header>
 
+        {/* Launch announcement banner — carte tab only */}
+        {activeTab === "carte" && (
+          <div
+            className="mx-6 mt-3 flex items-center gap-3 px-5 py-3.5 rounded-2xl"
+            style={{
+              background: "linear-gradient(90deg, rgba(124,58,237,0.12), rgba(79,70,229,0.08))",
+              border: "1px solid rgba(124,58,237,0.3)",
+            }}
+          >
+            <p className="text-[13px] flex-1">
+              <span className="font-semibold" style={{ color: "#a78bfa" }}>Lancement fin juin — début juillet 2025</span>
+              <span className="font-semibold" style={{ color: "#7dd3fc" }}> · Votre carte de fidélité sera disponible pour vos clients très bientôt !</span>
+            </p>
+          </div>
+        )}
+
         {/* Stripe success banner */}
         {stripeSuccess && (
           <div

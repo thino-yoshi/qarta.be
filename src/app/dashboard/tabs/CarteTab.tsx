@@ -217,12 +217,19 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
         {/* Identité */}
         <Section title="Identité de la carte">
           <Field label="Nom du commerce">
-            <TextInput value={design.cardName} onChange={(v) => set("cardName", v)} placeholder="Ex : BARBER" />
+            <TextInput value={design.cardName} onChange={(v) => set("cardName", v)} placeholder="Ex : BARBER" maxLength={57} />
           </Field>
-          <Field label={loyaltyTab === "points" ? "Label des points" : "Label des tampons"}>
-            <TextInput value={design.stampLabel} onChange={(v) => set("stampLabel", v)}
-              placeholder={loyaltyTab === "points" ? "Ex : POINTS CUMULÉS" : "Ex : COUPES COLLECTÉES"} />
-          </Field>
+          {loyaltyTab === "points" ? (
+            <Field label="Label des points">
+              <TextInput value={design.pointsLabel} onChange={(v) => set("pointsLabel", v)}
+                placeholder="Ex : POINTS CUMULÉS" maxLength={40} />
+            </Field>
+          ) : (
+            <Field label="Label des tampons">
+              <TextInput value={design.stampLabel} onChange={(v) => set("stampLabel", v)}
+                placeholder="Ex : COUPES COLLECTÉES" maxLength={40} />
+            </Field>
+          )}
           <Field label="Récompense">
             <TextInput value={design.rewardDescription} onChange={(v) => set("rewardDescription", v)} placeholder="Ex : coupe offerte" />
           </Field>
@@ -486,9 +493,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-function TextInput({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder?: string }) {
+function TextInput({ value, onChange, placeholder, maxLength }: { value: string; onChange: (v: string) => void; placeholder?: string; maxLength?: number }) {
   return (
     <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
+      maxLength={maxLength}
       className="w-full px-3 py-2.5 rounded-xl text-[13px] text-white outline-none transition-all"
       style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
       onFocus={(e) => { e.currentTarget.style.borderColor = "rgba(74,158,255,0.5)"; }}

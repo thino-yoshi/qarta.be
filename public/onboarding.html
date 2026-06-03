@@ -137,20 +137,19 @@
     .db-card-preview{border-radius:18px;padding:20px;position:relative;overflow:hidden;aspect-ratio:380/240;display:flex;flex-direction:column;box-shadow:0 20px 50px -15px rgba(0,0,0,0.6);transition:background 0.4s;text-shadow:0 1px 4px rgba(0,0,0,0.25);container-type:inline-size}
 
     .db-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
-    .db-card-name{font-size:18px;font-weight:800;letter-spacing:0.04em;line-height:1.1;transition:color .3s,font-family .3s}
-    .db-card-subtitle{font-size:9px;color:rgba(255,255,255,0.5);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:3px;font-family:'Manrope',sans-serif}
+    .db-card-name{font-size:clamp(16px,5.5cqw,30px);font-weight:800;letter-spacing:0.01em;line-height:1.15;transition:color .3s,font-family .3s;text-transform:uppercase;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+    .db-card-subtitle{font-size:clamp(9px,2cqw,12px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase;margin-bottom:4px;font-family:'Manrope',sans-serif}
     .db-card-holder-block{text-align:right}
-    .db-card-holder-label{font-size:8px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;font-family:'Manrope',sans-serif}
-    .db-card-holder-name{font-size:12px;font-weight:700;color:#fff;margin-top:2px;font-family:'Manrope',sans-serif}
-    .db-points-label-card{font-size:8px;font-weight:700;letter-spacing:0.14em;color:rgba(255,255,255,0.45);text-transform:uppercase;margin-bottom:8px;font-family:'Manrope',sans-serif}
+    .db-card-holder-label{font-size:clamp(9px,2cqw,12px);letter-spacing:0.18em;text-transform:uppercase;font-family:'Manrope',sans-serif;font-weight:700}
+    .db-card-holder-name{font-size:clamp(10px,2.4cqw,15px);font-weight:700;margin-top:2px;font-family:'Manrope',sans-serif;white-space:nowrap}
+    .db-points-label-card{font-size:clamp(9px,2.2cqw,13px);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:8px;font-family:'Manrope',sans-serif}
     .db-points-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
     .db-point{border-radius:50%;border:2px solid rgba(255,255,255,0.2);transition:background .3s,border-color .3s,width .15s,height .15s;flex-shrink:0}
     .db-point.filled{border-color:transparent}
     .db-card-footer{display:flex;align-items:center;justify-content:space-between}
-    .db-card-progress-text{font-size:10px;color:rgba(255,255,255,0.55);font-family:'Manrope',sans-serif}
+    .db-card-progress-text{font-size:clamp(12px,2.6cqw,15px);font-family:'Manrope',sans-serif}
     .db-card-progress-text strong{font-weight:700}
-    .db-card-count{font-size:12px;font-weight:700;color:rgba(255,255,255,0.6);font-family:'Manrope',sans-serif}
-    .db-card-count span{color:#fff}
+    .db-card-count{font-size:clamp(13px,2.8cqw,16px);font-weight:700;font-family:'Manrope',sans-serif}
     #db-stamps-display{display:flex;flex-direction:column;margin-top:auto}
     #db-points-display{display:none;margin-top:auto}
     .db-points-big{font-size:44px;font-weight:800;color:#fff;text-align:center;line-height:1;font-family:'Manrope',sans-serif}
@@ -238,11 +237,11 @@
           <div class="db-label">Identité de la carte</div>
           <div class="db-form-group">
             <label class="db-form-label">Nom du commerce *</label>
-            <input class="db-input" id="input-name" type="text" placeholder="ex : Café Lumi" oninput="dbUpdateName(this.value)"/>
+            <input class="db-input" id="input-name" type="text" placeholder="ex : Café Lumi" maxlength="57" oninput="dbUpdateName(this.value)"/>
           </div>
           <div class="db-form-group">
             <label class="db-form-label" id="stamp-label-lbl">Label des tampons</label>
-            <input class="db-input" id="input-stamp-label" type="text" value="POINTS COLLECTÉS" oninput="dbUpdateStampLabel(this.value)"/>
+            <input class="db-input" id="input-stamp-label" type="text" value="TAMPONS COLLECTÉS" oninput="dbUpdateStampLabel(this.value)"/>
           </div>
           <div class="db-form-group">
             <label class="db-form-label">Récompense *</label>
@@ -360,21 +359,31 @@
               </div>
             </div>
             <div id="db-stamps-display">
-              <div class="db-points-label-card" id="db-stamp-label-card">POINTS COLLECTÉS</div>
+              <div class="db-points-label-card" id="db-stamp-label-card">TAMPONS COLLECTÉS</div>
               <div class="db-points-row" id="db-points-row"></div>
-              <div class="db-card-footer">
-                <div class="db-card-progress-text">Encore <strong id="db-remaining">3</strong> pour votre <strong id="db-reward-text">récompense</strong></div>
-                <div class="db-card-count"><span id="db-count-current">3</span> / <span id="db-count-total">6</span></div>
+              <div style="margin-top:3%">
+                <div style="width:100%;border-radius:999px;overflow:hidden;height:2px;background:rgba(255,255,255,0.1);margin-bottom:6px">
+                  <div id="db-stamp-progress-bar" style="height:100%;border-radius:999px;width:50%;transition:width 0.5s"></div>
+                </div>
+                <div class="db-card-footer">
+                  <div class="db-card-progress-text">Encore <strong id="db-remaining">3</strong> pour votre <strong id="db-reward-text">récompense</strong></div>
+                  <div class="db-card-count"><span id="db-count-current">3</span> / <span id="db-count-total">6</span></div>
+                </div>
               </div>
             </div>
             <div id="db-points-display">
-              <div style="padding:8px 0">
-                <div class="db-points-big">1 240</div>
-                <div class="db-points-unit">points accumulés</div>
-                <div class="db-points-bar"><div class="db-points-bar-fill"></div></div>
-                <div style="display:flex;justify-content:space-between;margin-top:6px">
-                  <span style="font-size:10px;color:rgba(255,255,255,0.4)">0</span>
-                  <span style="font-size:10px;color:rgba(255,255,255,0.4)" id="db-points-goal-label">Palier : 1 000</span>
+              <p id="db-points-label-text" style="font-size:clamp(9px,2.2cqw,13px);font-weight:700;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:6px;font-family:'Manrope',sans-serif">POINTS COLLECTÉS</p>
+              <div style="height:20cqw;display:flex;align-items:center;gap:4px">
+                <span id="db-points-current-display" style="font-weight:900;line-height:1;font-size:clamp(32px,12.0cqw,68px);font-family:'Manrope',sans-serif">0</span>
+                <span id="db-pts-label" style="font-weight:700;opacity:0.75;font-size:clamp(11px,3.5cqw,22px);font-family:'Manrope',sans-serif">PTS</span>
+              </div>
+              <div style="margin-top:2%">
+                <div style="width:100%;border-radius:999px;overflow:hidden;height:2px;background:rgba(255,255,255,0.1);margin-bottom:8px">
+                  <div id="db-points-bar-new" style="height:100%;border-radius:999px;width:0%;transition:width 0.5s"></div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <p id="db-points-remaining-text" style="font-size:clamp(12px,2.6cqw,15px);font-family:'Manrope',sans-serif;margin:0">Encore <span id="db-points-remaining-val" style="font-weight:700">1 000</span> pts pour votre <span id="db-points-reward-text">récompense</span></p>
+                  <p id="db-points-counter" style="font-weight:700;font-size:clamp(13px,2.8cqw,16px);font-family:'Manrope',sans-serif;margin:0;white-space:nowrap">0 / 1 000</p>
                 </div>
               </div>
             </div>
@@ -476,20 +485,15 @@ function dbApplyPreset(idx){
   ['db-hex-acc1','db-hex-acc1b'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=p.acc;});
   const dam=document.getElementById('db-accent-mono');if(dam)dam.style.display='block';
   const dad=document.getElementById('db-accent-degrade');if(dad)dad.style.display='none';
-  // Texte
-  dbSt.textColor=p.txt;
-  const st=document.getElementById('db-swatch-text');if(st)st.style.background=p.txt;
-  const ht=document.getElementById('db-hex-text');if(ht)ht.value=p.txt;
-  const cn=document.getElementById('db-card-name');if(cn)cn.style.color=p.txt;
-  // Appliquer
-  dbApplyCardBg();dbRenderStamps();
+  // Texte — passe par dbUpdateTextColor pour propager à tous les éléments
+  dbApplyCardBg();dbUpdateTextColor(p.txt);
   // Marquer le preset actif
   document.querySelectorAll('#db-preset-grid .db-preset-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
 }
 
 function contrastColor(hex){var h=(hex||'').replace('#','');if(h.length<6)return '#ffffff';var r=parseInt(h.slice(0,2),16)/255,g=parseInt(h.slice(2,4),16)/255,b=parseInt(h.slice(4,6),16)/255;var lin=function(c){return c<=0.03928?c/12.92:Math.pow((c+0.055)/1.055,2.4);};var L=0.2126*lin(r)+0.7152*lin(g)+0.0722*lin(b);return L>0.179?'#1a1a1a':'#ffffff';}
 let typ='visit',busy=false;
-let dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'POINTS COLLECTÉS',reward:'',total:6,filled:3,pointsGoal:1000,_imgUrl:null};
+let dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',pointsLabel:'POINTS COLLECTÉS',reward:'',total:6,filled:3,pointsGoal:1000,_imgUrl:null};
 
 function goTo(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -535,7 +539,7 @@ function dbGetBgNoImage(){if(dbSt.bgType==='couleur')return dbSt.soloColor;retur
 function dbApplyCardBg(){const bg=dbGetBg();const c=document.getElementById('db-card-bg');if(c)c.style.background=bg;}
 function dbGetAccentBg(){return dbSt.accentMode==='degrade'?'linear-gradient(135deg,'+dbSt.acc1+','+dbSt.acc2+')':dbSt.acc1;}
 
-function dbSwitchMode(mode,btn){dbSt.mode=mode;if(btn){btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}const ip=mode==='points';document.getElementById('db-stamps-section').style.display=ip?'none':'block';document.getElementById('db-points-section').style.display=ip?'block':'none';document.getElementById('db-stamps-display').style.display=ip?'none':'block';document.getElementById('db-points-display').style.display=ip?'block':'none';const lbl=document.getElementById('stamp-label-lbl');if(lbl)lbl.textContent=ip?'Label des points':'Label des tampons';}
+function dbSwitchMode(mode,btn){dbSt.mode=mode;if(btn){btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}const ip=mode==='points';document.getElementById('db-stamps-section').style.display=ip?'none':'block';document.getElementById('db-points-section').style.display=ip?'block':'none';document.getElementById('db-stamps-display').style.display=ip?'none':'block';document.getElementById('db-points-display').style.display=ip?'block':'none';const lbl=document.getElementById('stamp-label-lbl');if(lbl)lbl.textContent=ip?'Label des points':'Label des tampons';const inp=document.getElementById('input-stamp-label');if(inp)inp.value=ip?dbSt.pointsLabel:dbSt.stampLabel;const card=document.getElementById('db-stamp-label-card');if(card)card.textContent=(ip?dbSt.pointsLabel:dbSt.stampLabel).toUpperCase();}
 function dbSwitchBg(type,btn){dbSt.bgType=type;btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-single-color-section').style.display=type==='couleur'?'block':'none';document.getElementById('db-gradient-section').style.display=type==='degrade'?'block':'none';document.getElementById('db-image-section').style.display=type==='image'?'block':'none';dbApplyCardBg();}
 function dbSwitchAccent(mode,btn){dbSt.accentMode=mode;btn.closest('.db-tab-group').querySelectorAll('.db-tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-accent-mono').style.display=mode==='mono'?'block':'none';document.getElementById('db-accent-degrade').style.display=mode==='degrade'?'block':'none';dbRenderStamps();}
 
@@ -561,20 +565,45 @@ function dbUpdateAccent1(val){dbSt.acc1=val;['db-swatch-acc1','db-swatch-acc1b']
 function dbUpdateAccentHex1(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent1(val);}
 function dbUpdateAccent2(val){dbSt.acc2=val;dbSyncSwatch('db-swatch-acc2',val);const h=document.getElementById('db-hex-acc2');if(h)h.value=val;dbRenderStamps();}
 function dbUpdateAccentHex2(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateAccent2(val);}
-function dbUpdateTextColor(val){dbSt.textColor=val;dbSyncSwatch('db-swatch-text',val);document.getElementById('db-hex-text').value=val;document.getElementById('db-card-name').style.color=val;const hn=document.querySelector('.db-card-holder-name');if(hn)hn.style.color=val;dbRenderStamps();}
+function dbUpdateTextColor(val){dbSt.textColor=val;dbSyncSwatch('db-swatch-text',val);document.getElementById('db-hex-text').value=val;document.getElementById('db-card-name').style.color=val;dbRenderStamps();}
 function dbUpdateTextColorHex(val){if(/^#[0-9a-fA-F]{6}$/.test(val))dbUpdateTextColor(val);}
 function dbSetFont(font,btn){dbSt.font=font;document.querySelectorAll('#db-font-grid .db-font-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('db-card-name').style.fontFamily="'"+font+"',sans-serif";}
-function dbUpdateName(val){dbSt.name=val;const u=val.toUpperCase();document.getElementById('db-card-name').textContent=u||'—';}
-function dbUpdateStampLabel(val){dbSt.stampLabel=val;document.getElementById('db-stamp-label-card').textContent=val.toUpperCase();}
-function dbUpdateReward(val){dbSt.reward=val;document.getElementById('db-reward-text').textContent=val||'récompense';}
+function dbUpdateName(val){dbSt.name=val;const u=val.toUpperCase();const el=document.getElementById('db-card-name');el.textContent=u||'—';el.style.fontSize=val.length>=39?'clamp(11px,3.8cqw,22px)':'clamp(16px,5.5cqw,30px)';}
+function dbUpdateStampLabel(val){if(dbSt.mode==='points'){dbSt.pointsLabel=val;dbRenderPoints();}else{dbSt.stampLabel=val;}document.getElementById('db-stamp-label-card').textContent=val.toUpperCase();}
+function dbUpdateReward(val){dbSt.reward=val;document.getElementById('db-reward-text').textContent=val||'récompense';const rt=document.getElementById('db-points-reward-text');if(rt)rt.textContent=val||'récompense';}
 function dbUpdateStamps(val){dbSt.total=parseInt(val);dbSt.filled=Math.min(dbSt.filled,dbSt.total);document.getElementById('stamp-count-badge').textContent=val;document.getElementById('db-count-total').textContent=val;document.getElementById('db-remaining').textContent=dbSt.total-dbSt.filled;dbRenderStamps();}
-function dbUpdatePoints(val){dbSt.pointsGoal=parseInt(val);document.getElementById('points-goal-badge').textContent=val;const lbl=document.getElementById('db-points-goal-label');if(lbl)lbl.textContent='Palier : '+parseInt(val).toLocaleString();}
+function dbRenderPoints(){
+  const acc1=dbSt.acc1;
+  const acc2=dbSt.accentMode==='degrade'?dbSt.acc2:dbSt.acc1;
+  const textC=dbSt.textColor;
+  const goal=dbSt.pointsGoal||1000;
+  const lbl=document.getElementById('db-points-label-text');
+  if(lbl){lbl.textContent=dbSt.pointsLabel.toUpperCase();lbl.style.color=textC;}
+  const num=document.getElementById('db-points-current-display');
+  if(num){num.style.color=acc1;}
+  const pts=document.getElementById('db-pts-label');
+  if(pts){pts.style.color=acc1;}
+  const bar=document.getElementById('db-points-bar-new');
+  if(bar){bar.style.width='0%';bar.style.background='linear-gradient(90deg,'+acc1+','+acc2+')';}
+  const rem=document.getElementById('db-points-remaining-text');
+  if(rem)rem.style.color=textC;
+  const remVal=document.getElementById('db-points-remaining-val');
+  if(remVal)remVal.textContent=goal.toLocaleString();
+  const rewTxt=document.getElementById('db-points-reward-text');
+  if(rewTxt){rewTxt.textContent=dbSt.reward||'récompense';}
+  const ctr=document.getElementById('db-points-counter');
+  if(ctr){ctr.textContent='0 / '+goal.toLocaleString();ctr.style.color=textC;}
+}
+function dbUpdatePoints(val){dbSt.pointsGoal=parseInt(val);document.getElementById('points-goal-badge').textContent=val;dbRenderPoints();}
 function dbRenderStamps(){
   const row=document.getElementById('db-points-row');row.innerHTML='';
   const perRow=dbSt.total/2;
   row.style.display='grid';
   row.style.gridTemplateColumns='repeat('+perRow+',1fr)';
+  row.style.gridTemplateRows='1fr 1fr';
+  row.style.height='24cqw';
   row.style.justifyItems='center';
+  row.style.alignItems='center';
   row.style.width='100%';
   row.style.gap='0';
   const chkColor=contrastColor(dbSt.textColor);
@@ -587,21 +616,25 @@ function dbRenderStamps(){
     else{d.style.border='1.5px solid '+dbSt.textColor+'44';}
     row.appendChild(d);
   }
-  // Sync colors on card elements (aligned with dashboard)
-  const sl=document.getElementById('db-stamp-label-card');if(sl)sl.style.color=dbSt.acc1;
-  const sub=document.querySelector('.db-card-subtitle');if(sub)sub.style.color=dbSt.acc1;
-  const hl=document.querySelector('.db-card-holder-label');if(hl)hl.style.color=dbSt.acc1;
-  const rem=document.getElementById('db-remaining');if(rem){rem.style.color=dbSt.acc1;const pt=rem.closest('.db-card-progress-text');if(pt)pt.style.color=dbSt.acc1;}
-  const rew=document.getElementById('db-reward-text');if(rew)rew.style.color=dbSt.acc1;
-  const cnt=document.getElementById('db-count-current');if(cnt)cnt.style.color=dbSt.textColor;
-  const ctt=document.getElementById('db-count-total');if(ctt){ctt.style.color=dbSt.textColor;ctt.parentElement.style.color=dbSt.textColor;}
+  // Sync ALL text-color elements (aligned with dashboard — textColor controls everything)
+  const t=dbSt.textColor;
+  const sl=document.getElementById('db-stamp-label-card');if(sl)sl.style.color=t;
+  const sub=document.querySelector('.db-card-subtitle');if(sub)sub.style.color=t;
+  const hl=document.querySelector('.db-card-holder-label');if(hl)hl.style.color=t;
+  const hn=document.querySelector('.db-card-holder-name');if(hn)hn.style.color=t;
+  const rem=document.getElementById('db-remaining');if(rem){rem.style.color=t;const pt=rem.closest('.db-card-progress-text');if(pt)pt.style.color=t;}
+  const rew=document.getElementById('db-reward-text');if(rew)rew.style.color=t;
+  const cnt=document.getElementById('db-count-current');if(cnt)cnt.style.color=t;
+  const ctt=document.getElementById('db-count-total');if(ctt){ctt.style.color=t;ctt.parentElement.style.color=t;}
   const card=document.getElementById('db-card-bg');if(card)card.style.boxShadow='0 20px 50px -15px '+dbSt.acc1+'55';
-  const pbf=document.querySelector('.db-points-bar-fill');if(pbf)pbf.style.background=dbSt.textColor;
+  const spb=document.getElementById('db-stamp-progress-bar');
+  if(spb){const pct=dbSt.total>0?Math.round(dbSt.filled/dbSt.total*100):0;spb.style.width=pct+'%';spb.style.background=dbSt.textColor;}
+  dbRenderPoints();
 }
 
 
 function dbInit(){
-  dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'POINTS COLLECTÉS',reward:'',total:6,filled:3,pointsGoal:1000,_imgUrl:null};
+  dbSt={mode:'tampons',bgType:'degrade',c1:'#4A1D96',c2:'#7C3AED',angle:135,soloColor:'#4A1D96',acc1:'#DDD6FE',acc2:'#9B59B6',accentMode:'mono',textColor:'#EDE9FE',font:'Manrope',name:'',stampLabel:'TAMPONS COLLECTÉS',pointsLabel:'POINTS COLLECTÉS',reward:'',total:6,filled:3,pointsGoal:1000,_imgUrl:null};
   // Sync gradient swatches
   dbSyncSwatch('db-swatch-1',dbSt.c1);const h1=document.getElementById('db-hex-1');if(h1)h1.value=dbSt.c1;
   dbSyncSwatch('db-swatch-2',dbSt.c2);const h2=document.getElementById('db-hex-2');if(h2)h2.value=dbSt.c2;
@@ -612,7 +645,7 @@ function dbInit(){
   dbSyncSwatch('db-swatch-text',dbSt.textColor);const ht=document.getElementById('db-hex-text');if(ht)ht.value=dbSt.textColor;
   // Sync angle slider
   const as=document.getElementById('db-angle-slider');if(as)as.value=dbSt.angle;
-  dbApplyCardBg();dbRenderStamps();dbUpdateTextColor(dbSt.textColor);
+  dbApplyCardBg();dbRenderStamps();dbUpdateTextColor(dbSt.textColor);dbRenderPoints();
 }
 
 async function submit(){
@@ -664,7 +697,7 @@ function buildCardDesign(){
   else if(dbSt.bgType==='image'){bgType='image';bgColors=[dbSt.soloColor];}
   const accentColors=dbSt.accentMode==='degrade'?[dbSt.acc1,dbSt.acc2]:[dbSt.acc1];
   return{
-    cardName:dbSt.name,stampLabel:dbSt.stampLabel,stampsRequired:dbSt.total,rewardDescription:dbSt.reward,
+    cardName:dbSt.name,stampLabel:dbSt.stampLabel,pointsLabel:dbSt.pointsLabel,stampsRequired:dbSt.total,rewardDescription:dbSt.reward,
     bgType,bgColors,bgGradientAngle:dbSt.angle,bgImageUrl:null,bgImageOpacity:0.3,
     accentColors,accentAngle:135,textColor:dbSt.textColor,fontFamily:dbSt.font,
     compactPointsSize:68,
@@ -695,16 +728,16 @@ function renderS4Card(){
   el.innerHTML=
     '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'+
       '<div style="flex:1;min-width:0">'+
-        '<h2 style="margin:0;font-weight:900;line-height:1;color:'+textC+';font-size:clamp(16px,5.5cqw,30px);letter-spacing:0.01em;text-transform:uppercase">'+name+'</h2>'+
-        '<p style="margin:4px 0 0;color:'+accFirst+';font-size:clamp(9px,2cqw,12px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase">Carte Fidélité</p>'+
+        '<p style="margin:0 0 4px;color:'+textC+';font-size:clamp(9px,2cqw,12px);font-weight:600;letter-spacing:0.18em;text-transform:uppercase">Carte de fidélité</p>'+
+        '<h2 style="margin:0;font-weight:900;line-height:1.15;color:'+textC+';font-size:'+(name.length>=39?'clamp(11px,3.8cqw,22px)':'clamp(16px,5.5cqw,30px)')+';letter-spacing:0.01em;text-transform:uppercase;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden">'+name+'</h2>'+
       '</div>'+
       '<div style="text-align:right;flex-shrink:0">'+
-        '<p style="margin:0;color:'+accFirst+';font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.18em;text-transform:uppercase">Titulaire</p>'+
+        '<p style="margin:0;color:'+textC+';font-size:clamp(9px,2cqw,12px);font-weight:700;letter-spacing:0.18em;text-transform:uppercase">Titulaire</p>'+
         '<p style="margin:2px 0 0;font-weight:700;color:'+textC+';font-size:clamp(10px,2.4cqw,15px);white-space:nowrap">Pierre Dubois</p>'+
       '</div>'+
     '</div>'+
     '<div style="margin-top:auto">'+
-      '<p style="margin:0 0 8px;color:'+accFirst+';font-size:clamp(6px,1.4cqw,9px);font-weight:700;letter-spacing:0.2em;text-transform:uppercase">'+dbSt.stampLabel.toUpperCase()+'</p>'+
+      '<p style="margin:0 0 8px;color:'+textC+';font-size:clamp(9px,2.2cqw,13px);font-weight:700;letter-spacing:0.2em;text-transform:uppercase">'+(dbSt.mode==='points'?dbSt.pointsLabel:dbSt.stampLabel).toUpperCase()+'</p>'+
       '<div style="display:flex;flex-wrap:wrap;gap:8px">'+stamps+'</div>'+
     '</div>'+
     '<div style="margin-top:4%">'+
@@ -712,8 +745,8 @@ function renderS4Card(){
         '<div style="height:100%;border-radius:999px;width:'+pct+'%;background:'+textC+'"></div>'+
       '</div>'+
       '<div style="display:flex;align-items:center;justify-content:space-between">'+
-        '<p style="margin:0;color:'+accFirst+';font-size:clamp(7px,1.5cqw,9px)">Encore <span style="font-weight:700">'+remaining+'</span> pour votre <span>'+reward+'</span></p>'+
-        '<p style="margin:0;color:'+textC+';font-weight:700;font-size:clamp(9px,1.8cqw,12px)">'+filled+' / '+total+'</p>'+
+        '<p style="margin:0;color:'+textC+';font-size:clamp(12px,2.6cqw,15px)">Encore <span style="font-weight:700">'+remaining+'</span> pour votre <span>'+reward+'</span></p>'+
+        '<p style="margin:0;color:'+textC+';font-weight:700;font-size:clamp(13px,2.8cqw,16px)">'+filled+' / '+total+'</p>'+
       '</div>'+
     '</div>';
   el.style.cssText='background:'+bg+';font-family:\''+font+'\',sans-serif;border-radius:16px;overflow:hidden;width:100%;aspect-ratio:380/240;position:relative;box-shadow:0 24px 60px -16px '+accFirst+'33;container-type:inline-size;display:flex;flex-direction:column;padding:5% 6% 4%;box-sizing:border-box;text-shadow:0 1px 4px rgba(0,0,0,0.25)';
