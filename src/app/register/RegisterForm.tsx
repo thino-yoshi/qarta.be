@@ -172,7 +172,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
     setLoading(true);
 
     const supabase = createClient();
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: form.email,
       password: form.password,
       options: {
@@ -197,9 +197,17 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
     if (signUpError) {
       setError(
         signUpError.message.includes("already registered")
-          ? "Cet email est déjà utilisé. Connectez-vous."
+          ? "Cette adresse email existe déjà. Connectez-vous."
           : `Erreur: ${signUpError.message}`
       );
+      setLoading(false);
+      return;
+    }
+
+    // ⚠️ Supabase anti-énumération : pour un email DÉJÀ inscrit, signUp ne renvoie
+    // pas d'erreur mais un user avec identities=[]. On le détecte pour refuser.
+    if (signUpData.user && (signUpData.user.identities?.length ?? 0) === 0) {
+      setError("Cette adresse email existe déjà. Connectez-vous.");
       setLoading(false);
       return;
     }
