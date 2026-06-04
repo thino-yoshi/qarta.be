@@ -190,6 +190,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
           siret: form.siret,
           num_locations: form.num_locations,
           role: "merchant",
+          user_type: "merchant",
         },
       },
     });
