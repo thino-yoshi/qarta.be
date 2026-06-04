@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { CreditCard, Plus, Minus, ImageIcon } from "lucide-react";
 import LoyaltyCard, { CardDesign, DEFAULT_DESIGN, FONT_OPTIONS, contrastColor } from "@/app/components/LoyaltyCard";
 
@@ -115,6 +115,16 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
   );
   const [imgUploading,  setImgUploading]  = useState(false);
   const [imgError,      setImgError]      = useState<string | null>(null);
+  const [showConvertModal, setShowConvertModal] = useState(false);
+
+  // Échelle de fidélité actuellement sauvegardée (mode + objectif).
+  // Sert à détecter un changement qui impacterait la progression des clients.
+  const scaleOf = (d: Partial<CardDesign>) => {
+    const mode = (d.loyaltyMode as "stamps" | "points") ?? "stamps";
+    const max  = mode === "points" ? Number(d.pointsGoal) : Number(d.stampsRequired);
+    return { mode, max: Number.isFinite(max) ? max : 0 };
+  };
+  const lastSavedScale = useRef(scaleOf(saved ?? DEFAULT_DESIGN));
 
   // Charger la carte créée pendant l'onboarding (si présente)
   useEffect(() => {
@@ -172,16 +182,31 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
     e.target.value = "";
   };
 
-  const handleSave = async () => {
+  // Clic sur « Sauvegarder » : si l'échelle de fidélité change (mode et/ou objectif),
+  // on demande confirmation avant de convertir la progression des clients.
+  const handleSaveClick = () => {
+    const next = scaleOf(design);
+    const prev = lastSavedScale.current;
+    const scaleChanged = next.mode !== prev.mode || next.max !== prev.max;
+    if (scaleChanged && prev.max > 0) {
+      setShowConvertModal(true);
+    } else {
+      doSave(false);
+    }
+  };
+
+  const doSave = async (convertProgress: boolean) => {
+    setShowConvertModal(false);
     setSaving(true); setSaveErr(null);
     try {
       const res = await fetch("/api/loyalty-card/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ card_design: design }),
+        body: JSON.stringify({ card_design: design, convertProgress }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Erreur serveur");
+      lastSavedScale.current = scaleOf(design); // nouvelle référence d'échelle
       setSaveOk(true);
       setTimeout(() => setSaveOk(false), 3000);
     } catch (e: unknown) {
@@ -359,7 +384,7 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
 
         {/* Sauvegarder */}
         {saveErr && <p className="text-[12px] text-red-400 px-1">{saveErr}</p>}
-        <SaveButton saving={saving} saveOk={saveOk} onClick={handleSave} />
+        <SaveButton saving={saving} saveOk={saveOk} onClick={handleSaveClick} />
 
       </div>
 
@@ -447,6 +472,69 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
         </div>
 
       </div>
+
+      {/* ── Modale : confirmation de conversion de progression ── */}
+      {showConvertModal && (() => {
+        const prev = lastSavedScale.current;
+        const next = scaleOf(design);
+        const oldUnit = prev.mode === "points" ? "points" : "tampons";
+        const newUnit = next.mode === "points" ? "points" : "tampons";
+        const exOld = Math.round(prev.max / 2);
+        const exNew = Math.round((exOld / prev.max) * next.max);
+        return (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(2px)" }}
+            onClick={() => setShowConvertModal(false)}
+          >
+            <div
+              className="w-full max-w-md rounded-2xl p-6"
+              style={{ background: "#1a1f2e", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 24px 60px -12px rgba(0,0,0,0.6)" }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span style={{ fontSize: 22 }}>⚠️</span>
+                <h3 className="text-white font-bold text-[16px]">Changement de programme</h3>
+              </div>
+
+              <p className="text-[13px] leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.75)" }}>
+                Vous modifiez votre programme de fidélité
+                {prev.mode !== next.mode
+                  ? <> (passage de <b>{oldUnit}</b> à <b>{newUnit}</b>)</>
+                  : <> (objectif <b>{prev.max}</b> → <b>{next.max}</b>)</>}.
+                Vos clients ont déjà de la progression. Pour ne pas les pénaliser,
+                elle sera <b>convertie proportionnellement</b> (le même pourcentage d'avancement est conservé).
+              </p>
+
+              <div className="rounded-xl px-4 py-3 mb-5" style={{ background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)" }}>
+                <p className="text-[12px]" style={{ color: "#c4b5fd" }}>
+                  <b>Exemple</b> — un client à mi-parcours&nbsp;:
+                </p>
+                <p className="text-[13px] font-semibold text-white mt-1">
+                  {exOld}/{prev.max} {oldUnit} → {exNew}/{next.max} {newUnit}
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowConvertModal(false)}
+                  className="flex-1 py-3 rounded-xl text-[13px] font-semibold transition-all"
+                  style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.1)" }}
+                >
+                  Annuler
+                </button>
+                <button
+                  onClick={() => doSave(true)}
+                  className="flex-1 py-3 rounded-xl text-[13px] font-bold text-white transition-all"
+                  style={{ background: "linear-gradient(135deg,#7c3aed,#4f46e5)", border: "none" }}
+                >
+                  Oui, convertir et sauvegarder
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
     </div>
   );
