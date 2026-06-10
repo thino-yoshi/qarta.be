@@ -145,7 +145,18 @@ export default function Header({ content }: { content?: Record<string, unknown> 
         </div>
 
         {open && (
-          <div className="md:hidden mt-2 glass-crystal rounded-3xl p-5 space-y-1 animate-card-in">
+          <div
+            className="md:hidden mt-2 glass-crystal rounded-3xl p-5 space-y-1 animate-card-in"
+            /* Style inline : non traité par lightningcss, donc le `backdrop-filter`
+               STANDARD (cassé dans le CSS buildé) est préservé. Fond plus opaque
+               en filet de sécurité pour rester lisible même sans flou. */
+            style={{
+              background: "rgba(255,255,255,0.9)",
+              backdropFilter: "blur(20px) saturate(160%)",
+              WebkitBackdropFilter: "blur(20px) saturate(160%)",
+            }}
+          >
+
             {NAV.map((item) => (
               <a
                 key={item.label}
