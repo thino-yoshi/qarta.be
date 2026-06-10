@@ -56,7 +56,9 @@ export default function ScrollBusinesses({ content }: Props) {
           </h2>
           <p className="mt-6 text-white/70 text-[17px] max-w-xl mx-auto leading-relaxed">{subtitle}</p>
 
-          <div className="relative mx-auto mt-14 w-full" style={{ height: 480 }}>
+          {/* La roue a un rayon fixe de 220px (~554px de large) qui débordait/était
+              rognée sous md. On la met à l'échelle sur mobile pour qu'elle tienne. */}
+          <div className="relative mx-auto mt-14 w-full scale-[0.62] sm:scale-[0.82] md:scale-100" style={{ height: 480 }}>
             {/* center logo */}
             <div className="absolute inset-0 flex items-center justify-center">
               <motion.div animate={{ y: [-6, 6, -6] }} transition={{ duration: 4.5, repeat: Infinity, ease: "easeInOut" }} className="relative">
