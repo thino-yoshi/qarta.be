@@ -1,6 +1,5 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import React from "react";
 import QartaPhoneLogin from "./QartaPhoneLogin";
 
 interface Props {
@@ -16,31 +15,8 @@ export default function ScrollImmersion({ content }: Props) {
   const subtitle = (c.subtitle as string) ?? "Plongez dans un écosystème où commerçants et clients interagissent en toute fluidité : une interface unique pour centraliser vos avantages, valoriser l'engagement local et transformer chaque échange en une relation durable.";
   const features = (c.features as string[]) ?? ["Intuitif", "Pratique", "Rapide"];
 
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-
-  const scale = useTransform(scrollYProgress, [0.1, 0.55], [0.85, 1.08]);
-  const rotate = useTransform(scrollYProgress, [0, 1], [-6, 6]);
-  const y = useTransform(scrollYProgress, [0, 0.45, 1], [280, 0, 50]);
-  const x = useTransform(scrollYProgress, [0, 0.45], [-700, 0]);
-
-  // Sur mobile : pas d'animation liée au scroll (le glissement x:-700 déborde
-  // et nécessiterait un clip qui casserait useScroll). Le téléphone reste fixe.
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 1023px)");
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-
   return (
     <section
-      ref={ref}
       data-testid="scroll-immersion"
       className="relative overflow-hidden"
       style={{ background: "#faf8f4" }}
@@ -82,8 +58,9 @@ export default function ScrollImmersion({ content }: Props) {
           </div>
         </div>
 
-        <motion.div
-          style={isMobile ? undefined : { scale, rotate, y, x }}
+        {/* Téléphone statique — pas d'animation liée au scroll (il reste à sa
+            position finale). Garde le léger flottement CSS (animate-float). */}
+        <div
           className="order-1 lg:order-2 flex justify-center"
           data-testid="immersion-phone"
         >
@@ -93,7 +70,7 @@ export default function ScrollImmersion({ content }: Props) {
               <QartaPhoneLogin role="client" />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
