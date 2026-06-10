@@ -318,7 +318,8 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
           <Image src="/logo-qarta.png" width={38} height={38} alt="Qarta" style={{ borderRadius: 9 }} />
           <QartaWordmark color="#ffffff" />
         </Link>
-        <Link href="/login" className="text-[13px] text-white/50 hover:text-white transition-colors font-medium">
+        {/* Masqué sur mobile (déborde/écrase le logo) — même lien en bas de carte. */}
+        <Link href="/login" className="hidden sm:block text-[13px] text-white/50 hover:text-white transition-colors font-medium">
           {loginPrompt}{" "}
           <span className="text-[#4a9eff] font-semibold">Se connecter</span>
         </Link>
