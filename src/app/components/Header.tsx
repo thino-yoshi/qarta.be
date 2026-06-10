@@ -110,7 +110,7 @@ export default function Header({ content }: { content?: Record<string, unknown> 
           <div className="flex items-center gap-2">
             <Link
               href="/login"
-              className={`hidden sm:inline-flex px-4 py-2 rounded-full text-[14px] font-semibold transition-colors ${
+              className={`hidden md:inline-flex px-4 py-2 rounded-full text-[14px] font-semibold transition-colors ${
                 scrolled ? "text-[#0f2044] hover:text-[#2c7be5]" : "text-white hover:text-[#cfe3ff]"
               }`}
               data-testid="header-login-link"
@@ -119,7 +119,7 @@ export default function Header({ content }: { content?: Record<string, unknown> 
             </Link>
             <Link
               href="/register"
-              className="q-btn-primary text-sm py-2 px-4"
+              className="hidden md:inline-flex q-btn-primary text-sm py-2 px-4"
               data-testid="header-register-link"
               style={{ padding: "8px 16px", fontSize: "14px" }}
             >
@@ -173,8 +173,20 @@ export default function Header({ content }: { content?: Record<string, unknown> 
             <Link href={DEMO.href} className="block px-4 py-3 text-[#0f2044] font-semibold rounded-2xl hover:bg-[#0f2044]/8">
               {DEMO.label}
             </Link>
-            <Link href="/login" className="block px-4 py-3 text-[#2c7be5] font-semibold rounded-2xl">
+            <Link
+              href="/login"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-3 text-[#2c7be5] font-semibold rounded-2xl"
+            >
               {loginLabel}
+            </Link>
+            <Link
+              href="/register"
+              onClick={() => setOpen(false)}
+              className="q-btn-primary block text-center px-4 py-3 rounded-2xl mt-2"
+              data-testid="header-mobile-register-link"
+            >
+              {registerLabel}
             </Link>
           </div>
         )}
