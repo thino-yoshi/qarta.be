@@ -41,16 +41,6 @@ html, body {
   height: 100%;
 }
 
-/* Clippe les débordements horizontaux (halos décoratifs, blobs en -right-*)
-   pour éviter le dézoom + bande blanche sur mobile. `clip` n'altère pas le
-   scroll vertical ni les éléments sticky, contrairement à `hidden`.
-   ⚠️ Uniquement sur `html` : le mettre sur `body` (qui a height:100%) en
-   ferait un conteneur de scroll imbriqué → window.scrollY bloqué à 0 et
-   animations framer-motion (useScroll) cassées. */
-html {
-  overflow-x: clip;
-}
-
 body {
   margin: 0;
   background: #faf8f4;
