@@ -108,23 +108,28 @@ export default function Header({ content }: { content?: Record<string, unknown> 
           </nav>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className={`hidden md:inline-flex px-4 py-2 rounded-full text-[14px] font-semibold transition-colors ${
-                scrolled ? "text-[#0f2044] hover:text-[#2c7be5]" : "text-white hover:text-[#cfe3ff]"
-              }`}
-              data-testid="header-login-link"
-            >
-              {loginLabel}
-            </Link>
-            <Link
-              href="/register"
-              className="hidden md:inline-flex q-btn-primary text-sm py-2 px-4"
-              data-testid="header-register-link"
-              style={{ padding: "8px 16px", fontSize: "14px" }}
-            >
-              {registerLabel}
-            </Link>
+            {/* Connexion + Créer un compte : visibles uniquement >= md.
+                Le `hidden` est porté par ce wrapper (et non par les liens),
+                sinon `.q-btn-primary { display:inline-flex }` écraserait le `hidden`. */}
+            <div className="hidden md:flex items-center gap-2">
+              <Link
+                href="/login"
+                className={`px-4 py-2 rounded-full text-[14px] font-semibold transition-colors ${
+                  scrolled ? "text-[#0f2044] hover:text-[#2c7be5]" : "text-white hover:text-[#cfe3ff]"
+                }`}
+                data-testid="header-login-link"
+              >
+                {loginLabel}
+              </Link>
+              <Link
+                href="/register"
+                className="q-btn-primary text-sm py-2 px-4"
+                data-testid="header-register-link"
+                style={{ padding: "8px 16px", fontSize: "14px" }}
+              >
+                {registerLabel}
+              </Link>
+            </div>
 
             <button
               className="md:hidden w-10 h-10 rounded-full flex items-center justify-center"
