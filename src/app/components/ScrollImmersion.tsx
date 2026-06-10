@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import QartaPhoneLogin from "./QartaPhoneLogin";
 
@@ -26,6 +26,17 @@ export default function ScrollImmersion({ content }: Props) {
   const rotate = useTransform(scrollYProgress, [0, 1], [-6, 6]);
   const y = useTransform(scrollYProgress, [0, 0.45, 1], [280, 0, 50]);
   const x = useTransform(scrollYProgress, [0, 0.45], [-700, 0]);
+
+  // Sur mobile : pas d'animation liée au scroll (le glissement x:-700 déborde
+  // et nécessiterait un clip qui casserait useScroll). Le téléphone reste fixe.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   return (
     <section
@@ -72,7 +83,7 @@ export default function ScrollImmersion({ content }: Props) {
         </div>
 
         <motion.div
-          style={{ scale, rotate, y, x }}
+          style={isMobile ? undefined : { scale, rotate, y, x }}
           className="order-1 lg:order-2 flex justify-center"
           data-testid="immersion-phone"
         >

@@ -41,6 +41,16 @@ html, body {
   height: 100%;
 }
 
+/* Mobile uniquement : clippe les débordements horizontaux (halos, blobs, etc.)
+   pour supprimer la bande blanche / le dézoom. Sur desktop on N'Y TOUCHE PAS :
+   un overflow-x sur html ferait détecter html comme conteneur de scroll par
+   framer-motion (useScroll), cassant les animations (mockup chapitre 1).
+   Sur mobile les animations scroll sont neutralisées (voir composants), donc
+   ce clip est sans effet de bord. */
+@media (max-width: 1023px) {
+  html { overflow-x: clip; }
+}
+
 body {
   margin: 0;
   background: #faf8f4;

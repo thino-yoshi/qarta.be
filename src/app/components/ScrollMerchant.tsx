@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Bell, Star, Gift, TrendingUp, Stamp, type LucideIcon } from "lucide-react";
 
@@ -150,6 +150,16 @@ export default function ScrollMerchant({ content }: Props) {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const phoneY      = useTransform(scrollYProgress, [0, 1], [80, -80]);
 
+  // Mobile : animation scroll neutralisée (cohérent avec le clip mobile global).
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   useEffect(() => {
     /* inject keyframes once */
     if (!document.getElementById("qfly-styles")) {
@@ -278,7 +288,7 @@ export default function ScrollMerchant({ content }: Props) {
             {/* overlay for flying cards — above the phone */}
             <div ref={overlayRef} style={{ position:"absolute", inset:0, zIndex:20, pointerEvents:"none" }} />
 
-            <motion.div style={{ y: phoneY }} className="relative z-10">
+            <motion.div style={isMobile ? undefined : { y: phoneY }} className="relative z-10">
               {/* phone shell */}
               <div style={{ width:300, height:640, background:"#0b1322", borderRadius:52, padding:10, border:"1.5px solid rgba(80,140,255,.2)", position:"relative" }}>
                 {/* side buttons */}
