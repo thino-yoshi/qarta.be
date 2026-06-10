@@ -39,9 +39,15 @@
 
 html, body {
   height: 100%;
-  /* Clippe les débordements horizontaux (halos décoratifs, blobs en -right-*)
-     pour éviter le dézoom + bande blanche sur mobile. `clip` n'altère pas
-     le scroll vertical ni les éléments sticky, contrairement à `hidden`. */
+}
+
+/* Clippe les débordements horizontaux (halos décoratifs, blobs en -right-*)
+   pour éviter le dézoom + bande blanche sur mobile. `clip` n'altère pas le
+   scroll vertical ni les éléments sticky, contrairement à `hidden`.
+   ⚠️ Uniquement sur `html` : le mettre sur `body` (qui a height:100%) en
+   ferait un conteneur de scroll imbriqué → window.scrollY bloqué à 0 et
+   animations framer-motion (useScroll) cassées. */
+html {
   overflow-x: clip;
 }
 
@@ -52,7 +58,7 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  /* (pas d'overflow-x ici : géré sur `html` — voir commentaire ci-dessus) */
 }
 
 h1, h2, h3, h4, h5, h6, .font-display {
