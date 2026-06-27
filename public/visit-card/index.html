@@ -83,22 +83,29 @@
     }
 
     /* ── Flip mechanic ── */
-    .flip-card { perspective: 1200px; }
+    .flip-card { perspective: 1200px; -webkit-perspective: 1200px; }
     .flip-inner {
       position: relative;
       width: 268px;
       height: 165px;
       transition: transform 0.7s cubic-bezier(.4,0,.2,1);
+      -webkit-transition: -webkit-transform 0.7s cubic-bezier(.4,0,.2,1);
       transform-style: preserve-3d;
+      -webkit-transform-style: preserve-3d;
     }
-    .flip-inner.flipped { transform: rotateY(180deg); }
+    .flip-inner.flipped { transform: rotateY(180deg); -webkit-transform: rotateY(180deg); }
     .flip-face {
       position: absolute;
       inset: 0;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
     }
-    .flip-back { transform: rotateY(180deg); }
+    .flip-back {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+    }
   </style>
 </head>
 <body>
