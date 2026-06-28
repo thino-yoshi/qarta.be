@@ -335,6 +335,23 @@
       resetInactivity();
     });
 
+    /* ── Swipe to flip ── */
+    let swipeStartX = null, swipeStartY = null;
+    inner.addEventListener('touchstart', (e) => {
+      swipeStartX = e.touches[0].clientX;
+      swipeStartY = e.touches[0].clientY;
+    }, { passive: true });
+    inner.addEventListener('touchend', (e) => {
+      if (swipeStartX === null) return;
+      const dx = e.changedTouches[0].clientX - swipeStartX;
+      const dy = e.changedTouches[0].clientY - swipeStartY;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+        inner.classList.toggle('flipped');
+        resetInactivity();
+      }
+      swipeStartX = null;
+    }, { passive: true });
+
     /* ── QR : démo prochainement ── */
     let demoTimer = null;
     document.getElementById('qr-container').addEventListener('click', (e) => {
