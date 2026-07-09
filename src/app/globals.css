@@ -48,7 +48,7 @@ html, body {
    Sur mobile les animations scroll sont neutralisées (voir composants), donc
    ce clip est sans effet de bord. */
 @media (max-width: 1023px) {
-  html { overflow-x: clip; }
+  html, body { overflow-x: clip; max-width: 100%; }
 }
 
 body {
