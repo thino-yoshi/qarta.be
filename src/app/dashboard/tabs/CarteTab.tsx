@@ -284,6 +284,30 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
               className="q-range w-full"
               style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
           </Field>
+          <Field label={`Points gagnés par euro dépensé : ${design.pointsPerEuro} pts/€`}>
+            <div className="flex items-center gap-3">
+              <input type="range" min={1} max={100} step={1} value={design.pointsPerEuro}
+                onChange={(e) => set("pointsPerEuro", Number(e.target.value))}
+                className="q-range flex-1"
+                style={{ "--q-thumb-color": design.accentColors[0] } as React.CSSProperties} />
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <button
+                  onClick={() => set("pointsPerEuro", Math.max(1, design.pointsPerEuro - 1))}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-white/60 hover:text-white transition-colors"
+                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)" }}
+                ><Minus size={12} /></button>
+                <span className="w-8 text-center text-[13px] font-bold text-white">{design.pointsPerEuro}</span>
+                <button
+                  onClick={() => set("pointsPerEuro", Math.min(100, design.pointsPerEuro + 1))}
+                  className="w-7 h-7 rounded-lg flex items-center justify-center text-white/60 hover:text-white transition-colors"
+                  style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)" }}
+                ><Plus size={12} /></button>
+              </div>
+            </div>
+            <p className="text-[11px] mt-1.5" style={{ color: "rgba(255,255,255,0.35)" }}>
+              Ex : un achat de 15 € rapporte {15 * design.pointsPerEuro} points
+            </p>
+          </Field>
           <Field label={`Taille du chiffre principal : ${design.compactPointsSize}px`}>
             <input type="range" min={28} max={96} value={design.compactPointsSize}
               onChange={(e) => set("compactPointsSize", Number(e.target.value))}

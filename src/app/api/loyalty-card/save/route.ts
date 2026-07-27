@@ -84,6 +84,8 @@ export async function POST(req: NextRequest) {
     merchantUpdate.stamps_required = Math.max(1, Math.round(card_design.stampsRequired));
   if (Number.isFinite(card_design.pointsGoal))
     merchantUpdate.points_required = Math.max(1, Math.round(card_design.pointsGoal));
+  if (Number.isFinite(card_design.pointsPerEuro))
+    merchantUpdate.points_per_euro = Math.max(1, Math.round(card_design.pointsPerEuro));
 
   if (Object.keys(merchantUpdate).length > 0) {
     const { error: mErr } = await admin

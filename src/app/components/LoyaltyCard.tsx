@@ -36,6 +36,7 @@ export interface CardDesign {
   // ── Mode de fidélité ────────────────────────────────────────────
   loyaltyMode:        "stamps" | "points";
   pointsGoal:         number;        // ex: 1000 (points pour récompense)
+  pointsPerEuro:      number;        // ex: 10 (points gagnés par euro dépensé)
 }
 
 export const DEFAULT_DESIGN: CardDesign = {
@@ -57,6 +58,7 @@ export const DEFAULT_DESIGN: CardDesign = {
   // Mode de fidélité
   loyaltyMode:        "stamps",
   pointsGoal:         1000,
+  pointsPerEuro:      10,
 };
 
 /* ─── Helpers ────────────────────────────────────────────────────── */
