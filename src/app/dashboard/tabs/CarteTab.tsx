@@ -108,8 +108,8 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
   const [saving,        setSaving]        = useState(false);
   const [saveOk,        setSaveOk]        = useState(false);
   const [saveErr,       setSaveErr]       = useState<string | null>(null);
-  const [previewStamps] = useState(3);
-  const [previewPoints] = useState(720);
+  const [previewStamps] = useState(0);
+  const [previewPoints] = useState(0);
   const [loyaltyTab,    setLoyaltyTab]    = useState<"stamps" | "points">(
     (saved?.loyaltyMode as "stamps" | "points") ?? "stamps"
   );
