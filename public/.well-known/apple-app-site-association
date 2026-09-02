@@ -1,0 +1,15 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAMID.com.yassin.fidelitypassapp"],
+        "components": [
+          {
+            "/": "/join/*",
+            "comment": "Deep link rejoindre programme fidélité"
+          }
+        ]
+      }
+    ]
+  }
+}
