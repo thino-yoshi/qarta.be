@@ -9,11 +9,23 @@ import AbonnementTab from "./tabs/AbonnementTab";
 
 type Tab = "carte" | "statistiques" | "abonnement";
 
+interface RecentClient { clientId: string; name: string; stamps: number; joinedAt: string; }
+
+interface StatsData {
+  totalClients: number;
+  totalStamps:  number;
+  totalRewards: number;
+  returnRate:   number;
+  dailyData:    number[];
+  recentClients: RecentClient[];
+}
+
 interface Props {
   user: { id: string; email: string };
   merchant: Record<string, unknown>;
   loyaltyCard: Record<string, unknown> | null;
   stripeSuccess?: boolean;
+  stats?: StatsData;
   content?: {
     header?:       Record<string, unknown>;
     cards?:        Record<string, unknown>;
@@ -22,7 +34,7 @@ interface Props {
   };
 }
 
-export default function DashboardShell({ user, merchant, loyaltyCard, stripeSuccess, content }: Props) {
+export default function DashboardShell({ user, merchant, loyaltyCard, stripeSuccess, content, stats }: Props) {
   const h = content?.header ?? {};
   const sidebarTitle  = (h.sidebarTitle  as string) ?? "Ma carte";
   const sidebarStats  = (h.sidebarStats  as string) ?? "Statistiques";
@@ -257,7 +269,7 @@ export default function DashboardShell({ user, merchant, loyaltyCard, stripeSucc
             <CarteTab merchant={merchant} loyaltyCard={loyaltyCard} isActive={isActive} />
           </div>
           <div style={{ display: activeTab === "statistiques" ? "block" : "none" }}>
-            <StatistiquesTab merchant={merchant} isActive={isActive} content={content?.stats} />
+            <StatistiquesTab merchant={merchant} isActive={isActive} content={content?.stats} stats={stats} />
           </div>
           <div style={{ display: activeTab === "abonnement" ? "block" : "none" }}>
             <AbonnementTab merchant={merchant} isActive={isActive} content={content?.subscription} />
