@@ -47,17 +47,17 @@ export default function StatistiquesTab({ isActive, stats, content }: Props) {
   ];
   const returnRate = isActive ? (stats?.returnRate ?? 0) : 0;
 
-  const bars             = isActive && stats?.dailyData?.length ? stats.dailyData : PLACEHOLDER_BARS;
-  const maxBar           = Math.max(...bars, 1);
-  const hasData          = isActive && (stats?.totalClients ?? 0) > 0;
-  const allNearClients   = isActive ? (stats?.nearRewardClients ?? []) : [];
-  const nearClients      = allNearClients.filter(c => c.remaining <= nearThreshold);
-  const nearRewardCount  = nearClients.length;
-
-  const [threshold, setThreshold]   = useState<number>(stats?.inactiveThreshold ?? 30);
-  const [saving, setSaving]         = useState(false);
-  const [saved, setSaved]           = useState(false);
+  const [threshold, setThreshold]         = useState<number>(stats?.inactiveThreshold ?? 30);
+  const [saving, setSaving]               = useState(false);
+  const [saved, setSaved]                 = useState(false);
   const [nearThreshold, setNearThreshold] = useState<number>(2);
+
+  const bars            = isActive && stats?.dailyData?.length ? stats.dailyData : PLACEHOLDER_BARS;
+  const maxBar          = Math.max(...bars, 1);
+  const hasData         = isActive && (stats?.totalClients ?? 0) > 0;
+  const allNearClients  = isActive ? (stats?.nearRewardClients ?? []) : [];
+  const nearClients     = allNearClients.filter(c => c.remaining <= nearThreshold);
+  const nearRewardCount = nearClients.length;
 
   async function saveThreshold() {
     setSaving(true);
