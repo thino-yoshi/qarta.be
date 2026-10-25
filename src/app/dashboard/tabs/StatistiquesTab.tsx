@@ -1,5 +1,5 @@
 "use client";
-import { Users, Stamp, Award, TrendingUp, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 
 interface RecentClient { clientId: string; name: string; stamps: number; joinedAt: string; }
 
@@ -35,12 +35,12 @@ export default function StatistiquesTab({ isActive, stats, content }: Props) {
   const lastClientsTitle = (c.lastClientsTitle as string) ?? "Derniers clients";
   const pendingDataLabel = (c.pendingDataLabel as string) ?? "Données réelles après activation";
 
-  const kpis = [
-    { label: stat1Label, value: stats?.totalClients ?? 0,  icon: Users,      color: "#4a9eff", suffix: "" },
-    { label: stat2Label, value: stats?.totalStamps  ?? 0,  icon: Stamp,      color: "#9b59b6", suffix: "" },
-    { label: stat3Label, value: stats?.totalRewards ?? 0,  icon: Award,      color: "#27ae60", suffix: "" },
-    { label: stat4Label, value: stats?.returnRate   ?? 0,  icon: TrendingUp, color: "#f39c12", suffix: stat4Suffix },
+  const mainStats = [
+    { label: stat1Label, value: isActive ? (stats?.totalClients ?? 0) : 0 },
+    { label: stat2Label, value: isActive ? (stats?.totalStamps  ?? 0) : 0 },
+    { label: stat3Label, value: isActive ? (stats?.totalRewards ?? 0) : 0 },
   ];
+  const returnRate = isActive ? (stats?.returnRate ?? 0) : 0;
 
   const bars    = isActive && stats?.dailyData?.length ? stats.dailyData : PLACEHOLDER_BARS;
   const maxBar  = Math.max(...bars, 1);
@@ -52,21 +52,40 @@ export default function StatistiquesTab({ isActive, stats, content }: Props) {
 
   return (
     <div className="space-y-6">
-      {/* ── KPI cards ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {kpis.map(({ label, value, icon: Icon, color, suffix }) => (
-          <div key={label} className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] text-white/40 uppercase tracking-wider leading-tight">{label}</span>
-              <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: `${color}18` }}>
-                <Icon size={14} color={color} strokeWidth={2} />
-              </div>
+      {/* ── Bloc Vue d'ensemble ── */}
+      <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+        {/* Header */}
+        <div className="px-6 pt-5 pb-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+          <span className="text-[11px] font-semibold tracking-[0.12em] uppercase" style={{ color: "rgba(255,255,255,0.35)" }}>
+            Vue d&apos;ensemble · 30 derniers jours
+          </span>
+        </div>
+
+        {/* 3 stats en colonnes */}
+        <div className="grid grid-cols-3 divide-x" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+          {mainStats.map(({ label, value }) => (
+            <div key={label} className="px-6 py-6 text-center">
+              <p className="text-[36px] font-bold leading-none text-white mb-2">{value}</p>
+              <p className="text-[12px]" style={{ color: "rgba(255,255,255,0.4)" }}>{label}</p>
             </div>
-            <p className="text-[28px] font-bold" style={{ color }}>
-              {isActive ? value : 0}{suffix}
-            </p>
+          ))}
+        </div>
+
+        {/* Taux de retour — barre */}
+        <div className="px-6 py-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[12px]" style={{ color: "rgba(255,255,255,0.4)" }}>{stat4Label}</span>
+            <span className="text-[12px] font-semibold" style={{ color: "rgba(255,255,255,0.6)" }}>
+              {returnRate}{stat4Suffix} reviennent
+            </span>
           </div>
-        ))}
+          <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{ width: `${Math.min(returnRate, 100)}%`, background: "linear-gradient(90deg, #4a9eff, #7b6fff)" }}
+            />
+          </div>
+        </div>
       </div>
 
       {/* ── Graphique ── */}
