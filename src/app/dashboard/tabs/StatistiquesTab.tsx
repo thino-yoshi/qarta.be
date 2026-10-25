@@ -1,5 +1,5 @@
 "use client";
-import { Lock } from "lucide-react";
+import { Users, Lock } from "lucide-react";
 
 interface RecentClient { clientId: string; name: string; stamps: number; joinedAt: string; }
 
