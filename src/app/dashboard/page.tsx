@@ -71,7 +71,7 @@ export default async function DashboardPage(props: {
   const allCards            = allCardsRes.data ?? [];
   const nearRewardCards     = allCards.filter(c => {
     const remaining = stampsRequired - (c.stamps_count ?? 0);
-    return remaining > 0 && remaining <= 2;
+    return remaining > 0 && remaining <= 10;
   });
   const nearRewardCount     = nearRewardCards.length;
 

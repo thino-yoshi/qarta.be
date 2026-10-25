@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Users, Award, Lock } from "lucide-react";
+import { Users, Lock } from "lucide-react";
 
 interface RecentClient  { clientId: string; name: string; stamps: number; joinedAt: string; }
 interface NearClient    { clientId: string; name: string; stamps: number; remaining: number; }
@@ -50,12 +50,14 @@ export default function StatistiquesTab({ isActive, stats, content }: Props) {
   const bars             = isActive && stats?.dailyData?.length ? stats.dailyData : PLACEHOLDER_BARS;
   const maxBar           = Math.max(...bars, 1);
   const hasData          = isActive && (stats?.totalClients ?? 0) > 0;
-  const nearRewardCount  = isActive ? (stats?.nearRewardCount ?? 0) : 0;
-  const nearClients      = isActive ? (stats?.nearRewardClients ?? []) : [];
+  const allNearClients   = isActive ? (stats?.nearRewardClients ?? []) : [];
+  const nearClients      = allNearClients.filter(c => c.remaining <= nearThreshold);
+  const nearRewardCount  = nearClients.length;
 
   const [threshold, setThreshold]   = useState<number>(stats?.inactiveThreshold ?? 30);
   const [saving, setSaving]         = useState(false);
   const [saved, setSaved]           = useState(false);
+  const [nearThreshold, setNearThreshold] = useState<number>(2);
 
   async function saveThreshold() {
     setSaving(true);
@@ -152,14 +154,23 @@ export default function StatistiquesTab({ isActive, stats, content }: Props) {
 
         {/* Clients proches d'une récompense */}
         <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+          <div className="px-5 py-4 border-b flex items-center justify-between gap-3" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
             <div>
               <h3 className="text-[14px] font-semibold">Proches d&apos;une récompense</h3>
-              <p className="text-[11px] text-white/35 mt-0.5">À 2 tampons ou moins</p>
+              <p className="text-[11px] text-white/35 mt-0.5">{nearRewardCount} client{nearRewardCount > 1 ? "s" : ""}</p>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl" style={{ background: "rgba(39,174,96,0.12)" }}>
-              <Award size={12} color="#27ae60" />
-              <span className="text-[12px] font-bold" style={{ color: "#27ae60" }}>{nearRewardCount}</span>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[11px] text-white/35">≤</span>
+              <input
+                type="number"
+                min={1}
+                max={20}
+                value={nearThreshold}
+                onChange={e => setNearThreshold(Math.max(1, Number(e.target.value)))}
+                className="w-12 text-center text-[13px] font-bold rounded-lg px-2 py-1 outline-none"
+                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff" }}
+              />
+              <span className="text-[11px] text-white/35">tampons</span>
             </div>
           </div>
           {nearClients.length > 0 ? (
