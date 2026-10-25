@@ -64,19 +64,42 @@ export default async function DashboardPage(props: {
   }
   const dailyData = Object.values(dailyMap);
 
-  // Derniers clients avec leur nom
-  const clientIds = (recentCardsRes.data ?? []).map(c => c.client_id);
-  const usersRes  = clientIds.length
-    ? await admin.from("users").select("id, name, email").in("id", clientIds)
+  // Derniers clients + clients proches de récompense
+  const stampsRequired      = (merchantResult.data.stamps_required as number) ?? 10;
+  const inactiveThreshold   = (merchantResult.data.inactive_threshold_days as number) ?? 30;
+  const allCardsRes         = await admin.from("loyalty_cards").select("client_id, stamps_count, created_at").eq("merchant_id", merchantId);
+  const allCards            = allCardsRes.data ?? [];
+  const nearRewardCards     = allCards.filter(c => {
+    const remaining = stampsRequired - (c.stamps_count ?? 0);
+    return remaining > 0 && remaining <= 2;
+  });
+  const nearRewardCount     = nearRewardCards.length;
+
+  // Noms de tous les clients nécessaires (derniers + proches récompense)
+  const clientIds           = (recentCardsRes.data ?? []).map(c => c.client_id);
+  const nearClientIds       = nearRewardCards.slice(0, 5).map(c => c.client_id);
+  const allClientIds        = [...new Set([...clientIds, ...nearClientIds])];
+  const usersRes            = allClientIds.length
+    ? await admin.from("users").select("id, name, email").in("id", allClientIds)
     : { data: [] };
   const userMap = Object.fromEntries((usersRes.data ?? []).map(u => [u.id, u]));
+
   const recentClients = (recentCardsRes.data ?? []).map(c => ({
-    clientId:   c.client_id,
-    name:       (userMap[c.client_id] as { name?: string; email?: string })?.name
-                ?? (userMap[c.client_id] as { name?: string; email?: string })?.email
-                ?? "Client",
-    stamps:     c.stamps_count ?? 0,
-    joinedAt:   c.created_at as string,
+    clientId: c.client_id,
+    name:     (userMap[c.client_id] as { name?: string; email?: string })?.name
+              ?? (userMap[c.client_id] as { name?: string; email?: string })?.email
+              ?? "Client",
+    stamps:   c.stamps_count ?? 0,
+    joinedAt: c.created_at as string,
+  }));
+
+  const nearRewardClients = nearRewardCards.slice(0, 5).map(c => ({
+    clientId:  c.client_id,
+    name:      (userMap[c.client_id] as { name?: string; email?: string })?.name
+               ?? (userMap[c.client_id] as { name?: string; email?: string })?.email
+               ?? "Client",
+    stamps:    c.stamps_count ?? 0,
+    remaining: stampsRequired - (c.stamps_count ?? 0),
   }));
 
   return (
@@ -91,7 +114,7 @@ export default async function DashboardPage(props: {
         subscription: content["dashboard-subscription"],
         stats:        content["dashboard-stats"],
       }}
-      stats={{ totalClients, totalStamps, totalRewards, returnRate, dailyData, recentClients }}
+      stats={{ totalClients, totalStamps, totalRewards, returnRate, dailyData, recentClients, nearRewardCount, nearRewardClients, inactiveThreshold }}
     />
   );
 }

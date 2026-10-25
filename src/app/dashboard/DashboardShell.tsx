@@ -9,15 +9,19 @@ import AbonnementTab from "./tabs/AbonnementTab";
 
 type Tab = "carte" | "statistiques" | "abonnement";
 
-interface RecentClient { clientId: string; name: string; stamps: number; joinedAt: string; }
+interface RecentClient  { clientId: string; name: string; stamps: number; joinedAt: string; }
+interface NearClient    { clientId: string; name: string; stamps: number; remaining: number; }
 
 interface StatsData {
-  totalClients: number;
-  totalStamps:  number;
-  totalRewards: number;
-  returnRate:   number;
-  dailyData:    number[];
-  recentClients: RecentClient[];
+  totalClients:      number;
+  totalStamps:       number;
+  totalRewards:      number;
+  returnRate:        number;
+  dailyData:         number[];
+  recentClients:     RecentClient[];
+  nearRewardCount:   number;
+  nearRewardClients: NearClient[];
+  inactiveThreshold: number;
 }
 
 interface Props {

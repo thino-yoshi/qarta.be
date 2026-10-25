@@ -1,15 +1,20 @@
 "use client";
-import { Users, Lock } from "lucide-react";
+import { useState } from "react";
+import { Users, Award, Lock } from "lucide-react";
 
-interface RecentClient { clientId: string; name: string; stamps: number; joinedAt: string; }
+interface RecentClient  { clientId: string; name: string; stamps: number; joinedAt: string; }
+interface NearClient    { clientId: string; name: string; stamps: number; remaining: number; }
 
 interface StatsData {
-  totalClients: number;
-  totalStamps:  number;
-  totalRewards: number;
-  returnRate:   number;
-  dailyData:    number[];
-  recentClients: RecentClient[];
+  totalClients:      number;
+  totalStamps:       number;
+  totalRewards:      number;
+  returnRate:        number;
+  dailyData:         number[];
+  recentClients:     RecentClient[];
+  nearRewardCount:   number;
+  nearRewardClients: NearClient[];
+  inactiveThreshold: number;
 }
 
 const PLACEHOLDER_BARS = [1,3,2,5,2,4,6,3,5,1,7,4,3,6,2,5,4,7,3,5,6,4,3,2,5,4,6,3,2,1];
@@ -42,9 +47,31 @@ export default function StatistiquesTab({ isActive, stats, content }: Props) {
   ];
   const returnRate = isActive ? (stats?.returnRate ?? 0) : 0;
 
-  const bars    = isActive && stats?.dailyData?.length ? stats.dailyData : PLACEHOLDER_BARS;
-  const maxBar  = Math.max(...bars, 1);
-  const hasData = isActive && (stats?.totalClients ?? 0) > 0;
+  const bars             = isActive && stats?.dailyData?.length ? stats.dailyData : PLACEHOLDER_BARS;
+  const maxBar           = Math.max(...bars, 1);
+  const hasData          = isActive && (stats?.totalClients ?? 0) > 0;
+  const nearRewardCount  = isActive ? (stats?.nearRewardCount ?? 0) : 0;
+  const nearClients      = isActive ? (stats?.nearRewardClients ?? []) : [];
+
+  const [threshold, setThreshold]   = useState<number>(stats?.inactiveThreshold ?? 30);
+  const [saving, setSaving]         = useState(false);
+  const [saved, setSaved]           = useState(false);
+
+  async function saveThreshold() {
+    setSaving(true);
+    setSaved(false);
+    try {
+      await fetch("/api/merchant/inactive-threshold", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ days: threshold }),
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setSaving(false);
+    }
+  }
 
   function formatDate(iso: string) {
     return new Date(iso).toLocaleDateString("fr-FR", { day: "numeric", month: "short" });
@@ -117,6 +144,80 @@ export default function StatistiquesTab({ isActive, stats, content }: Props) {
         <div className="flex justify-between mt-2 text-[11px] text-white/20">
           <span>Il y a 30j</span>
           <span>Aujourd&apos;hui</span>
+        </div>
+      </div>
+
+      {/* ── Deux blocs côte à côte ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+        {/* Clients proches d'une récompense */}
+        <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="px-5 py-4 border-b flex items-center justify-between" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+            <div>
+              <h3 className="text-[14px] font-semibold">Proches d&apos;une récompense</h3>
+              <p className="text-[11px] text-white/35 mt-0.5">À 2 tampons ou moins</p>
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl" style={{ background: "rgba(39,174,96,0.12)" }}>
+              <Award size={12} color="#27ae60" />
+              <span className="text-[12px] font-bold" style={{ color: "#27ae60" }}>{nearRewardCount}</span>
+            </div>
+          </div>
+          {nearClients.length > 0 ? (
+            <div className="divide-y" style={{ borderColor: "rgba(255,255,255,0.05)" }}>
+              {nearClients.map(c => (
+                <div key={c.clientId} className="px-5 py-3 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-[12px] font-bold"
+                      style={{ background: "rgba(39,174,96,0.12)", color: "#27ae60" }}>
+                      {c.name.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-[13px] font-medium">{c.name}</span>
+                  </div>
+                  <span className="text-[11px] px-2.5 py-1 rounded-lg font-semibold"
+                    style={{ background: "rgba(39,174,96,0.1)", color: "#27ae60" }}>
+                    encore {c.remaining} tampon{c.remaining > 1 ? "s" : ""}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="py-10 text-center">
+              <p className="text-[13px] text-white/20">{isActive ? "Aucun client proche pour l'instant" : "Données après activation"}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Seuil d'inactivité */}
+        <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
+          <h3 className="text-[14px] font-semibold mb-1">Seuil d&apos;inactivité</h3>
+          <p className="text-[12px] text-white/35 mb-5">
+            Un client est considéré inactif s&apos;il n&apos;a pas visité depuis ce nombre de jours. Utilisé pour les notifications de rappel.
+          </p>
+          <div className="flex items-center gap-3 mb-4">
+            <input
+              type="number"
+              min={1}
+              max={365}
+              value={threshold}
+              onChange={e => setThreshold(Number(e.target.value))}
+              className="w-24 text-center text-[22px] font-bold rounded-xl px-3 py-2 outline-none"
+              style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff" }}
+            />
+            <span className="text-[14px] text-white/40">jours sans visite</span>
+          </div>
+          <button
+            onClick={saveThreshold}
+            disabled={saving}
+            className="w-full py-2.5 rounded-xl text-[13px] font-semibold transition-all"
+            style={{
+              background: saved ? "rgba(39,174,96,0.2)" : "rgba(74,158,255,0.15)",
+              border: `1px solid ${saved ? "rgba(39,174,96,0.3)" : "rgba(74,158,255,0.25)"}`,
+              color: saved ? "#27ae60" : "#4a9eff",
+              opacity: saving ? 0.6 : 1,
+            }}
+          >
+            {saving ? "Enregistrement…" : saved ? "✓ Enregistré" : "Enregistrer"}
+          </button>
         </div>
       </div>
 
