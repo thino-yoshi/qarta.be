@@ -15,13 +15,31 @@ export async function POST(req: NextRequest) {
 
   const data = await res.json();
 
+  let token: string | null = null;
+
   if (!res.ok) {
-    return NextResponse.json({ error: data.detail ?? "Inscription échouée" }, { status: res.status });
+    // Email déjà dans Neon → tenter un login avec les mêmes credentials
+    if (res.status === 400 && data.detail === "Email déjà utilisé") {
+      const loginRes = await fetch(`${RAILWAY}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!loginRes.ok) {
+        return NextResponse.json({ error: "Email déjà utilisé et mot de passe incorrect" }, { status: 409 });
+      }
+      const loginData = await loginRes.json();
+      token = loginData.token;
+    } else {
+      return NextResponse.json({ error: data.detail ?? "Inscription échouée" }, { status: res.status });
+    }
+  } else {
+    token = data.token;
   }
 
   const response = NextResponse.json({ success: true });
 
-  response.cookies.set("qarta_token", data.token, {
+  response.cookies.set("qarta_token", token!, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
