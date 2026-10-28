@@ -1,15 +1,16 @@
-import { createClient } from "@/lib/supabase/server";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
+import { sql } from "@/lib/neon";
 import EditorShell from "./EditorShell";
 
 export const metadata = { title: "Éditeur de pages — QARTA Admin" };
 
 export default async function EditorPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const session = await getSession();
+  if (!session) redirect("/login");
 
-  if (!user) redirect("/login");
-  if (user.email !== process.env.QARTA_ADMIN_EMAIL) redirect("/dashboard");
+  const [userRow] = await sql`SELECT email FROM users WHERE id = ${session.id} LIMIT 1`;
+  if ((userRow?.email as string) !== process.env.QARTA_ADMIN_EMAIL) redirect("/dashboard");
 
-  return <EditorShell userEmail={user.email!} />;
+  return <EditorShell userEmail={(userRow?.email as string) ?? ""} />;
 }

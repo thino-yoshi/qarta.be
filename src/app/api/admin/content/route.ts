@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { getSession } from "@/lib/session";
 import { sql } from "@/lib/neon";
 
 async function checkAdmin(): Promise<boolean> {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  return user?.email === process.env.QARTA_ADMIN_EMAIL;
+  const session = await getSession();
+  if (!session) return false;
+  const [row] = await sql`SELECT email FROM users WHERE id = ${session.id} LIMIT 1`;
+  return (row?.email as string) === process.env.QARTA_ADMIN_EMAIL;
 }
 
 /** GET /api/admin/content?page=home&section=header  → content JSON

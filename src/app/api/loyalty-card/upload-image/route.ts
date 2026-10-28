@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getSession } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
@@ -16,9 +16,9 @@ const PUBLIC_URL = process.env.R2_PUBLIC_URL ?? "";
 const MAX_SIZE   = 5 * 1024 * 1024;
 
 export async function POST(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+  const user = { id: session.id };
 
   const formData = await req.formData();
   const file = formData.get("file") as File | null;

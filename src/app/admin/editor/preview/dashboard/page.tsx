@@ -1,7 +1,8 @@
-import { createClient } from "@/lib/supabase/server";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { getPageContent } from "@/lib/content/getContent";
 import DashboardShell from "@/app/dashboard/DashboardShell";
+import { sql } from "@/lib/neon";
 
 /** Fictional merchant for preview — no real DB data involved. */
 const MOCK_MERCHANT = {
@@ -35,9 +36,10 @@ const MOCK_LOYALTY_CARD = {
 
 /** Preview-only page — shows DashboardShell with mock merchant data. */
 export default async function PreviewDashboardPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user || user.email !== process.env.QARTA_ADMIN_EMAIL) redirect("/login");
+  const session = await getSession();
+  if (!session) redirect("/login");
+  const [row] = await sql`SELECT email FROM users WHERE id = ${session.id} LIMIT 1`;
+  if ((row?.email as string) !== process.env.QARTA_ADMIN_EMAIL) redirect("/login");
 
   const content = await getPageContent("dashboard");
 

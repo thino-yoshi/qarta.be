@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, ArrowLeft, Building2, User, Mail, Lock, Phone, MapPin, Globe, Hash, CheckCircle, AlertCircle, Eye, EyeOff, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import { QartaWordmark } from "../components/QartaLogo";
-import { createClient } from "@/lib/supabase/client";
 import HeroGradient from "../components/HeroGradient";
 
 /* ─── Types de commerce ─── */
@@ -105,7 +104,6 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
 
   /* ─── Form data ─── */
   const [form, setForm] = useState({
@@ -126,17 +124,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
     num_locations: "1 établissement",
   });
 
-  const [otp, setOtp] = useState(["", "", "", "", "", "", "", ""]);
-  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
-
   const set = (key: string, val: string) => setForm((f) => ({ ...f, [key]: val }));
-
-  /* ─── Cooldown renvoi ─── */
-  useEffect(() => {
-    if (resendCooldown <= 0) return;
-    const t = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
-    return () => clearTimeout(t);
-  }, [resendCooldown]);
 
   /* ─── Validation ─── */
   const validateStep1 = () => {
@@ -171,136 +159,54 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
     setError(null);
     setLoading(true);
 
-    const supabase = createClient();
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-      options: {
-        data: {
-          business_name: form.business_name,
-          category: form.category,
-          address: form.address,
-          postal_code: form.postal_code,
-          city: form.city,
-          country: form.country,
-          website: form.website,
-          first_name: form.first_name,
-          last_name: form.last_name,
-          phone: form.phone,
-          siret: form.siret,
-          num_locations: form.num_locations,
-          role: "merchant",
-          user_type: "merchant",
-        },
-      },
+    // 1. Créer le compte via Railway
+    const regRes = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: form.email,
+        password: form.password,
+        first_name: form.first_name,
+        last_name: form.last_name,
+      }),
     });
 
-    if (signUpError) {
-      setError(
-        signUpError.message.includes("already registered")
-          ? "Cette adresse email existe déjà. Connectez-vous."
-          : `Erreur: ${signUpError.message}`
-      );
+    const regData = await regRes.json();
+    if (!regRes.ok) {
+      setError(regData.error ?? "Erreur lors de la création du compte.");
       setLoading(false);
       return;
     }
 
-    // ⚠️ Supabase anti-énumération : pour un email DÉJÀ inscrit, signUp ne renvoie
-    // pas d'erreur mais un user avec identities=[]. On le détecte pour refuser.
-    if (signUpData.user && (signUpData.user.identities?.length ?? 0) === 0) {
-      setError("Cette adresse email existe déjà. Connectez-vous.");
-      setLoading(false);
-      return;
-    }
-
-    setLoading(false);
-    setResendCooldown(60);
-    setStep(3);
-  };
-
-  const handleVerify = async () => {
-    const token = otp.join("");
-    if (token.length < 8) { setError("Entrez le code à 8 chiffres."); return; }
-    setError(null);
-    setLoading(true);
-
-    const supabase = createClient();
-    const { data, error: verifyError } = await supabase.auth.verifyOtp({
-      email: form.email,
-      token,
-      type: "signup",
+    // 2. Créer le profil marchand
+    const merchantRes = await fetch("/api/register-merchant", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        business_name: form.business_name,
+        category: form.category,
+        first_name: form.first_name,
+        last_name: form.last_name,
+        phone: form.phone,
+        address: form.address,
+        postal_code: form.postal_code,
+        city: form.city,
+        country: form.country,
+        website: form.website,
+        siret: form.siret,
+        num_locations: form.num_locations,
+      }),
     });
 
-    if (verifyError || !data.user) {
-      setError("Code incorrect ou expiré. Demandez un nouveau code.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const res = await fetch("/api/register-merchant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          business_name: form.business_name,
-          category: form.category,
-          first_name: form.first_name,
-          last_name: form.last_name,
-          phone: form.phone,
-          address: form.address,
-          postal_code: form.postal_code,
-          city: form.city,
-          country: form.country,
-          website: form.website,
-          siret: form.siret,
-          num_locations: form.num_locations,
-        }),
-      });
-
-      const result = await res.json();
-      if (!res.ok) {
-        setError(`Erreur lors de l'enregistrement : ${result.error}`);
-        setLoading(false);
-        return;
-      }
-    } catch {
-      setError("Erreur réseau. Réessayez.");
+    const merchantData = await merchantRes.json();
+    if (!merchantRes.ok) {
+      setError(`Erreur lors de l'enregistrement : ${merchantData.error}`);
       setLoading(false);
       return;
     }
 
     router.push("/dashboard");
     router.refresh();
-  };
-
-  const resendCode = async () => {
-    if (resendCooldown > 0) return;
-    setLoading(true);
-    const supabase = createClient();
-    await supabase.auth.resend({ type: "signup", email: form.email });
-    setResendCooldown(60);
-    setLoading(false);
-  };
-
-  const handleOtp = (i: number, val: string) => {
-    if (!/^\d*$/.test(val)) return;
-    const next = [...otp];
-    next[i] = val.slice(-1);
-    setOtp(next);
-    if (val && i < 7) otpRefs.current[i + 1]?.focus();
-  };
-
-  const handleOtpKey = (i: number, e: React.KeyboardEvent) => {
-    if (e.key === "Backspace" && !otp[i] && i > 0) otpRefs.current[i - 1]?.focus();
-  };
-
-  const handleOtpPaste = (e: React.ClipboardEvent) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 8);
-    const next = [...otp];
-    text.split("").forEach((ch, i) => { next[i] = ch; });
-    setOtp(next);
-    otpRefs.current[Math.min(text.length, 7)]?.focus();
   };
 
   const inputClass = (hasIcon = true) =>
@@ -332,7 +238,7 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
 
           {/* Steps indicator */}
           <div className="flex items-center gap-2 mb-2">
-            {[1, 2, 3].map((s) => (
+            {[1, 2].map((s) => (
               <React.Fragment key={s}>
                 <div className="flex items-center gap-2">
                   <div
@@ -345,10 +251,10 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
                     {step > s ? <CheckCircle size={14} strokeWidth={2.5} /> : s}
                   </div>
                   <span className={`text-[12px] font-medium hidden sm:block ${step === s ? "text-white" : "text-white/30"}`}>
-                    {s === 1 ? tab1Label : s === 2 ? tab2Label : tab3Label}
+                    {s === 1 ? tab1Label : tab2Label}
                   </span>
                 </div>
-                {s < 3 && <div className="flex-1 h-px" style={{ background: step > s ? "rgba(44,123,229,0.5)" : "rgba(255,255,255,0.08)" }} />}
+                {s < 2 && <div className="flex-1 h-px" style={{ background: step > s ? "rgba(44,123,229,0.5)" : "rgba(255,255,255,0.08)" }} />}
               </React.Fragment>
             ))}
           </div>
@@ -513,64 +419,6 @@ export default function RegisterForm({ content }: { content?: Record<string, unk
                   {loading ? <Spinner /> : <> {step2CTA} <ArrowRight size={16} strokeWidth={2.2} /> </>}
                 </button>
               </div>
-            </div>
-          )}
-
-          {/* ── ÉTAPE 3 ── */}
-          {step === 3 && (
-            <div className="text-center">
-              <div className="inline-flex w-16 h-16 rounded-2xl items-center justify-center mb-5"
-                style={{ background: "rgba(44,123,229,0.15)", border: "1px solid rgba(44,123,229,0.3)" }}>
-                <Mail size={28} color="#4a9eff" strokeWidth={1.8} />
-              </div>
-              <h1 className="text-white text-[22px] font-bold mb-2" style={{ fontFamily: "Manrope, sans-serif", letterSpacing: "-0.02em" }}>
-                {step3Title}
-              </h1>
-              <p className="text-white/45 text-[14px] mb-1">{step3Sub}</p>
-              <p className="text-[#4a9eff] font-semibold text-[14px] mb-8">{form.email}</p>
-
-              {error && <ErrorBox msg={error} />}
-
-              {/* OTP boxes */}
-              <div className="flex gap-2.5 justify-center mb-8" onPaste={handleOtpPaste}>
-                {otp.map((val, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => { otpRefs.current[i] = el; }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={val}
-                    onChange={(e) => handleOtp(i, e.target.value)}
-                    onKeyDown={(e) => handleOtpKey(i, e)}
-                    className="w-12 h-14 text-center text-[22px] font-bold text-white rounded-2xl outline-none transition-all"
-                    style={{
-                      background: val ? "rgba(44,123,229,0.2)" : "rgba(255,255,255,0.06)",
-                      border: val ? "1px solid rgba(44,123,229,0.6)" : "1px solid rgba(255,255,255,0.12)",
-                    }}
-                  />
-                ))}
-              </div>
-
-              <button onClick={handleVerify}
-                disabled={loading || otp.join("").length < 8}
-                className="w-full py-3.5 rounded-2xl font-semibold text-white text-[15px] flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-50"
-                style={{ background: "linear-gradient(135deg,#2c7be5,#4a9eff)", boxShadow: "0 12px 30px -10px rgba(44,123,229,0.6), inset 0 1px 0 rgba(255,255,255,0.2)" }}>
-                {loading ? <Spinner /> : <> {step3CTA} <ArrowRight size={16} strokeWidth={2.2} /> </>}
-              </button>
-
-              <p className="mt-5 text-[13px] text-white/35">
-                {resendHint}{" "}
-                <button onClick={resendCode} disabled={resendCooldown > 0}
-                  className="text-[#4a9eff] font-semibold disabled:text-white/25 transition-colors">
-                  {resendCooldown > 0 ? `${resendLabel} dans ${resendCooldown}s` : resendLabel}
-                </button>
-              </p>
-
-              <button onClick={() => { setStep(2); setError(null); setOtp(["","","","","","","",""]); }}
-                className="mt-3 text-[12px] text-white/25 hover:text-white/50 transition-colors flex items-center gap-1 mx-auto">
-                <ArrowLeft size={12} /> {editEmailLabel}
-              </button>
             </div>
           )}
 

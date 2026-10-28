@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { getSession } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 import { resend, FROM_EMAIL, ADMIN_EMAIL } from "@/lib/resend";
 import { welcomeMerchantEmail } from "@/lib/emails/welcome-merchant";
@@ -6,40 +6,15 @@ import { adminNewMerchantEmail } from "@/lib/emails/admin-new-merchant";
 import { sql } from "@/lib/neon";
 
 export async function POST(req: NextRequest) {
-  /* ── 1. Vérifier que l'utilisateur est bien connecté ── */
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
+  const session = await getSession();
+  if (!session) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
   const body = await req.json();
+  const userId = session.id;
 
-  /* ── 2. Insérer dans Neon ── */
-
-  /* users EN PREMIER */
-  try {
-    await sql`
-      INSERT INTO users (id, email, name, user_type, password_hash)
-      VALUES (
-        ${user.id},
-        ${user.email ?? ""},
-        ${`${body.first_name} ${body.last_name}`.trim()},
-        'merchant',
-        'SUPABASE_AUTH'
-      )
-      ON CONFLICT (id) DO UPDATE SET
-        email     = EXCLUDED.email,
-        name      = EXCLUDED.name,
-        user_type = 'merchant'
-    `;
-  } catch (err) {
-    console.error("[register-merchant] users error:", err);
-    return NextResponse.json({ error: String(err) }, { status: 500 });
-  }
-
-  /* merchants ENSUITE */
+  // Insérer dans merchants (users déjà créé par Railway /auth/admin/create-merchant)
   try {
     await sql`
       INSERT INTO merchants (
@@ -49,7 +24,7 @@ export async function POST(req: NextRequest) {
         website, siret, num_locations, subscription_status
       )
       VALUES (
-        ${user.id},
+        ${userId},
         ${body.business_name},
         ${body.category},
         ${body.first_name},
@@ -83,37 +58,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 
-  /* ── 3. Emails via Resend (en parallèle, non bloquants) ── */
-  const welcome = welcomeMerchantEmail({
-    firstName: body.first_name,
-    businessName: body.business_name,
-  });
+  // Emails via Resend — récupérer l'email depuis Neon
+  try {
+    const [userRow] = await sql`SELECT email FROM users WHERE id = ${userId} LIMIT 1`;
+    const userEmail = (userRow?.email as string) ?? "";
 
-  const adminNotif = adminNewMerchantEmail({
-    firstName: body.first_name,
-    lastName: body.last_name,
-    businessName: body.business_name,
-    category: body.category,
-    email: user.email!,
-    phone: body.phone,
-    city: body.city,
-    numLocations: body.num_locations,
-  });
-
-  await Promise.allSettled([
-    resend.emails.send({
-      from: FROM_EMAIL,
-      to: user.email!,
-      subject: welcome.subject,
-      html: welcome.html,
-    }),
-    resend.emails.send({
-      from: FROM_EMAIL,
-      to: ADMIN_EMAIL,
-      subject: adminNotif.subject,
-      html: adminNotif.html,
-    }),
-  ]);
+    if (userEmail) {
+      const welcome = welcomeMerchantEmail({
+        firstName: body.first_name,
+        businessName: body.business_name,
+      });
+      const adminNotif = adminNewMerchantEmail({
+        firstName: body.first_name,
+        lastName: body.last_name,
+        businessName: body.business_name,
+        category: body.category,
+        email: userEmail,
+        phone: body.phone,
+        city: body.city,
+        numLocations: body.num_locations,
+      });
+      await Promise.allSettled([
+        resend.emails.send({ from: FROM_EMAIL, to: userEmail, subject: welcome.subject, html: welcome.html }),
+        resend.emails.send({ from: FROM_EMAIL, to: ADMIN_EMAIL, subject: adminNotif.subject, html: adminNotif.html }),
+      ]);
+    }
+  } catch (err) {
+    console.error("[register-merchant] email error:", err);
+  }
 
   return NextResponse.json({ success: true });
 }

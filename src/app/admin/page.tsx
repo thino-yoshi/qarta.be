@@ -1,42 +1,40 @@
-import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { Users, Store, CreditCard, TrendingUp, LogOut, Settings, ShieldCheck, LayoutPanelLeft } from "lucide-react";
 import { QartaLogo, QartaWordmark } from "../components/QartaLogo";
+import { sql } from "@/lib/neon";
 
 async function setMerchantStatus(formData: FormData) {
   "use server";
-  const id = formData.get("id") as string;
+  const id        = formData.get("id")         as string;
   const newStatus = formData.get("new_status") as string;
-  const admin = createAdminClient();
-  await admin.from("merchants").update({ subscription_status: newStatus }).eq("id", id);
+  await sql`UPDATE merchants SET subscription_status = ${newStatus} WHERE id = ${id}`;
   revalidatePath("/admin");
 }
 
 export default async function AdminPage() {
-  /* ── Auth vérification ── */
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  const session = await getSession();
+  if (!session) redirect("/login");
+
+  const [userRow] = await sql`SELECT email FROM users WHERE id = ${session.id} LIMIT 1`;
   const adminEmail = process.env.QARTA_ADMIN_EMAIL;
-  if (user.email !== adminEmail) redirect("/dashboard");
+  if (userRow?.email !== adminEmail) redirect("/dashboard");
 
-  /* ── Données via service role ── */
-  const admin = createAdminClient();
+  const userEmail = (userRow?.email as string) ?? "";
 
-  const { data: merchants } = await admin
-    .from("merchants")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const merchants = await sql`
+    SELECT m.*, u.email
+    FROM merchants m
+    LEFT JOIN users u ON u.id = m.id
+    ORDER BY m.created_at DESC
+  `;
 
-  const total = merchants?.length ?? 0;
-  const active = merchants?.filter((m) => m.subscription_status === "active").length ?? 0;
-  const pending = merchants?.filter((m) => m.subscription_status === "pending").length ?? 0;
-
-  const now = new Date();
-  const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-  const newThisMonth = merchants?.filter((m) => m.created_at >= firstOfMonth).length ?? 0;
+  const total        = merchants.length;
+  const active       = merchants.filter((m) => m.subscription_status === "active").length;
+  const pending      = merchants.filter((m) => m.subscription_status === "pending").length;
+  const firstOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
+  const newThisMonth = merchants.filter((m) => (m.created_at as string) >= firstOfMonth).length;
 
   return (
     <div className="min-h-screen" style={{ background: "#0b1220", fontFamily: "Manrope, sans-serif", color: "#fff" }}>
@@ -58,7 +56,7 @@ export default async function AdminPage() {
           </div>
         </div>
         <div className="flex items-center gap-4">
-          <span className="text-[13px] text-white/40">{user.email}</span>
+          <span className="text-[13px] text-white/40">{userEmail}</span>
           <a
             href="/admin/editor"
             className="flex items-center gap-2 text-[13px] font-semibold px-4 py-2 rounded-xl transition-all"
@@ -76,20 +74,17 @@ export default async function AdminPage() {
       </header>
 
       <div className="relative z-10 max-w-7xl mx-auto px-8 py-10">
-
-        {/* Titre */}
         <div className="mb-10">
           <p className="text-[12px] text-white/35 uppercase tracking-widest mb-2">Tableau de bord</p>
           <h1 className="text-[28px] font-bold" style={{ letterSpacing: "-0.02em" }}>Espace propriétaire QARTA</h1>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
           {[
-            { label: "Commerçants total", value: total, icon: Store, color: "#4a9eff" },
-            { label: "Abonnements actifs", value: active, icon: CreditCard, color: "#27ae60" },
-            { label: "En attente", value: pending, icon: Settings, color: "#f39c12" },
-            { label: "Nouveaux ce mois", value: newThisMonth, icon: TrendingUp, color: "#9b59b6" },
+            { label: "Commerçants total", value: total,        icon: Store,      color: "#4a9eff" },
+            { label: "Abonnements actifs", value: active,      icon: CreditCard, color: "#27ae60" },
+            { label: "En attente",          value: pending,     icon: Settings,   color: "#f39c12" },
+            { label: "Nouveaux ce mois",    value: newThisMonth, icon: TrendingUp, color: "#9b59b6" },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
               <div className="flex items-center justify-between mb-4">
@@ -103,7 +98,6 @@ export default async function AdminPage() {
           ))}
         </div>
 
-        {/* Table commerçants */}
         <div className="rounded-2xl overflow-hidden" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
           <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
             <div className="flex items-center gap-2">
@@ -126,35 +120,33 @@ export default async function AdminPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {merchants?.map((m, i) => (
-                    <tr key={m.id}
+                  {merchants.map((m, i) => (
+                    <tr key={m.id as string}
                       style={{ borderBottom: i < total - 1 ? "1px solid rgba(255,255,255,0.04)" : "none" }}
                       className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-6 py-4 font-semibold text-white">{m.business_name || "—"}</td>
-                      <td className="px-6 py-4 text-white/70">{m.first_name} {m.last_name}</td>
-                      <td className="px-6 py-4 text-white/50">{m.email}</td>
-                      <td className="px-6 py-4 text-white/50">{m.city || "—"}</td>
-                      <td className="px-6 py-4 text-white/50">{m.category || "—"}</td>
-                      <td className="px-6 py-4">
-                        <StatusBadge status={m.subscription_status} />
-                      </td>
+                      <td className="px-6 py-4 font-semibold text-white">{(m.business_name as string) || "—"}</td>
+                      <td className="px-6 py-4 text-white/70">{m.first_name as string} {m.last_name as string}</td>
+                      <td className="px-6 py-4 text-white/50">{(m.email as string) || "—"}</td>
+                      <td className="px-6 py-4 text-white/50">{(m.city as string) || "—"}</td>
+                      <td className="px-6 py-4 text-white/50">{(m.category as string) || "—"}</td>
+                      <td className="px-6 py-4"><StatusBadge status={m.subscription_status as string} /></td>
                       <td className="px-6 py-4 text-white/35">
-                        {m.created_at ? new Date(m.created_at).toLocaleDateString("fr-BE") : "—"}
+                        {m.created_at ? new Date(m.created_at as string).toLocaleDateString("fr-BE") : "—"}
                       </td>
                       <td className="px-6 py-4">
                         <form action={setMerchantStatus}>
-                          <input type="hidden" name="id" value={m.id} />
-                          <input type="hidden" name="new_status" value={m.subscription_status === "active" ? "pending" : "active"} />
+                          <input type="hidden" name="id" value={m.id as string} />
+                          <input type="hidden" name="new_status" value={(m.subscription_status as string) === "active" ? "pending" : "active"} />
                           <button
                             type="submit"
                             className="px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all hover:scale-105 whitespace-nowrap"
                             style={
-                              m.subscription_status === "active"
+                              (m.subscription_status as string) === "active"
                                 ? { background: "rgba(231,76,60,0.12)", border: "1px solid rgba(231,76,60,0.3)", color: "#e74c3c" }
                                 : { background: "rgba(39,174,96,0.12)", border: "1px solid rgba(39,174,96,0.3)", color: "#27ae60" }
                             }
                           >
-                            {m.subscription_status === "active" ? "✕ Désactiver" : "✓ Activer"}
+                            {(m.subscription_status as string) === "active" ? "✕ Désactiver" : "✓ Activer"}
                           </button>
                         </form>
                       </td>

@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { QartaWordmark } from "../components/QartaLogo";
-import { createClient } from "@/lib/supabase/client";
 import dynamic from "next/dynamic";
 const HeroGradient = dynamic(() => import("../components/HeroGradient"), { ssr: false });
 
@@ -41,15 +40,16 @@ export default function LoginForm({ content }: { content?: Record<string, unknow
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const res = await fetch("/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-    if (error) {
-      setError(
-        error.message === "Invalid login credentials"
-          ? "Email ou mot de passe incorrect."
-          : "Une erreur est survenue. Réessayez."
-      );
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error ?? "Une erreur est survenue. Réessayez.");
       setLoading(false);
       return;
     }
