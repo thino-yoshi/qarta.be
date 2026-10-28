@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     if (oldMax > 0 && newMax > 0) {
       const cards = await sql`SELECT id, stamps_count FROM loyalty_cards WHERE merchant_id = ${user.id}`;
       if (cards.length > 0) {
-        await Promise.all(cards.map((c: { id: string; stamps_count: number }) => {
+        await Promise.all((cards as { id: string; stamps_count: number }[]).map((c) => {
           const ratio     = Math.min(1, (Number(c.stamps_count) || 0) / oldMax);
           const converted = Math.min(newMax, Math.max(0, Math.round(ratio * newMax)));
           return sql`UPDATE loyalty_cards SET stamps_count = ${converted} WHERE id = ${c.id}`;
