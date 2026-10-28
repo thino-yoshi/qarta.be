@@ -1,6 +1,6 @@
-import { createClient }      from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+import { sql } from "@/lib/neon";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -12,11 +12,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Valeur invalide (1–365 jours)" }, { status: 400 });
   }
 
-  const admin = createAdminClient();
-  const { error } = await admin.from("merchants")
-    .update({ inactive_threshold_days: days })
-    .eq("id", user.id);
+  try {
+    await sql`UPDATE merchants SET inactive_threshold_days = ${days} WHERE id = ${user.id}`;
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true });
 }

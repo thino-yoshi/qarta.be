@@ -1,9 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 import { NextRequest, NextResponse } from "next/server";
 import { resend, FROM_EMAIL, ADMIN_EMAIL } from "@/lib/resend";
 import { welcomeMerchantEmail } from "@/lib/emails/welcome-merchant";
 import { adminNewMerchantEmail } from "@/lib/emails/admin-new-merchant";
+import { sql } from "@/lib/neon";
 
 export async function POST(req: NextRequest) {
   /* ── 1. Vérifier que l'utilisateur est bien connecté ── */
@@ -16,44 +16,71 @@ export async function POST(req: NextRequest) {
 
   const body = await req.json();
 
-  /* ── 2. Insérer via service role ── */
-  const admin = createAdminClient();
+  /* ── 2. Insérer dans Neon ── */
 
   /* users EN PREMIER */
-  const { error: userError } = await admin.from("users").upsert({
-    id: user.id,
-    email: user.email,
-    name: `${body.first_name} ${body.last_name}`,
-    user_type: "merchant",
-  }, { onConflict: "email" });
-
-  if (userError) {
-    console.error("[register-merchant] users error:", userError);
-    return NextResponse.json({ error: userError.message }, { status: 500 });
+  try {
+    await sql`
+      INSERT INTO users (id, email, name, user_type, password_hash)
+      VALUES (
+        ${user.id},
+        ${user.email ?? ""},
+        ${`${body.first_name} ${body.last_name}`.trim()},
+        'merchant',
+        'SUPABASE_AUTH'
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        email     = EXCLUDED.email,
+        name      = EXCLUDED.name,
+        user_type = 'merchant'
+    `;
+  } catch (err) {
+    console.error("[register-merchant] users error:", err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 
   /* merchants ENSUITE */
-  const { error: merchantError } = await admin.from("merchants").upsert({
-    id: user.id,
-    business_name: body.business_name,
-    category: body.category,
-    email: user.email,
-    first_name: body.first_name,
-    last_name: body.last_name,
-    phone: body.phone,
-    address: body.address,
-    postal_code: body.postal_code,
-    city: body.city,
-    country: body.country,
-    website: body.website || null,
-    siret: body.siret || null,
-    num_locations: body.num_locations,
-    subscription_status: "pending",
-  });
-
-  if (merchantError) {
-    console.error("[register-merchant] merchants error:", merchantError);
-    return NextResponse.json({ error: merchantError.message }, { status: 500 });
+  try {
+    await sql`
+      INSERT INTO merchants (
+        id, business_name, category,
+        first_name, last_name, phone,
+        address, postal_code, city, country,
+        website, siret, num_locations, subscription_status
+      )
+      VALUES (
+        ${user.id},
+        ${body.business_name},
+        ${body.category},
+        ${body.first_name},
+        ${body.last_name},
+        ${body.phone},
+        ${body.address},
+        ${body.postal_code},
+        ${body.city},
+        ${body.country},
+        ${body.website || null},
+        ${body.siret || null},
+        ${body.num_locations},
+        'pending'
+      )
+      ON CONFLICT (id) DO UPDATE SET
+        business_name     = EXCLUDED.business_name,
+        category          = EXCLUDED.category,
+        first_name        = EXCLUDED.first_name,
+        last_name         = EXCLUDED.last_name,
+        phone             = EXCLUDED.phone,
+        address           = EXCLUDED.address,
+        postal_code       = EXCLUDED.postal_code,
+        city              = EXCLUDED.city,
+        country           = EXCLUDED.country,
+        website           = EXCLUDED.website,
+        siret             = EXCLUDED.siret,
+        num_locations     = EXCLUDED.num_locations
+    `;
+  } catch (err) {
+    console.error("[register-merchant] merchants error:", err);
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 
   /* ── 3. Emails via Resend (en parallèle, non bloquants) ── */

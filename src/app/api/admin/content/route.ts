@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { sql } from "@/lib/neon";
 
 async function checkAdmin(): Promise<boolean> {
   const supabase = await createClient();
@@ -19,28 +19,15 @@ export async function GET(req: NextRequest) {
 
   if (!page) return NextResponse.json({ error: "Missing page param" }, { status: 400 });
 
-  const db = createAdminClient();
-
   if (section) {
-    const { data, error } = await db
-      .from("page_content")
-      .select("content")
-      .eq("page", page)
-      .eq("section", section)
-      .maybeSingle();
-
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-    return NextResponse.json(data?.content ?? null);
+    const [row] = await sql`
+      SELECT content FROM page_content WHERE page = ${page} AND section = ${section} LIMIT 1
+    `;
+    return NextResponse.json(row?.content ?? null);
   }
 
-  const { data, error } = await db
-    .from("page_content")
-    .select("section, content")
-    .eq("page", page);
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-  const map = Object.fromEntries((data ?? []).map(r => [r.section, r.content]));
+  const rows = await sql`SELECT section, content FROM page_content WHERE page = ${page}`;
+  const map = Object.fromEntries(rows.map((r: { section: string; content: unknown }) => [r.section, r.content]));
   return NextResponse.json(map);
 }
 
@@ -55,14 +42,17 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "Missing fields: page, section, content" }, { status: 400 });
   }
 
-  const db = createAdminClient();
-  const { error } = await db
-    .from("page_content")
-    .upsert(
-      { page, section, content, updated_at: new Date().toISOString() },
-      { onConflict: "page,section" }
-    );
+  try {
+    await sql`
+      INSERT INTO page_content (page, section, content, updated_at)
+      VALUES (${page}, ${section}, ${JSON.stringify(content)}, NOW())
+      ON CONFLICT (page, section) DO UPDATE SET
+        content    = EXCLUDED.content,
+        updated_at = EXCLUDED.updated_at
+    `;
+  } catch (err) {
+    return NextResponse.json({ error: String(err) }, { status: 500 });
+  }
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }
