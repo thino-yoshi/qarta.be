@@ -14,6 +14,9 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const userId = session.id;
 
+  // "1 établissement" → 1, "2 à 5 établissements" → 2, "5+ établissements" → 5
+  const numLocations = parseInt(String(body.num_locations ?? "1"), 10) || 1;
+
   // Insérer dans merchants (users déjà créé par Railway /auth/admin/create-merchant)
   try {
     await sql`
@@ -36,7 +39,7 @@ export async function POST(req: NextRequest) {
         ${body.country},
         ${body.website || null},
         ${body.siret || null},
-        ${body.num_locations},
+        ${numLocations},
         'pending'
       )
       ON CONFLICT (id) DO UPDATE SET
@@ -76,7 +79,7 @@ export async function POST(req: NextRequest) {
         email: userEmail,
         phone: body.phone,
         city: body.city,
-        numLocations: body.num_locations,
+        numLocations: numLocations,
       });
       await Promise.allSettled([
         resend.emails.send({ from: FROM_EMAIL, to: userEmail, subject: welcome.subject, html: welcome.html }),
