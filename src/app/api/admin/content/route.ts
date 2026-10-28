@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
   }
 
   const rows = await sql`SELECT section, content FROM page_content WHERE page = ${page}`;
-  const map = Object.fromEntries(rows.map((r: { section: string; content: unknown }) => [r.section, r.content]));
+  const map = Object.fromEntries((rows as { section: string; content: unknown }[]).map(r => [r.section, r.content]));
   return NextResponse.json(map);
 }
 
