@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carte Physique — Qarta (Impression)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Sora', sans-serif;
+      background: #0d0d0d;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .wrapper {
+      display: flex;
+      align-items: flex-start;
+      gap: 40px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+    }
+    .card {
+      width: 220px;
+      height: 220px;
+      border-radius: 18px;
+      overflow: hidden;
+      position: relative;
+    }
+    .grid-bg {
+      position: absolute; inset: 0; border-radius: 18px;
+      background-image:
+        linear-gradient(rgba(74,158,255,.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(74,158,255,.12) 1px, transparent 1px);
+      background-size: 18px 18px;
+      pointer-events: none;
+    }
+    @media print {
+      body { background: #0d0d0d; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+
+    <!-- ══ RECTO ══ -->
+    <div class="side">
+      <span class="label">Recto</span>
+      <div class="card" style="
+        background: linear-gradient(145deg,#0e1a35,#172a52);
+        border: 1px solid rgba(74,158,255,.2);
+        box-shadow: 0 16px 48px rgba(0,0,0,.6);
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: space-between;
+        padding: 18px 16px 14px;
+      ">
+        <div class="grid-bg"></div>
+
+        <!-- Logo + Qarta -->
+        <div style="display:flex; align-items:center; gap:6px; position:relative; z-index:1;">
+          <img src="qarta-logo.png" width="22" height="22" style="
+            display:block; border-radius:28%; mix-blend-mode:screen;
+            filter: drop-shadow(0 0 6px rgba(74,158,255,.9)) drop-shadow(0 0 12px rgba(44,123,229,.5));
+            pointer-events:none; user-select:none;">
+          <span style="font-size:12px; font-weight:800; color:#fff;">Qarta</span>
+        </div>
+
+        <!-- QR code -->
+        <div style="
+          background:#fff; border-radius:12px; padding:2px;
+          width:116px; height:116px;
+          box-shadow:0 4px 16px rgba(0,0,0,.3);
+          position:relative; z-index:1;
+          display:flex; align-items:center; justify-content:center;
+          overflow:hidden;
+        ">
+          <img src="qr-qarta.png" width="126" height="126" style="display:block;">
+        </div>
+
+        <!-- SCANNE-MOI -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:5px; position:relative; z-index:1;">
+          <div style="width:28px; height:1px; background:linear-gradient(90deg,transparent,rgba(74,158,255,.7),transparent);"></div>
+          <div style="
+            font-size:11px; font-weight:800; letter-spacing:.18em;
+            color:#4a9eff; text-transform:uppercase;
+          ">SCANNE-MOI</div>
+          <div style="width:28px; height:1px; background:linear-gradient(90deg,transparent,rgba(74,158,255,.7),transparent);"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ══ /RECTO ══ -->
+
+    <!-- ══ VERSO ══ -->
+    <div class="side">
+      <span class="label">Verso</span>
+      <div class="card" style="
+        background: linear-gradient(145deg,#172a52,#0e1a35);
+        border: 1px solid rgba(74,158,255,.2);
+        box-shadow: 0 16px 48px rgba(0,0,0,.6);
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; gap: 14px;
+      ">
+        <div class="grid-bg"></div>
+
+        <!-- 3 stripes bottom-left -->
+        <div style="position:absolute; bottom:18px; left:16px; display:flex; flex-direction:column; gap:5px; z-index:1;">
+          <div style="width:32px; height:2.5px; border-radius:99px; background:#4a9eff;"></div>
+          <div style="width:24px; height:2.5px; border-radius:99px; background:rgba(255,255,255,.3);"></div>
+          <div style="width:16px; height:2.5px; border-radius:99px; background:rgba(255,255,255,.15);"></div>
+        </div>
+
+        <!-- Big logo + Qarta -->
+        <div style="display:flex; align-items:center; gap:10px; position:relative; z-index:1;">
+          <img src="qarta-logo.png" width="44" height="44" style="
+            display:block; border-radius:28%; mix-blend-mode:screen;
+            filter: drop-shadow(0 0 13px rgba(74,158,255,.9)) drop-shadow(0 0 26px rgba(44,123,229,.5));
+            pointer-events:none; user-select:none;">
+          <span style="font-size:28px; font-weight:800; color:#fff;">Qarta</span>
+        </div>
+
+        <!-- Separator -->
+        <div style="width:50px; height:1px; background:rgba(74,158,255,.2); position:relative; z-index:1;"></div>
+
+        <!-- Tagline -->
+        <span style="
+          font-size:10.5px; font-weight:700; line-height:1.65;
+          letter-spacing:.01em; font-style:italic;
+          text-align:center; position:relative; z-index:1;
+        ">
+          <span style="color:#4a9eff;">votre commerce</span>
+          <span style="color:#fff;"> mérite<br>une fidélité qui se démarque</span>
+        </span>
+      </div>
+    </div>
+    <!-- ══ /VERSO ══ -->
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Carte Physique Qarta — Tailles réelles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    @page { size: A4 portrait; margin: 10mm; }
+    body {
+      font-family: 'Sora', sans-serif;
+      background: #fff;
+      width: 190mm;
+      margin: 0 auto;
+      padding: 6mm;
+    }
+    .rows { display: flex; flex-direction: column; gap: 5mm; }
+    .row  { display: flex; flex-direction: row; align-items: flex-start; gap: 4mm; flex-wrap: wrap; }
+    .pair { display: flex; flex-direction: row; align-items: flex-start; gap: 1.5mm; }
+    .card { position: relative; overflow: hidden; flex-shrink: 0; border: 0.3mm solid rgba(74,158,255,.3); }
+    .grid-bg {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(74,158,255,.12) 0.15mm, transparent 0.15mm),
+        linear-gradient(90deg, rgba(74,158,255,.12) 0.15mm, transparent 0.15mm);
+    }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <div class="rows" id="rows"></div>
+
+  <script>
+    // ── Valeurs originales (carte 220×220px de référence) ──
+    const BASE       = 220;   // px
+    const O = {
+      padTop:    18,   padSide:   16,   padBot:    14,
+      logoSm:    22,   logoLg:    44,
+      qrBox:    116,   qrImg:    126,   qrBoxBr:   12,
+      fontSm:    12,   fontLg:    28,
+      fontScanne:11,   fontTag:   10.5,
+      gapSm:      6,   gapLg:     10,   gapVerso:  14,
+      strW1:     32,   strW2:     24,   strW3:     16,
+      strH:     2.5,   strBot:    18,   strLeft:   16,  strGap: 5,
+      sepW:      50,   lineW:     28,   lineH:    0.5,
+      gridSize:  18,   br:        18,
+      padTagSide:16,   scannGap:   5,
+    };
+
+    // Scale toutes les valeurs de O pour une carte de mm×mm (en mm CSS)
+    function sc(mm) {
+      const f = mm / BASE;
+      const r = {};
+      for (const k in O) r[k] = +(O[k] * f).toFixed(4);
+      return r;
+    }
+
+    function makeRecto(mm) {
+      const v = sc(mm);
+      return `
+        <div class="card" style="
+          width:${mm}mm; height:${mm}mm; border-radius:${v.br}mm;
+          background:linear-gradient(145deg,#0e1a35,#172a52);
+          display:flex; flex-direction:column; align-items:center;
+          justify-content:space-between;
+          padding:${v.padTop}mm ${v.padSide}mm ${v.padBot}mm;
+        ">
+          <div class="grid-bg" style="border-radius:${v.br}mm; background-size:${v.gridSize}mm ${v.gridSize}mm;"></div>
+
+          <div style="display:flex;align-items:center;gap:${v.gapSm}mm;position:relative;z-index:1;">
+            <img src="qarta-logo.png" style="width:${v.logoSm}mm;height:${v.logoSm}mm;display:block;border-radius:28%;mix-blend-mode:screen;
+              filter:drop-shadow(0 0 ${+(v.logoSm*.3).toFixed(2)}mm rgba(74,158,255,.9)) drop-shadow(0 0 ${+(v.logoSm*.6).toFixed(2)}mm rgba(44,123,229,.5));">
+            <span style="font-size:${v.fontSm}mm;font-weight:800;color:#fff;line-height:1;">Qarta</span>
+          </div>
+
+          <div style="
+            background:#fff; border-radius:${v.qrBoxBr}mm;
+            width:${v.qrBox}mm; height:${v.qrBox}mm;
+            display:flex; align-items:center; justify-content:center;
+            overflow:hidden; flex-shrink:0; position:relative; z-index:1;
+          ">
+            <img src="qr-qarta.png" style="width:${v.qrImg}mm;height:${v.qrImg}mm;display:block;">
+          </div>
+
+          <div style="display:flex;flex-direction:column;align-items:center;gap:${v.scannGap}mm;position:relative;z-index:1;">
+            <div style="width:${v.lineW}mm;height:${v.lineH}mm;background:linear-gradient(90deg,transparent,rgba(74,158,255,.7),transparent);"></div>
+            <div style="font-size:${v.fontScanne}mm;font-weight:800;letter-spacing:.18em;color:#4a9eff;text-transform:uppercase;">SCANNE-MOI</div>
+            <div style="width:${v.lineW}mm;height:${v.lineH}mm;background:linear-gradient(90deg,transparent,rgba(74,158,255,.7),transparent);"></div>
+          </div>
+        </div>`;
+    }
+
+    function makeVerso(mm) {
+      const v = sc(mm);
+      return `
+        <div class="card" style="
+          width:${mm}mm; height:${mm}mm; border-radius:${v.br}mm;
+          background:linear-gradient(145deg,#172a52,#0e1a35);
+          display:flex; flex-direction:column; align-items:center;
+          justify-content:center; gap:${v.gapVerso}mm;
+        ">
+          <div class="grid-bg" style="border-radius:${v.br}mm; background-size:${v.gridSize}mm ${v.gridSize}mm;"></div>
+
+          <div style="position:absolute;bottom:${v.strBot}mm;left:${v.strLeft}mm;display:flex;flex-direction:column;gap:${v.strGap}mm;z-index:1;">
+            <div style="width:${v.strW1}mm;height:${v.strH}mm;border-radius:1mm;background:#4a9eff;"></div>
+            <div style="width:${v.strW2}mm;height:${v.strH}mm;border-radius:1mm;background:rgba(255,255,255,.3);"></div>
+            <div style="width:${v.strW3}mm;height:${v.strH}mm;border-radius:1mm;background:rgba(255,255,255,.15);"></div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:${v.gapLg}mm;position:relative;z-index:1;">
+            <img src="qarta-logo.png" style="width:${v.logoLg}mm;height:${v.logoLg}mm;display:block;border-radius:28%;mix-blend-mode:screen;
+              filter:drop-shadow(0 0 ${+(v.logoLg*.3).toFixed(2)}mm rgba(74,158,255,.9)) drop-shadow(0 0 ${+(v.logoLg*.6).toFixed(2)}mm rgba(44,123,229,.5));">
+            <span style="font-size:${v.fontLg}mm;font-weight:800;color:#fff;line-height:1;">Qarta</span>
+          </div>
+
+          <div style="width:${v.sepW}mm;height:${v.lineH}mm;background:rgba(74,158,255,.2);position:relative;z-index:1;"></div>
+
+          <span style="font-size:${v.fontTag}mm;font-weight:700;line-height:1.65;letter-spacing:.01em;font-style:italic;text-align:center;position:relative;z-index:1;padding:0 ${v.padTagSide}mm;">
+            <span style="color:#4a9eff;">votre commerce</span>
+            <span style="color:#fff;"> mérite<br>une fidélité qui se démarque</span>
+          </span>
+        </div>`;
+    }
+
+    // ── Génération ──
+    const SIZES = [25, 35, 50, 65, 80];
+    const MAX_W = 182; // mm dispo sur A4
+    const container = document.getElementById('rows');
+
+    // Regrouper en lignes selon la largeur dispo
+    const rows = [];
+    let row = [], rowW = 0;
+    SIZES.forEach(mm => {
+      const itemW = mm * 2 + 1.5; // recto + verso + gap
+      if (row.length && rowW + 4 + itemW > MAX_W) {
+        rows.push(row); row = []; rowW = 0;
+      }
+      row.push(mm);
+      rowW += (row.length > 1 ? 4 : 0) + itemW;
+    });
+    if (row.length) rows.push(row);
+
+    rows.forEach(rowSizes => {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'row';
+      rowSizes.forEach(mm => {
+        const pairEl = document.createElement('div');
+        pairEl.className = 'pair';
+        pairEl.innerHTML = makeRecto(mm) + makeVerso(mm);
+        rowEl.appendChild(pairEl);
+      });
+      container.appendChild(rowEl);
+    });
+  </script>
+</body>
+</html>
