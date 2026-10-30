@@ -62,8 +62,8 @@ export default async function DashboardPage(props: {
     const d = new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000);
     dailyMap[d.toISOString().split("T")[0]] = 0;
   }
-  for (const c of newClientsRes as Array<{ created_at: string }>) {
-    const day = c.created_at.split("T")[0];
+  for (const c of newClientsRes as Array<{ created_at: string | Date }>) {
+    const day = new Date(c.created_at).toISOString().split("T")[0];
     if (day in dailyMap) dailyMap[day]++;
   }
   const dailyData = Object.values(dailyMap);
@@ -93,11 +93,11 @@ export default async function DashboardPage(props: {
   type UserRow = { id: string; name?: string; email?: string };
   const userMap = Object.fromEntries((usersRes as UserRow[]).map(u => [u.id, u]));
 
-  const recentClients = (recentCardsRes as Array<{ client_id: string; stamps_count: number; created_at: string }>).map(c => ({
+  const recentClients = (recentCardsRes as Array<{ client_id: string; stamps_count: number; created_at: string | Date }>).map(c => ({
     clientId: c.client_id,
     name:     userMap[c.client_id]?.name ?? userMap[c.client_id]?.email ?? "Client",
     stamps:   c.stamps_count ?? 0,
-    joinedAt: c.created_at,
+    joinedAt: new Date(c.created_at).toISOString(),
   }));
 
   const nearRewardClients = nearRewardCards.slice(0, 5).map(c => ({
