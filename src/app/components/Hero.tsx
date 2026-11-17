@@ -146,7 +146,8 @@ export default function Hero({ content }: { content?: Record<string, unknown> })
                   window.scrollTo({ top: target.getBoundingClientRect().top + window.scrollY - 80, behavior: "smooth" });
                 }
               }}
-              className="px-5 py-3.5 rounded-full font-semibold text-white border border-white/30 hover:bg-white/10 transition-colors backdrop-blur-md"
+              className="px-5 py-3.5 rounded-full font-semibold text-white border border-white/30 hover:bg-white/10 transition-colors"
+              style={{ backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" }}
               data-testid="hero-cta-contact"
             >
               {ctaContactLabel}
@@ -161,7 +162,12 @@ export default function Hero({ content }: { content?: Record<string, unknown> })
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 2, duration: 1 }}
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              onClick={() => {
+                const hero = heroRef.current;
+                if (hero) {
+                  window.scrollTo({ top: hero.getBoundingClientRect().bottom + window.scrollY, behavior: "smooth" });
+                }
+              }}
               className="flex flex-col items-center gap-2 text-[#faf8f4]/60 cursor-pointer hover:text-white/80 transition-colors"
             >
               <span className="text-[10px] uppercase tracking-[0.3em]">{scrollLabel}</span>
