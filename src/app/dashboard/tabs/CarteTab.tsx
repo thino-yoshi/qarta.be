@@ -230,7 +230,14 @@ export default function CarteTab({ merchant, loyaltyCard }: Props) {
               onClick={() => setLoyaltyTab(tab)}
               className="flex-1 py-2.5 rounded-xl text-[13px] font-semibold transition-all"
               style={loyaltyTab === tab
-                ? { background: "linear-gradient(135deg,rgba(74,158,255,0.18),rgba(155,89,182,0.12))", color: "#fff", border: "1px solid rgba(74,158,255,0.3)" }
+                ? {
+                    // Bleu clair + reflet brillant transparent sur la moitié haute (passe sur le texte)
+                    background: "linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0) 50%), linear-gradient(135deg, #7CC4FF, #4A9EFF)",
+                    color: "#fff",
+                    textShadow: "0 1px 2px rgba(10,30,70,0.45)",
+                    border: "1px solid rgba(255,255,255,0.35)",
+                    boxShadow: "0 4px 16px rgba(74,158,255,0.35)",
+                  }
                 : { color: "rgba(255,255,255,0.3)", border: "1px solid transparent" }
               }
             >
